@@ -10,7 +10,7 @@
 carpentry: "swc"
 
 # Overall title for pages.
-title: "ATLAS RECAST Tutorial"
+title: "Workshop Title"
 
 
 #------------------------------------------------------------
@@ -26,7 +26,7 @@ kind: "workshop"
 repository: <USERNAME>/<PROJECT>
 
 # Email address, no mailto:
-# (Don't change this -- the contact address for your workshop will be set
+# (Don't change this -- the contact address for your workshop will be set 
 # in the index.md file)
 email: "team@carpentries.org"
 
@@ -61,36 +61,36 @@ start_time: 0
 
 # Specify that things in the episodes collection should be output.
 collections:
-episodes:
-output: true
-permalink: /:path/index.html
-extras:
-output: true
-permalink: /:path/index.html
+  episodes:
+    output: true
+    permalink: /:path/index.html
+  extras:
+    output: true
+    permalink: /:path/index.html
 
 # Set the default layout for things in the episodes collection.
 defaults:
-- values:
-root: .
-layout: page
-- scope:
-path: ""
-type: episodes
-values:
-root: ..
-layout: episode
-- scope:
-path: ""
-type: extras
-values:
-root: ..
-layout: page
+  - values:
+      root: .
+      layout: page
+  - scope:
+      path: ""
+      type: episodes
+    values:
+      root: ..
+      layout: episode
+  - scope:
+      path: ""
+      type: extras
+    values:
+      root: ..
+      layout: page
 
 # Files and directories that are not to be copied.
 exclude:
-- Makefile
-- bin/
-- .Rproj.user/
+  - Makefile
+  - bin/
+  - .Rproj.user/
 
 # Turn on built-in syntax highlighting.
 highlighter: rouge
