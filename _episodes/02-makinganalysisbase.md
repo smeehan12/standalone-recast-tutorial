@@ -17,10 +17,10 @@ keypoints:
 Throughout the week, you have been developing and running your AnalysisPayload within a
 docker image `atlas/analysisbase:21.2.75`.  It transported you into something that feels like
 lxplus, and at this point you may have an appreciation for how to think about this image and how
-it is like lxplus, and how it is different.  But where does this image come from?
+it is like lxplus, and how it is different. Before we proceed with exploring how this image and others are used in analysis preservation, let's first take a step back and try to understand a bit better where the image actually comes from.
 
 ## ATLAS Software and Infrastructure
-Within the [ATLAS Distributed Computing](LINK HERE) group (ADC), there is a team of individuals (albeit small)
+Within the [ATLAS Distributed Computing](https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/AtlasDistributedComputing) group (ADC), there is a team of individuals (albeit small)
 that manages the overall distribution of software.  This is the _software and infrastructure team_ (SIT).
 One of the things they are responsible for is to create and archive the Athena docker images
 and their releases.  The code to do this is housed here - [Link to GitLab Repo](https://gitlab.cern.ch/atlas-sit/docker).
@@ -32,13 +32,13 @@ infrastructure and changes quite infrequently.  The other is the release layer w
 houses a compiled version of the given branch of Athena that is to be released in that image.
 
 **Base Layer** ([Link to Repo](https://gitlab.cern.ch/atlas-sit/docker/tree/master/slc6-atlasos)):
-This base layer is build starting from Scientific Linux 6 ([SLC6](http://linux.web.cern.ch/linux/scientific6/)).
+This base layer is built starting from Scientific Linux 6 ([SLC6](http://linux.web.cern.ch/linux/scientific6/)).
 On top of that, a minimal set of components, such as compilers and package managers, are added to allow the subsequent building
 of the release.
 
 **Release Layer** ([Link to Repo](https://gitlab.cern.ch/atlas-sit/docker/tree/master/slc6-analysisbase)):
 The release image is based on the base layer described previously.  In this layer, a given release is installed
-and the `release_setup.sh` script that you are used to running at this point, is added to allow for
+and the `release_setup.sh` script that you are used to running at this point is added to allow for
 the configuration of the release within the image.
 
 
