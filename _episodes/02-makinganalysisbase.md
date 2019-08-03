@@ -49,12 +49,12 @@ go into the `slc6-atlasos` directory and build the image with a uniquely named t
 
 ~~~bash
 cd slc6-atlasos
-docker build -t meehan/slc6-atlasos:latest --compress  .
+docker build -t [your_name]/slc6-atlasos:latest --compress  .
 ~~~
 
 this may take 10 minutes or so, but if you watch the output, you will see that its nothing more than
 a normal `docker build` execution that is using `yum` to get access to other software.  Once it is finished,
-if you query the images available on your machine, you should see this base image
+if you query the images available on your machine, you should see this base image:
 
 ~~~bash
 docker images
@@ -75,14 +75,75 @@ docker images
 >
 {: .output}
 
-You can now use this base image locally!  So now change your working directory and go into the `slc6-analysisbase`
-directory.  Open up the `Dockerfile` here and change the `ARG BASEIMAGE=atlas/slc6-atlasos:latest` entry to not
-be the ATLAS base release, but instead the one you just created (e.g. `meehan/slc6-atlasos`). Now, you can
-run a `docker build` command similar as before.
+While we're waiting for the build to finish, let's take a look at the Dockerfile. Open up the Dockerfile with a text editor, and try to understand what's going on. You can use the following exercise questions as a guide.
+
+> ## Exercise
+>
+> **Question 1** 
+> 
+> a) What is the default base image for the Dockerfile? 
+>
+> b) How would you adjust the `docker build [...]` command to start from a different base image (eg. `centos:7`)? Hint: check out the docker build options with `docker build --help`
+>
+> **Question 2**
+>
+> Identify the step in which the atlas development libraries are obtained.
+>
+> **Question 3**
+>
+> If you were to go into the container (e.g. by running `docker run -it --rm meehan/slc6-atlasos bash`) and run `pwd`, what would you expect as the output?
+> 
+> **Question 4**
+>
+> What is the first set of commands that will run by default when a container is started up with this image?
+> 
+> **Question 5**
+>
+> Which group does the `atlas` user belong to, and why does this give it superuser rights?
+>
+> > ## Solution
+> > 1.  a) `cern/slc6-base:latest`. The base image is specified with the `FROM` instruction, which in this case is followed by the variable `BASEIMAGE`, set to `cern/slc6-base:latest` by default. 
+> > 
+> >     b) `docker build -t meehan/slc6-atlasos:latest --compress  --build-arg BASEIMAGE=centos:7 .`
+> > 2. It's one of the `yum` packages installed in the first `RUN` instruction: `atlas-devel`.
+> > 3. `\root`, specified with the WORKDIR instruction.
+> > 4. `cat /etc/motd && /bin/bash`, as specified by the `CMD` instruction.
+> > 5. The `wheel` group, as specified by the `RUN` instruction `usermod -aG wheel atlas`. This gives it superuser rights because the first run command in this `RUN` instruction adds a line to the `sudoers` file to give all users belonging to the `wheel` group superuser rights with no password required.
+> > 
+> {: .solution}
+{: .challenge}
+
+Once this base image is finished building, you can now use it locally!  So now change your working directory and go into the `slc6-analysisbase`
+directory.  Open up the `Dockerfile` here and notice that it again uses an argument to specify the base image: `ARG BASEIMAGE=atlas/slc6-atlasos:latest`. Use the `docker build` option `--build-arg` to replace this default base image with the one we just built: 
 
 ~~~bash
-docker build -t meehan/analysisbase:latest --compress  .
+docker build -t meehan/analysisbase:latest --compress  --build-arg BASEIMAGE=meehan/slc6-atlasos .
 ~~~
+
+Again, let's go though the Dockerfile to see if we can understand what's it's doing, using the following exercise questions to test your understanding:
+
+> ## Exercise 
+> 
+> **Question 1**
+> 
+> How are the variables `AtlasProject` and `AtlasVersion` set with the `ENV` instruction different from the other variables set with `ARG`?
+>
+> **Question 2** 
+>
+> Open up the file `release_setup.sh.in` in another text editor window and review it sets up the environment. Identify how the `release_setup.sh` script in an athanalysisbase container gets the information to specifically set up the AnalysisBase environment.
+> 
+> **Question 3**
+> Identify where the specific `AnalysisBase:21.2.3` code package is installed.
+> 
+> > ## Solution
+> > 
+> > 1. These will persist as environment variables in any container that's started up with this image, unlike the variables set with `ARG` which only persist through the build process.
+> >
+> > 2. The last RUN instruction in the Dockerfile (line 34) replaces all instances of `{{PROJECT}}` in `release_setup.sh.in` with AthAnalysis, and outputs the result to `release_setup.sh`, then removes `release_setup.sh.in` from the image.
+> >
+> > 3. The first RUN instruction (line 27) installs all the yum packages, including the `AnalysisBase_21.2.3_x86_64-slc6-gcc62-opt` package specified as a variable.
+> {: .solution}
+{: .challenge}
 
 And finally check to see that the image is present in the repository.
 
