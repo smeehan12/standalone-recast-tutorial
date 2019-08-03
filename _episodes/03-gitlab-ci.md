@@ -14,7 +14,7 @@ keypoints:
 ---
 
 ## Introduction
-Now that we've deconstructed where the `atlas/analysisbase` image that you've been using for your analysis actually comes from, we're going to take the next step of using this image as a base for preserving our ATLAS environment. Gitlab CI/CD automates the task of keeping your analysis environment up-to-date so you don't have to think about it (much). This is accomplished by re-building the container in which your analysis environment is preserved on top of `atlas/analysisbase` for each analysis repo each time that new commits are pushed to the repos. 
+Now that we've deconstructed the `atlas/analysisbase` image that you've been using for your analysis to see where it actually comes from, we're going to take the next step of using this image as a base for preserving our ATLAS environment. Gitlab CI/CD automates the task of keeping your analysis environment up-to-date so you don't have to think about it (much). This is accomplished by re-building the container in which your analysis environment is preserved on top of `atlas/analysisbase` for each analysis repo each time that new commits are pushed to the repos. 
 
 
 ## RECAST and Gitlab CI/CD
@@ -48,8 +48,8 @@ So far, you've been starting your containers from the atlas/analysisbase:21.2.75
 > Now open the Dockerfile with a text editor and, starting with the following skeleton, fill in the FIXMEs to make a Dockerfile that builds your analysis environment. 
 > 
 > ~~~
-> # Specify the image and release tag from which you are working
-> [FIXME]
+> # Specify the image and release tag from which we're working
+> atlas/analysisbase:21.2.75
 > 
 > # Put the current repo (the one in which this Dockerfile resides) in the /Bootcamp directory
 > # Note that this directory is created on the fly and does not need to reside in the repo already
