@@ -49,7 +49,7 @@ go into the `slc6-atlasos` directory and build the image with a uniquely named t
 
 ~~~bash
 cd slc6-atlasos
-docker build -t [your_name]/slc6-atlasos:latest --compress  .
+docker build -t [your_name]/slc6-atlasos:latest  .
 ~~~
 
 this may take 10 minutes or so, but if you watch the output, you will see that its nothing more than
@@ -104,7 +104,7 @@ While we're waiting for the build to finish, let's take a look at the Dockerfile
 > > ## Solution
 > > 1.  a) `cern/slc6-base:latest`. The base image is specified with the `FROM` instruction, which in this case is followed by the variable `BASEIMAGE`, set to `cern/slc6-base:latest` by default. 
 > > 
-> >     b) `docker build -t meehan/slc6-atlasos:latest --compress  --build-arg BASEIMAGE=centos:7 .`
+> >     b) `docker build -t meehan/slc6-atlasos:latest  --build-arg BASEIMAGE=centos:7 .`
 > > 2. It's one of the `yum` packages installed in the first `RUN` instruction: `atlas-devel`.
 > > 3. `\root`, specified with the WORKDIR instruction.
 > > 4. `cat /etc/motd && /bin/bash`, as specified by the `CMD` instruction.
@@ -117,7 +117,7 @@ Once this base image is finished building, you can now use it locally!  So now c
 directory.  Open up the `Dockerfile` here and notice that it again uses an argument to specify the base image: `ARG BASEIMAGE=atlas/slc6-atlasos:latest`. Use the `docker build` option `--build-arg` to replace this default base image with the one we just built: 
 
 ~~~bash
-docker build -t meehan/analysisbase:latest --compress  --build-arg BASEIMAGE=meehan/slc6-atlasos .
+docker build -t meehan/analysisbase:latest  --build-arg BASEIMAGE=meehan/slc6-atlasos .
 ~~~
 
 Again, let's go though the Dockerfile to see if we can understand what's it's doing, using the following exercise questions to test your understanding:

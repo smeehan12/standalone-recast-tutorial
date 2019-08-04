@@ -20,7 +20,7 @@ So far in our VHbb analysis, we've taken a Monte Carlo simulated signal DAOD, lo
 
 
 
-However, the time it would take us to properly account for all the SM backgrounds would probably take away from the main purpose of this tutorial, which is to look at how docker is being used in ATLAS analysis. So we'll instead assume that our SM background distribution can be modeled analytically by some smoothly decaying exponential in the dijet invariant mass, and move along (keeping in mind that this would in no way fly in a real analysis!). We'll also provide toy data for the interpretation, which will be statistically drawn from the exponentially falling SM background, plus *some* non-background component that we're hoping to model. The fit will be done using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/)
+However, the time it would take us to properly account for all the SM backgrounds would probably take away from the main purpose of this tutorial, which is to look at how docker is being used in ATLAS analysis. So we'll instead assume that our SM background distribution can be modeled analytically by some smoothly decaying exponential in the dijet invariant mass, and move along (keeping in mind that this would in no way fly in a real analysis!). We'll also provide toy data for the interpretation, which will be statistically drawn from the exponentially falling SM background, plus *some* non-background component that we're hoping to model. The fit will be done using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/).
 
 
 This approach is illustrated in the following doodle, where some data is fit with the background plus signal, with the signal amplitude (linearly proportional to the cross section) allowed to vary, and the fit shows that the data is best represented with a signal component, where the signal cross section is 1/5th of its simulated value. Note that the signal in this doodle is **not** meant to represent the particular signal we get from our DAOD, it's just drawn from a Gaussian distribution for illustration.
@@ -68,11 +68,6 @@ These steps are summarized in the following illustration:
 
 <img src="../fig/Steps.png" alt="Steps" style="width:600px"> 
 
-
-> ## Exercise
-> [FIXME: do a short exercise if needed to turn the hard-coded path to their DAOD into a command-line variable. Stress that it would probably make their lives easier when developing their analysis to try and avoid hard-coding things that could change when the analysis is RECASTed]
-{: .challenge}
-
 ## Workflow
 
 The workflow description specifies how all the steps "fit together". It accomplishes this by specifying exactly where all the data to be input to each step comes from - whether it be user-provided (i.e. "init" data) or output from a previous step - and how each step will be executed.
@@ -81,6 +76,39 @@ So here is an idea of what our workflow should look like:
 
 <img src="../fig/Workflow.png" alt="Workflow" style="width:1200px"> 
 
+> ## Exercise
+> Looking at the workflow, you'll notice that the signal DAOD file gets passed to the analysis code in the first skimming step. Since our ultimate goal with RECAST is to make it possible to trivially re-interpret our analysis with any signal model, we should be able to pass any signal DAOD to this skimming step, not just the one we've been working with so far. It would also be good for clarity (and in fact necessary if we wanted to start considering different background samples) to be able to specify the name of the ROOT file containing the output histograms depending on the input DAOD. But at present, the filename and path to the input signal DAOD and output ROOT file are hard-coded into the AnalysisPayload.cxx code. 
+>
+> So, with an eye on re-interpretation, update the AnalysisPayload.cxx in your gitlab repo so it can read in both:
+> * the path to the input DAOD, and 
+> * the path to the output ROOT file that will contain the histograms created by AnalysisPayload.cxx
+> 
+> such that the `AnalysisPayload` executable can be executed as follows:
+> ~~~
+> AnalysisPayload /path/to/input/DAOD.root.1 /path/to/output/ROOT/file.root
+> ~~~
+> {: .source}
+> > ## Solution
+> > The updates should look something like:
+> > 
+> > 1. `int main() {` --> `int main(int argc, char *argv) {`
+> > 
+> > 2. `TString inputFilePath = /path/to/ROOT/file.root.1;` becomes:
+> > ~~~
+> > TString inputFilePath = argv[1];
+> > TString outputFilePath = argv[2];
+> > ~~~
+> > {: .source}
+> > 
+> > 3. `TFile *fout = new TFile("myOutputFile.root","RECREATE");` --> `TFile *fout = new TFile(outputFilePath), "RECREATE");`
+> {: .solution}
+{: .challenge}
+
+> ## Hints
+> This should only require changing three lines in AnalysisPayload.cxx
+> 
+> The simplest way to implement command-line arguments in C/C++ is by passing the number `argc` of command line arguments and the list `*argv[]` of arguments to the `main()` function (see eg. this quick [cplusplus.com tutorial](http://www.cplusplus.com/articles/DEN36Up4/)).
+{: .callout}
 
 {% include links.md %}
 
