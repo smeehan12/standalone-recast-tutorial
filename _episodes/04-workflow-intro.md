@@ -3,12 +3,17 @@ title: "Introducing Workflows"
 teaching: 30
 exercises: 10
 questions:
-- "FIXME"
-- 
+- "What is the ultimate physics goal in interpreting our analysis of the VHbb signal model?"
+- "What is the goal of RECAST in the context of interpreting our analysis?"
+- "How does yadage help us preserve our analysis workflow for re-interpretation?"
 objectives:
-- "FIXME"
+- "Understand the concept (but not necessarily the details!) of combining our signal model with data and SM background to interpret our analysis as a search for new physics."
+- "Get a high-level overview of how yadage can help you preserve your analysis for re-interpretation."
 keypoints:
-- "FIXME"
+- "Our end goal with the VHbb analysis is to perform a statistical comparison of our signal model with ATLAS data and SM backgrounds to determine whether we can see evidence of the signal in the data."
+- "The goal of RECAST is to preserve and automate the procedure of re-interpreting our analysis with a new signal model."
+- "Yadage helps you preserve each step of passing an arbitrary signal model through our analysis chain as a containerized process, and combine these steps into an automated workflow."
+- "Try to avoid hard-coding anything to do with the signal model while developing your analysis, since this info will change when it's re-interpreted. Better yet, maintain your RECAST framework as you develop your analysis so you don't even have to think about it!"
 
 ---
 
@@ -49,7 +54,13 @@ If it weren't for the docker containers involved in RECAST, this could conceivab
 
 We'll get into the syntax part of yadage in the upcoming *intermezzo*, during which you'll get to practice writing a basic helloworld workflow in yadage. But before venturing too far into the forest of syntax, let's first fly overhead and see where this is all going. 
 
-In the yadage approach, the workflow is divided into distinct steps, called packaged activities - or "packtivities" - each of which will run inside a docker container. The steps get linked into a workflow using something called a dynamic acyclic graph (DAG). 
+In the yadage approach, the workflow is divided into distinct steps, called packaged activities - or "packtivities" - each of which will run inside a docker container. The steps get linked into a workflow using something called a dynamic acyclic graph (DAG), where each node of the DAG is a step, and directed edges connecting the steps represent the (not necessarily linear) dependencies between steps. The yadage workflow engine then uses this DAG to optimize the execution of the workflow.
+
+> ## More reading on Yadage
+> Nice introductory yadage tutorial: https://yadage.github.io/tutorial/
+> 
+> [Yadage and Packtivity – analysis preservation usingparametrized workflows](https://arxiv.org/pdf/1706.01878.pdf) (paper on arXiv with lots of great background info)
+{: .callout}
 
 ## Steps
 
