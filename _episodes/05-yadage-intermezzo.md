@@ -20,7 +20,7 @@ In this *intermezzo*, we'll take our first step into the forest of workflow auth
 
 The goal of the workflow is to take an input message, concatenate it with another (fixed) message, and then capitalize the new concatenated message and output it to a file. This is accomplished in two steps, as shown in the following workflow diagram:
 
-<img src="../fig/sample_workflow.png" alt="Sample workflow" style="width:100px"> 
+<img src="../fig/sample_workflow.png" alt="Sample_workflow" style="width:100px"> 
 
 The containers containing the environment and executables needed run each of the two steps are already available on docker hub. For the purpose of writing our workflow, we're not really concerned with the code that actually produces the executables. All we need to know how to run them inside their respective containers.
 
