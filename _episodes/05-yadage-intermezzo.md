@@ -98,7 +98,15 @@ packtivity-run steps.yml#/messagewriter -p message="Hi there." -p outputfile="'{
 ~~~
 {: .source}
 
-You can now check that a file `outputfile.txt` has been produced in the current directory with the expected output.
+You can now check that a file `outputfile.txt` has been produced in the current directory with the expected output. Note that you'll need to remove the `_packtivity` directory before running the `packtivity-run` command again, otherwise the command will crash with a message like this:
+
+~~~
+w134-87-144-175:workflow danikam$ packtivity-run steps.yml#/messagewriter -p message="Hi there." -p outputfile="'{workdir}/outputfile.txt'" 
+<TypedLeafs: {'msgfile': '/Users/danikamacdonell/workflow/outputfile.txt'}> (prepublished)
+2019-08-06 11:39:06,301 | pack.packtivity_sync |   INFO | starting file logging for topic: step
+2019-08-06 11:39:07,704 | pack.packtivity_sync | WARNING | cid file /Users/danikamacdonell/workflow/_packtivity/packtivity_syncbackend.cid seems to exist, container execution will crash
+~~~
+{: .output}
 
 #### Shouting Step
 
@@ -120,7 +128,12 @@ uppermaker:
 ~~~
 {: .source}
 
-You can validate and test this step using the same `packtivity-validate` and `packtivity-run` tools as before. 
+You can validate and test this step using the same `packtivity-validate` and `packtivity-run` tools as before, where the `packtivity-run` command would be:
+
+~~~
+packtivity-run steps.yml#/uppermaker -p inputfile="'{workdir}/outputfile.txt'" -p outputfile="'{workdir}/capped_output.txt'" 
+~~~
+{: .source}
 
 > ## Debugging Hint
 > When `packtivity-run` fails and crashes, the info in its core dump can sometimes be a little cryptic. But if you look in the `_packtivity` directory that gets created when you run `packtivity-run`, you'll find several log files, and usually one of them (often `packtivity_syncbackend.run.log`) will be able to point you to the cause of the crash.
@@ -146,7 +159,7 @@ stages:
     scheduler_type: singlestep-stage
     parameters:
       inputfile: {step: writing_stage, output: msgfile}
-      outputfile: '{workdir}/outputfile.txt'
+      outputfile: '{workdir}/capped_output.txt'
     step: {$ref: 'steps.yml#/uppermaker'}
 ~~~
 {: .source}
@@ -174,15 +187,18 @@ yadage-run workdir workflow.yml -p msg='Hi there.'
 ~~~
 {: .source}
 
-If the workflow runs successfully, you should find the file `outputfile.txt` in the workdir, with the following content:
+If the workflow runs successfully, you should find the file `capped_output.txt` in the `workdir/shouting_stage` directory, with the following content:
 
 ~~~
 HELLO, THE MESSAGE WAS: HI THERE.
 ~~~
 {: .output}
 
+Note that, as with the `packtivity-run` command, you'll need to remove the `workdir` directory produced by the `yadage_run` command before you can re-run the command.
+
 > ## Debugging Hint
-> As with `packtivity-run`, the `yadage-run` command also produces helpful log files 
+> As with `packtivity-run`, the `yadage-run` command also produces log files for each step that can be super handy for debugging. These are located in the respective `_packtivity` directory for each step. For example, the log files for the second `shouting_stage` step are located in `workdir/shouting_stage/_packtivity/`. 
+{: .callout}
 
 {% include links.md %}
 
