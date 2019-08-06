@@ -44,8 +44,11 @@ the configuration of the release within the image.
 
 ## Build it Yourself
 Here we will be working through the building of **your very own** release image on your local machine.  Start
-by cloning the [atlas-sit/docker](https://gitlab.cern.ch/atlas-sit/docker) repository.  Once in that repository,
-go into the `slc6-atlasos` directory and build the image with a uniquely named tag using your name
+by cloning the [atlas-sit/docker](https://gitlab.cern.ch/atlas-sit/docker) repository.  
+
+
+### Building the Base Layer
+Once in the `atlas-sit` repository, go into the `slc6-atlasos` directory and build the image with a uniquely named tag using your name
 
 ~~~bash
 cd slc6-atlasos
@@ -113,11 +116,13 @@ While we're waiting for the build to finish, let's take a look at the Dockerfile
 > {: .solution}
 {: .challenge}
 
-Once this base image is finished building, you can now use it locally!  So now change your working directory and go into the `slc6-analysisbase`
-directory.  Open up the `Dockerfile` here and notice that it again uses an argument to specify the base image: `ARG BASEIMAGE=atlas/slc6-atlasos:latest`. Use the `docker build` option `--build-arg` to replace this default base image with the one we just built: 
+### Building the Release Layer
+
+Once the base image is finished building, you can now use it locally!  So now change your working directory and go into the `slc6-analysisbase`
+directory.  Open up the `Dockerfile` here and update the line `ARG RELEASE=21.2.3` (line 11) to `ARG RELEASE=21.2.75` so we'll build the exact release we've been running. Notice that this `Dockerfile` again uses an argument to specify the base image: `ARG BASEIMAGE=atlas/slc6-atlasos:latest`. Use the `docker build` option `--build-arg` to replace this default base image with the one we just built: 
 
 ~~~bash
-docker build -t meehan/analysisbase:latest  --build-arg BASEIMAGE=meehan/slc6-atlasos .
+docker build -t meehan/analysisbase:21.2.75  --build-arg BASEIMAGE=meehan/slc6-atlasos .
 ~~~
 
 Again, let's go though the Dockerfile to see if we can understand what's it's doing, using the following exercise questions to test your understanding:
@@ -133,7 +138,7 @@ Again, let's go though the Dockerfile to see if we can understand what's it's do
 > Open up the file `release_setup.sh.in` in another text editor window and review it sets up the environment. Identify how the `release_setup.sh` script in an athanalysisbase container gets the information to specifically set up the AnalysisBase environment.
 > 
 > **Question 3**
-> Identify where the specific `AnalysisBase:21.2.3` code package is installed.
+> Identify where the specific `AnalysisBase:21.2.75` code package is installed.
 > 
 > > ## Solution
 > > 
@@ -165,7 +170,11 @@ And finally check to see that the image is present in the repository.
 {: .output}
 
 > ## Exercise
-> Try running your AnalysisPayload within this image that you just created!
+> Try running your `AnalysisPayload` within this image that you just created! Remember that the analysis release image doesn't yet contain your analysis code, so you'll need to volume-mount the top level of your gitlab repo to it:
+> ~~~
+> cd /your/gitlab/repo
+> docker run --rm -it -v $PWD:/home/atlas/Bootcamp meehan/analysisbase:21.2.75 bash
+> ~~~
 >
 {: .challenge}
 
