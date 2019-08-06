@@ -102,7 +102,7 @@ So here is an idea of what our workflow should look like:
 > > ## Solution
 > > The updates should look something like:
 > > 
-> > 1. `int main() {` --> `int main(int argc, char *argv) {`
+> > 1. `int main() {` --> `int main(int argc, char **argv) {`
 > > 
 > > 2. `TString inputFilePath = /path/to/ROOT/file.root.1;` becomes:
 > > ~~~
