@@ -17,7 +17,7 @@ We now have all the Yadage tools we need to put together our VHbb RECAST workflo
 
 ### Skimming Step
 
-<img src="../fig/SkimmingStep.png" alt="Steps" style="width:200px">
+<img src="../fig/SkimmingStep.png" alt="Skimming" style="width:200px">
 
 We can use essentially the same yadage structure and syntax for defining our analysis steps as we did for the message writing and shouting steps we saw in the intermezzo. So let's start with this structure and fill it in with the information needed to run the `AnalysisPayload` skimming step of our workflow. In your browser, navigate to `https://gitlab.cern.ch/` and click the green `New Project` button. Give your project a name (eg. `my-workflow`), set the visibility level as desired, and click `Create Project`. Now you can copy the repo url from the browser and clone your new project onto your computer:
 
@@ -39,6 +39,8 @@ git clone [repo url].git
 {: .challenge}
 
 ### Reformatting Step
+
+<img src="../fig/ReformattingStep.png" alt="Reformatting" style="width:200px">
 
 In this step, we read in the dijet invariant mass histogram `h_mjj_kin` that was written out to a ROOT file in the last step, and write it out to a text file so it can be easily read in by the final interpretation step. The required format of the output text file is space-separated histogram bin edges in the first row and space-separated bin contents in the second row. For a five-bin triangle-shaped histogram with bin edges ranging from 0 to 10, for example, the contents would be:
 
