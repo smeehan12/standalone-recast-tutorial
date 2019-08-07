@@ -118,7 +118,7 @@ So far, you've been starting your containers from the atlas/analysisbase:21.2.75
 Now that you've added a Dockerfile to your gitlab repo, you can proceed with updating your `.gitlab-ci.yml` to actually build the container during the CI/CD pipeline and store it in the gitlab registry. You can later pull it from the gitlab registry just as you would any other container, but in this case using your CERN credentials. 
 
 
-So, if there isn't yet code in your `.gitlab-ci.yml` file to build the container, you can add a build stage under the `stages` section
+So, if there isn't yet code in your `.gitlab-ci.yml` file to build the container, you can add a build stage under the `stages` section.
 
 ~~~
 stages:

@@ -43,7 +43,10 @@ If it weren't for the docker containers involved in RECAST, this could conceivab
 > ## Background preservation
 > In our sample analysis, we're using an analytic falling exponential as our background, but a real ATLAS analysis will have many different sources of background, each obtained from its own set of DAODs, and involving its own set of systematics that will affect the fit result. Since these background contributions won't change when the analysis is re-interpreted with a new model, it's in general important to preserve the contribution of these backgrounds to the final analysis results in the analysis code so that only need to run the signal DAOD through the whole analysis chain when the analysis is re-interpreted with RECAST. 
 >
->  <img src="../fig/background_preservation.png" alt="Background preservation" style="width:300px"> 
+> <img src="../fig/background_preservation.png" alt="Background preservation" style="width:300px"> 
+>
+> Another important point to keep in mind is that RECAST does **not** on its own document the exact version of Athena code that was originally used to produce your background and signal DAODs, since your code may not necessarily be compatible with DAODs produced with different releases of the ATLAS derivation framework. Therefore, it would be good to document somewhere (perhaps on your gitlab repo) exactly which ATLASDerivation cache and p-tags were used to produce the DAODs used in your analysis so other analysts know to produce new signals for RECAST with this same version. See the [DerivationProductionTeam](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/DerivationProductionTeam#Info_on_AtlasDerivation_caches_a) page for more information about derivation production and organzation.
+> 
 {: .callout}
 
 ## Yadage
@@ -57,9 +60,9 @@ We'll get into the syntax part of yadage in the upcoming *intermezzo*, during wh
 In the yadage approach, the workflow is divided into distinct steps, called packaged activities - or "packtivities" - each of which will run inside a docker container. The steps get linked into a workflow using something called a dynamic acyclic graph (DAG), where each node of the DAG is a step, and directed edges connecting the steps represent the (not necessarily linear) dependencies between steps. The yadage workflow engine then uses this DAG to optimize the execution of the workflow.
 
 > ## More reading on Yadage
-> Nice introductory yadage tutorial: https://yadage.github.io/tutorial/
+> Nice introductory yadage tutorial: [https://yadage.github.io/tutorial/](https://yadage.github.io/tutorial/)
 > 
-> [Yadage and Packtivity – analysis preservation usingparametrized workflows](https://arxiv.org/pdf/1706.01878.pdf) (paper on arXiv with lots of great background info)
+> [Yadage and Packtivity – analysis preservation using parametrized workflows](https://arxiv.org/pdf/1706.01878.pdf) (paper on arXiv with lots of great background info)
 {: .callout}
 
 ## Steps
@@ -69,11 +72,15 @@ Each step in the workflow is fully described by:
 * **Process description:** Instructions - typically a bash command or script - for transforming the input data into output to be fed into the next step, or the final result if it's the last step in the workflow
 * **Environment description:** The environment in which the instructions need to be executed. This is specified by the image used to start the container in which the step will run.
 
+and these three components are codified with dedicated yadage syntax, as we'll see in the upcoming "Yadage Helloworld" intermezzo.
+
+### VHbb RECAST Steps
+
 The three steps involved in interpreting our VHbb analysis are as follows:
 
 * **Skimming Step:** This is the step that we're already familiar with, where we take in the signal DAOD, loop through it event-by-event, apply some selections, and output a histogram of the dijet invariant mass variable that we'll want to fit our model to the data. This step will take place in the custom `AnalysisBase` container we recently created for our analysis repo. 
-* **Reformatting Step:** The pyhf fitting framework that we'll use for re-interpretation is written in pure python and runs outside of ROOT, so we can simplify the fitting step by reformatting the histogram that we wrote to a ROOT file in the previous skimming step into a json file that is readable in pure python, and outputting this json file to the fitting step.  
-* **Fitting Step:** Here, we use pyhf to do our statistical analysis of the signal, background, and data to determine whether we can detect our signal model in the data. We need some extra pieces of information to scale the signal appropriately, which we can get from the AMI database (this will be discussed further soon). 
+* **Reformatting Step:** The pyhf statistical interpretation framework that we'll use for re-interpretation is written in pure python and runs outside of ROOT, so we can simplify the fitting step by reformatting the histogram that we wrote to a ROOT file in the previous skimming step into a json file that is readable in pure python, and outputting this json file to the interpretation step.  
+* **Interpretation Step:** Here, we use pyhf to do our statistical analysis of the signal, background, and data to determine whether we can detect our signal model in the data. We need some extra pieces of information to scale the signal appropriately, which we can get from the AMI database (this will be discussed further soon). 
 
 These steps are summarized in the following illustration:
 
