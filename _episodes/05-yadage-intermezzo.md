@@ -18,6 +18,39 @@ keypoints:
 
 In this *intermezzo*, we'll take our first step into the forest of workflow authoring by walking through a simple helloworld example that illustrates the yadage syntax involved. The original example, written by Lukas Heinrich, is available here: [Getting Started Tutorial](https://yadage.github.io/tutorial/GettingStarted.html). Once you've mastered this basic workflow, it should be relatively straightforward to extend it to more complex workflows. 
 
+### Yadage setup
+
+Yadage is available as both a [pip package](https://pypi.org/project/yadage/) and a [docker container image](https://hub.docker.com/r/yadage/yadage) with yadage pre-installed. To avoid any need to download pip, yadage and its dependencies onto our computers - and since we're already in a container groove! - let's run with the container. 
+
+First, pull the container from dockerhub:
+~~~
+docker pull yadage/yadage
+~~~
+{: .source}
+
+Now, create a file called `setup_yadage.sh`, and paste the following bash functions into it - or just paste them to your .bashrc (linux) or .bash_profile (mac) if you want them to be available anytime you start a new shell:
+
+~~~
+# Functions to run yadage commands using the yadage container                                                                                                                                                                                
+function yadage-run {
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage yadage-run "$@"
+}
+function yadage-validate {
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage packtivity-validate "$@"
+}
+function packtivity-validate {
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage packtivity-validate "$@"
+}
+function packtivity-run {
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage packtivity-run "$@"
+}
+~~~
+{: .source}
+
+Whichever file you pasted the functions into, you can now source that file (`source setup_yadage.sh`) to make the functions available in your current shell. Each of these functions just runs a command of the same name in the yadage container, after volume-mounting your current working directory to the container. 
+
+### Helloworld Workflow
+
 The goal of the workflow is to take an input message, concatenate it with another (fixed) message, and then capitalize the new concatenated message and output it to a file. This is accomplished in two steps, as shown in the following workflow diagram:
 
 <img src="../fig/sample_workflow.png" alt="Sample_workflow" style="width:100px"> 
