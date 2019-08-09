@@ -78,14 +78,14 @@ So far, you've been starting your containers from the atlas/analysisbase:21.2.75
 > > ADD . /Bootcamp/
 > > 
 > > # Go into the directory specified here (again, it will create the directory if it doesn't already exist)
-> > WORKDIR /Bootcamp/build
+> > WORKDIR /build
 > > 
 > > # Source the ATLAS analysis environment
 > > # Make sure the directory containing your analysis code (and the code inside it) is owned by atlas user
 > > # Build your source code using cmake
 > > RUN source ~/release_setup.sh &&  \
 > >     sudo chown -R atlas /Bootcamp && \
-> >     cmake ../source && \
+> >     cmake ../Bootcamp && \
 > >     make
 > > ~~~
 > > {: .source}
