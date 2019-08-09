@@ -27,9 +27,11 @@ Let's go through this scaling step-by-step.
 
 #### MC Event Weighting
 
-The MC event generators used by ATLAS may for a variety of reasons assign a weight other than 1 to events they produce, and these weights should be taken into account when looping over the events and adding them to histograms. For example, the next-to-leading order (NLO) algorithm may sometimes generate events for the same process that was already generated with the leaing-order (LO) algorithm, in which case some events may be assigned a weight of -1 to avoid "double-counting". See the "[All about the ATLAS Monte Carlo](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhysicsAnalysisWorkBookRel20MC)" twiki page for a more thorough discussion. 
+The MC event generators used by ATLAS may for a variety of reasons assign a weight other than 1 to events they produce, and these weights should be taken into account when looping over the events and adding them to histograms. For example, the next-to-leading order (NLO) algorithm may sometimes generate events for the same process that was already generated with the leaing-order (LO) algorithm, in which case some events may be assigned a weight of -1 to avoid "double-counting". See the "[All about the ATLAS Monte Carlo](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PhysicsAnalysisWorkBookRel20MC)" twiki page for a more thorough discussion. The MC event weight is accounted for when filling histograms by adding the event weight, rather than +1, to the bin to which the event is assigned. Fortunately, ROOT's [`Fill()`](https://root.cern.ch/doc/master/classTH1.html#a498de8e0804e75fc75e62dc14a3bb62d) function used in our `AnalysisPayload.cxx` is already all set up for this! It can take a second argument - which defaults to 1 - representing the event weight. 
 
-The MC event weight is accounted for when filling histograms by adding the event weight, rather than +1, to the bin to which the event is assigned. Fortunately, ROOT's [`Fill()`](https://root.cern.ch/doc/master/classTH1.html#a498de8e0804e75fc75e62dc14a3bb62d) function used in our `AnalysisPayload.cxx` is already all set up for this! It can take a second argument - which defaults to 1 - representing the event weight. But what we haven't yet addressed is how to actually obtain this MC event weight to begin with. The next exercise will will guide you through this step. 
+In addition to this event-by-event weighting, we also need to deal with the fact that the number of weighted events that were used to generate an MC sample isn't actually at all relevant for comparing its shape or size with other MC samples. This number essentially just dictates the "statistics" of the sample (i.e. how much fluctuation you can expect to see in each bin due to the randomness of the MC generation - for example, if you double the number of events in your sample, you can expect the fluctuation per bin relative to the bin size to go down by 1/<math><msqrt><mi>2</mi></msqrt></math> on average assuming their assignment to the bin is governed by [Poisson statistics](https://stattrek.com/probability-distributions/poisson.aspx)). So this information is typically "normalized out" by dividing the histogram bin amplitudes by the sum of all event weights, such that the sum over all histogram bins is 1.
+
+What we haven't yet addressed is how to actually obtain this MC event weight to begin with. The next exercise will will guide you through implementing the MC event weighting and normalization.
 
 > ## Exercise
 > Update your AnalysisPayload.cxx code to (a) obtain the MC event weight for each event and (b) weight each event by its MC event weight when filling your histograms.
@@ -41,7 +43,7 @@ The MC event weight is accounted for when filling histograms by adding the event
 > Now, weight each event by its MC event weight when filling the four histograms in AnalysisPayload.cxx.
 > 
 > #### Part 3
-> The number of weighted events that were used to generate an MC sample isn't actually relevant for comparing its shape or size with other MC samples. It essentially just dictates the "statistics" of the sample (i.e. how much fluctuation you can expect to see in each bin due to the randomness of the MC generation - for example, if you double the number of events in your sample, you can expect the fluctuation per bin relative to the bin size to go down by 1/$\sqrt{2}$ on average assuming their assignment to the bin is governed by [Poisson statistics](https://stattrek.com/probability-distributions/poisson.aspx)).
+> Lastly, divide the histogram bin amplitudes by the sum of all event weights, such that the sum over all histogram bins is 1. (Hint: ROOT has a [`Scale()`](https://root.cern.ch/doc/master/classTH1.html#add929909dcb3745f6a52e9ae0860bfbd) function that can do exactly what we want here). 
 > 
 > > ## Solution
 > > #### Part 1
@@ -53,9 +55,11 @@ The MC event weight is accounted for when filling histograms by adding the event
 > >     float mc_evt_weight_nom = ei->mcEventWeights().at(0);    // Use the 0th entry for "nominal" event weight
 > >     std::cout << "Processing run # " << ei->runNumber() << ", event # " << ei->eventNumber() << ". MC event weight: " << mc_evt_weight_nom << std::endl;
 > > ~~~
+> > {: .source}
 > > 
 > > #### Part 2
 > > The updated code for histogram-filling should look something like this:
+> > ~~~
 > >     // fill the analysis histograms accordingly
 > >     h_njets_raw->Fill( jets_raw.size(), mc_evt_weight_nom );
 > >     h_njets_kin->Fill( jets_kin.size(), mc_evt_weight_nom );
@@ -67,8 +71,47 @@ The MC event weight is accounted for when filling histograms by adding the event
 > >     if( jets_kin.size()>=2 ){
 > >       h_mjj_kin->Fill( (jets_kin.at(0).p4()+jets_kin.at(1).p4()).M()/1000., mc_evt_weight_nom );
 > >     }
+> > ~~~
+> > {: .source}
+> >
+> > #### Part 3
+> > First, we need to compute the sum of all event weights during the event loop. The modifications for this in the event loop should look something like this (with the updated lines marked with `UPDATED HERE`):
+> > ~~~
+> >   // float to contain the sum of MC event weights   // UPDATED HERE
+> >   float sum_evt_weight = 0.;                        // UPDATED HERE
+> > 
+> >   // primary event loop
+> >   for ( Long64_t i=0; i<numEntries; ++i ) {
+> >
+> >   // Load the event
+> >   event.getEntry( i );
+> >
+> >   // Load xAOD::EventInfo and print the event info
+> >   const xAOD::EventInfo * ei = nullptr;
+> >   event.retrieve( ei, "EventInfo" );
+> >   float mc_evt_weight_nom = ei->mcEventWeights().at(0);    // Use the 0th entry for "nominal" event weight
+> >   std::cout << "Processing run # " << ei->runNumber() << ", event # " << ei->eventNumber() << ". MC event weight: " << mc_evt_weight_nom << std::endl;
+> >   
+> >   // Add the MC event weight to the sum over all events   // UPDATED HERE
+> >   sum_evt_weight += mc_evt_weight_nom;                    // UPDATED HERE
+> >   [... rest of the event loop ...]
+> > ~~~
+> > {: .source}
+> > 
+> > Now, we can scale the histogram bins by the sum of squared weights. Something like the following should come just after the event loop and just before the line `TFile *fout = new TFile(outputFilePath, "RECREATE");`:
+> > ~~~
+> >   // Normalize the histograms by the sum of MC event weights
+> >   h_njets_raw->Scale( 1./sum_evt_weight );
+> >   h_njets_kin->Scale( 1./sum_evt_weight );
+> >   h_mjj_raw->Scale( 1./sum_evt_weight );
+> >   h_mjj_kin->Scale( 1./sum_evt_weight );
+> > ~~~
+> > {: .source}
 > {: .solution}
 {: .challenge}
+
+#### Cross Section and Filter Factor Weighting
+Now that we've correctly weighted by 
 
 ## Overview of writing workflow
 
