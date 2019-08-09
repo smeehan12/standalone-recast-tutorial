@@ -121,7 +121,7 @@ So here is an idea of what our workflow should look like:
 > > 3. `TFile *fout = new TFile("myOutputFile.root","RECREATE");` --> `TFile *fout = new TFile(outputFilePath), "RECREATE");`
 > {: .solution}
 > 
-> Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo.
+> Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo. Make sure the main repo is updated to use the latest AnalysisPayload commit.
 {: .challenge}
 
 > ## Hints
