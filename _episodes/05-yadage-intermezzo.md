@@ -22,7 +22,7 @@ In this *intermezzo*, we'll take our first step into the forest of workflow auth
 
 Yadage is available as both a [pip package](https://pypi.org/project/yadage/) and a [docker container image](https://hub.docker.com/r/yadage/yadage) with yadage pre-installed. To avoid any need to download pip, yadage and its dependencies onto our computers - and since we're already in a container groove! - let's run with the container. 
 
-First, pull the container from dockerhub:
+First, pull the container from docker hub:
 ~~~
 docker pull yadage/yadage
 ~~~
