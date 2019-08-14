@@ -12,7 +12,9 @@ Welcome to the US ATLAS/First-HEP computing bootcamp's tutorial on ATLAS analysi
 
 > ## Prerequisites
 >
-> Knowledge gained from the bootcamp so far, especially this morning's docker tutorial!
+> * A personal repo containing a working version of your VHbb analysis code and gitlab-ci files from Wednesday's ATLAS CI/CD tutorial.
+> 
+> * Knowledge gained from the bootcamp so far, especially this morning's docker tutorial!
 {: .prereq}
 
 {% include links.md %}
