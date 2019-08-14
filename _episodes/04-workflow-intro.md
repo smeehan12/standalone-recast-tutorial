@@ -79,7 +79,7 @@ and these three components are codified with dedicated yadage syntax, as we'll s
 The three steps involved in interpreting our VHbb analysis are as follows:
 
 * **Skimming Step:** This is the step that we're already familiar with, where we take in the signal DAOD, loop through it event-by-event, apply some selections, and output a histogram of the dijet invariant mass variable that we'll want to fit our model to the data. This step will take place in the custom `AnalysisBase` container we recently created for our analysis repo. 
-* **Reformatting Step:** The pyhf statistical interpretation framework that we'll use for re-interpretation is written in pure python and runs outside of ROOT, so we can simplify the fitting step by reformatting the histogram that we wrote to a ROOT file in the previous skimming step into a json file that is readable in pure python, and outputting this json file to the interpretation step.  
+* **Reformatting Step:** The pyhf statistical interpretation framework that we'll use for re-interpretation is written in pure python and runs outside of ROOT, so we can simplify the fitting step somewhat by reformatting the histogram that we wrote to a ROOT file in the previous skimming step into a text file that is readable in pure python, and outputting this text file to the interpretation step.  
 * **Interpretation Step:** Here, we use pyhf to do our statistical analysis of the signal, background, and data to determine whether we can detect our signal model in the data. We need some extra pieces of information to scale the signal appropriately, which we can get from the AMI database (this will be discussed further soon). 
 
 These steps are summarized in the following illustration:

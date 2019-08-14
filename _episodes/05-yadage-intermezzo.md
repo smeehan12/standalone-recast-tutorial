@@ -28,26 +28,12 @@ docker pull yadage/yadage
 ~~~
 {: .source}
 
-Now, create a file called `setup_yadage.sh`, and paste the following bash functions into it - or just paste them to your .bashrc (linux) or .bash_profile (mac) if you want them to be available anytime you start a new shell:
+Now, if you want to use yadage commands in your directory, you can start the yadage container in the directory and bind-mount the directory contents and your docker daemon to the container with the following command:
 
 ~~~
-# Functions to run yadage commands using the yadage container                                                                                                                                                                                
-function yadage-run {
-docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage yadage-run "$@"
-}
-function yadage-validate {
-docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage packtivity-validate "$@"
-}
-function packtivity-validate {
-docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage packtivity-validate "$@"
-}
-function packtivity-run {
-docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage packtivity-run "$@"
-}
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
 ~~~
 {: .source}
-
-Whichever file you pasted the functions into, you can now source that file (`source setup_yadage.sh`) to make the functions available in your current shell. Each of these functions just runs a command of the same name in the yadage container, after volume-mounting your current working directory to the container. 
 
 ### Helloworld Workflow
 
@@ -82,7 +68,12 @@ The workflow we're about to construct essentially does the role of automating th
 
 ### Steps 
 
-The two steps in our workflow are encoded in a yaml file steps.yml. Make a directory named `workflow` somewhere on your computer, cd into it, and create an empty file named `steps.yml`.
+The two steps in our workflow are encoded in a yaml file steps.yml. Make a directory named `workflow` somewhere on your computer, cd into it, and create an empty file named `steps.yml`. In another shell, `cd` into this directory and paste the command listed above to start the yadage container in which you'll run yadage commands (eg. `packtivity-validate`, `yadage-run`, etc.):
+
+~~~
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
+~~~
+{: .source}
 
 #### Message Writing Step
 

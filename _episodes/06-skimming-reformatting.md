@@ -27,17 +27,134 @@ git clone [repo url].git
 ~~~
 {: .source}
 
-> ## Exercise
+In another shell, cd into the workflow project and start the yadage container so you can validate and test the steps and workflow as you develop. You'll also need to log in to the gitlab docker registry using your CERN credentials so yadage can automatically pull images from the gitlab registry:
+
+~~~
+docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
+docker login gitlab-registry.cern.ch
+~~~
+{: .source}
+
+Working from your shell, cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`, and rename it `recast_daod.root`:
+
+~~~
+cd /path/to/new/workflow/repo
+touch steps.yml
+touch workflow.yml
+mkdir inputdata
+cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
+~~~
+{: .source}
+
+> ## Providing files to yadage
+> Since we have a signal DAOD file for yadage to process, we'll need a way to tell the yadage-run command where to look for the DOAD file. This functionality is provided by `yadage-run`'s `-d initdir=` option. For example, if the file to input is named `inputfile.txt`, and it's located in the directory `inputdata` syntax for passing it to yadage-run as the variable inputfile would be:
 > 
-> Working from your shell, cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Fill in the FIXMEs in the following skeleton code to encode the first skimming step of the analysis 
 > ~~~
-> [Skeleton for skimming step with FIXMEs will go here]
+> yadage-run workdir workflow.yml -p inputfile=inputfile.txt -d initdir=$PWD/inputdata
+> ~~~
+> {: .source}
+{: .callout}
+
+> ## Exercise
+>
+> #### Part 1: 
+> Fill in the FIXMEs in the following skeleton code to encode the first skimming step of the analysis in your steps.yml file.
+> ~~~
+> skimming_step:
+>  process:
+>    process_type: interpolated-script-cmd
+>    script: |
+>      # Source the ATLAS environment
+>      [FIXME]
+>
+>      # Run the AnalysisPayload executable to produce the output ROOT file. 
+>      cd [FIXME]
+>      [FIXME] {input_file} {output_file}
+>  environment:
+>    environment_type: docker-encapsulated
+>    image: [FIXME (use your gitlab registry image!)]
+>    imagetag: master
+>  publisher:
+>    publisher_type: interpolated-pub
+>    publish:
+>      selected_events: [FIXME]
+> ~~~
+> {: .source}
+> 
+> #### Part 2: 
+> Fill in the following skeleton code to encode the corresponding workflow stage in your workflow.yml file.
+> ~~~
+> stages:
+> - name: skimming_step
+>  dependencies: [FIXME]
+>  scheduler:
+>    scheduler_type: singlestep-stage
+>    parameters:
+      input_file: {[FIXME], output: signal_daod}
+      [FIXME]: '{workdir}/selected.root'
+    step: [FIXME]
 > ~~~
 > {: .source}
 > > ## Solution
-> > [Solution with FIXMEs filled in will go here]
+> > #### Part 1
+> > ~~~
+> > skimming_step:
+> >   process:
+> >     process_type: interpolated-script-cmd
+> >     script: |
+> >       # Run the AnalysisPayload executable to produce analysis plots
+> >       source /home/atlas/release_setup.sh
+> >       cd /Bootcamp/build
+> >       ./AnalysisPayload/AnalysisPayload {input_file} {output_file}
+> >   environment:
+> >     environment_type: docker-encapsulated
+> >     image: [gitlab registry image for your analysis repo]
+> >     imagetag: master
+> >   publisher:
+> >     publisher_type: interpolated-pub
+> >     publish:
+> >       selected_events: '{output_file}'
+> > ~~~
+> > {: .source}
+> > #### Part 2
+> > ~~~
+> > stages:
+> > - name: skimming_step
+> >   dependencies: [init]
+> >   scheduler:
+> >     scheduler_type: singlestep-stage
+> >     parameters:
+> >       input_file: {step: init, output: signal_daod}
+> >       output_file: '{workdir}/selected.root'
+> >     step: {$ref: steps.yml#/skimming_step}
+> > ~~~
+> > {: .source}
 > {: .solution}
 {: .challenge}
+
+> ## Debugging Hints
+>
+> * Remember you can use the `packtivity-validate` command in your yadage container to quickly check if your step definition is valid:
+> 
+> ~~~
+> packtivity-validate steps.yml#/skimming_step
+> ~~~
+> {: .source}
+> * The step can be tested in your yadage container with a `packtivity-run` command like:
+>
+> ~~~
+> packtivity-run steps.yml#/skimming_step -p input_file="'{workdir}/inputdata/recast_daod.root'" -p output_file="'{workdir}/selected.root'"
+> ~~~
+> {: .source}
+> * The workflow can be tested with a `yadage-run` command like:
+> ~~~
+> yadage-run workdir workflow.yml -p signal_daod=recast_daod.root -d initdir=$PWD/inputdata
+> ~~~
+> {: .source}
+>
+> * The output file should be located under `workdir/skimming_step/selected.root` after a successful `yadage-run`.
+{: .callout}
+
 
 ### Reformatting Step
 
@@ -151,14 +268,47 @@ reformatting_step:
     process_type: interpolated-script-cmd
     script: |
       source ~/release_setup.sh		# NOTE: This command shouldn't be needed if you're using an image you produced in the bonus "python-implementation" exercise!
-      /build/AnalysisPayload/ReformatHist {inputfile} {outputfile}     # Change the exact run command if your executable has a different name or location
+      /Bootcamp/build/AnalysisPayload/ReformatHist {hist_root} {hist_txt}     # Change the exact run command if your executable has a different name or location
   publisher:
     publisher_type: interpolated-pub
     publish:
-      hist_txt: '{outputfile}'
+      hist_txt: '{hist_txt}'
   environment:
     environment_type: docker-encapsulated
-    image: [gitlab image in which the ReformatHist executable will run]
+    image: [gitlab registry image for your analysis repo]
+    imagetag: master       
+~~~
+{: .source}
+
+along with the corresponding workflow.yml stage:
+
+~~~
+- name: reformatting_step
+  dependencies: [skimming_step]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      hist_root: {step: skimming_step, output: selected_events}
+      hist_txt: '{workdir}/selected.txt'
+    step: {$ref: steps.yml#/reformatting_step}
+~~~
+{: .source}
+
+> ## Exercise
+> Put together and run a `packtivity-run` command to test the reformatting step.
+> 
+> > ## Solution
+> > ~~~
+> > packtivity-run steps.yml#/reformatting_step -p hist_root="'{workdir}/workdir/skimming_step/selected.root'" -p hist_txt="'{workdir}/selected.txt'"
+> > ~~~
+> > {: .source}
+> {: .solution}
+{: .challenge}
+
+The `yadage-run` command to test the updated workflow should be the same as before, since we haven't added any more initial files or parameters:
+
+~~~
+yadage-run workdir workflow.yml -p signal_daod=recast_daod.root -d initdir=$PWD/inputdata
 ~~~
 {: .source}
 
