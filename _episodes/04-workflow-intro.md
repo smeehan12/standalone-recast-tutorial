@@ -25,10 +25,10 @@ So far in our VHbb analysis, we've taken a Monte Carlo simulated signal DAOD, lo
 
 
 
-However, the time it would take us to properly account for all the SM backgrounds would probably take away from the main purpose of this tutorial, which is to look at how docker is being used in ATLAS analysis. So we'll instead assume that our SM background distribution can be modeled analytically by some smoothly decaying exponential in the dijet invariant mass, and move along (keeping in mind that this would in no way fly in a real analysis!). We'll also provide some toy data for the interpretation. The fit will be done using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/).
+However, the time it would take us to properly account for all the SM backgrounds would probably take away from the main purpose of this "docker in ATLAS" tutorial. So we'll instead assume that our SM background distribution can be modeled analytically by some smoothly decaying exponential in the dijet invariant mass, and move along (keeping in mind that this would in no way fly in a real analysis!). We'll also provide some toy data for the interpretation. The fit will be done using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/).
 
 
-This approach is illustrated in the following doodle, where some data is fit with the background plus signal, with the signal amplitude (linearly proportional to the cross section) allowed to vary, and the fit shows that the data is best represented with a signal component, where the signal cross section is 1/5th of its simulated value. Note that the signal in this doodle is **not** meant to represent the particular signal we get from our DAOD, it's just drawn from a Gaussian distribution for illustration.
+This approach is illustrated in the following doodle, where some data is fit with the background plus signal, with the signal amplitude (linearly proportional to the cross section) allowed to vary. The fit shows that the data is best represented with a signal component, where the signal cross section is 1/5th of its simulated value. Note that the signal in this doodle is **not** meant to represent the particular signal we get from our DAOD, it's just drawn from a Gaussian distribution for illustration.
 
 <img src="../fig/doodle.png" alt="Background preservation" style="width:900px"> 
 
@@ -38,14 +38,14 @@ This approach is illustrated in the following doodle, where some data is fit wit
 Thanks to gitlab and docker, we've now successfully preserved our analysis code and the environment in which we run it. The final piece of RECAST analysis preservation is to preserve our analysis workflow for interpreting the signal as described above, and automate the process of passing an arbitrary signal model through the workflow to re-interpret the analysis in a new context. 
 
 
-If it weren't for the docker containers involved in RECAST, this could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in one or more docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps, which may in general need to be done in different containers. Lukas Heinrich has written a great tool called "yadage" to handle this situation. Before diving into the gory details of how to actually program with yadage, let's start with a high-level overview of what it is and how it accomplishes the goal of preserving and re-interpreting our analysis.
+If it weren't for the docker containers involved in RECAST, this could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. Lukas Heinrich has written a great tool called "yadage" to handle this situation. Before diving into the gory details of how to actually program with yadage, let's start with a high-level overview of what it is and how it accomplishes the goal of preserving and re-interpreting our analysis.
 
 > ## Background preservation
 > In our sample analysis, we're using an analytic falling exponential as our background, but a real ATLAS analysis will have many different sources of background, each obtained from its own set of DAODs, and involving its own set of systematics that will affect the fit result. Since these background contributions won't change when the analysis is re-interpreted with a new model, it's in general important to preserve the contribution of these backgrounds to the final analysis results in the analysis code so that only need to run the signal DAOD through the whole analysis chain when the analysis is re-interpreted with RECAST. 
 >
 > <img src="../fig/background_preservation.png" alt="Background preservation" style="width:300px"> 
 >
-> Another important point to keep in mind is that RECAST does **not** on its own document the exact version of Athena code that was originally used to produce your background and signal DAODs, since your code may not necessarily be compatible with DAODs produced with different releases of the ATLAS derivation framework. Therefore, it would be good to document somewhere (perhaps on your gitlab repo) exactly which ATLASDerivation cache and p-tags were used to produce the DAODs used in your analysis so other analysts know to produce new signals for RECAST with this same version. See the [DerivationProductionTeam](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/DerivationProductionTeam#Info_on_AtlasDerivation_caches_a) page for more information about derivation production and organzation.
+> Another important point to keep in mind is that RECAST does **not** on its own document the exact version of Athena code that was originally used to produce your background and signal DAODs, since your code may not necessarily be compatible with DAODs produced with different releases of the ATLAS derivation framework. Therefore, it would be good document somewhere in your gitlab repo exactly which ATLASDerivation cache and p-tags were used to produce the DAODs used in your analysis (this could just be a list of all the dataset names used) so other analysts know to produce new signals for RECAST with this same version. See the [DerivationProductionTeam](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/DerivationProductionTeam#Info_on_AtlasDerivation_caches_a) page for more information about derivation production and organzation.
 > 
 {: .callout}
 
@@ -84,7 +84,7 @@ The three steps involved in interpreting our VHbb analysis are as follows:
 
 These steps are summarized in the following illustration:
 
-<img src="../fig/Steps.png" alt="Steps" style="width:600px"> 
+<img src="../fig/Steps.png" alt="Steps" style="width:800px"> 
 
 ## Workflow
 

@@ -3,7 +3,7 @@ title: "Skimming and Reformatting Steps for RECASTing the VHbb Analysis"
 teaching: 10
 exercises: 40
 questions:
-- "None"
+- "How do I use the yadage syntax I've learned to preserve the analysis steps needed to prepare my signal for interpretation?"
 objectives:
 - "Practice using yadage syntax to describe the first two steps of our VHbb analysis."
 - "Add a new executable to your analysis framework to convert the ROOT histograms created by Analysis payload to a simple text file format."

@@ -3,7 +3,7 @@ title: "Intermezzo: Yadage Helloworld"
 teaching: 10
 exercises: 20
 questions:
-- "None"
+- "What is the syntax to define a basic yadage workflow?"
 objectives:
 - "Get acquainted with a simple helloworld yadage workflow."
 - "Learn about some of the dubugging tools that are at your disposal for developing workflows."
@@ -17,6 +17,10 @@ keypoints:
 ## Introduction
 
 In this *intermezzo*, we'll take our first step into the forest of workflow authoring by walking through a simple helloworld example that illustrates the yadage syntax involved. The original example, written by Lukas Heinrich, is available here: [Getting Started Tutorial](https://yadage.github.io/tutorial/GettingStarted.html). Once you've mastered this basic workflow, it should be relatively straightforward to extend it to more complex workflows. 
+
+> ## High-level `recast-atlas` Tool 
+> In this tutorial, we focus on developing skills for encoding your workflow with yadage syntax, and use yadage commands directly to test and run the workflow. Lukas Heinrich has also written a really nice high-level wrapper for running yadage called [recast-atlas](https://github.com/recast-hep/recast-atlas) to help facilitate running the workflow, with the ability to encode unit tests and different run configurations in the `recast.yml` steering file. See this recast tutorial for instructions and examples for developing your workflow with this `recast-atlas` tool!
+{: .callout}
 
 ### Yadage setup
 
@@ -39,7 +43,7 @@ docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /va
 
 The goal of the workflow is to take an input message, concatenate it with another (fixed) message, and then capitalize the new concatenated message and output it to a file. This is accomplished in two steps, as shown in the following workflow diagram:
 
-<img src="../fig/sample_workflow.png" alt="Sample_workflow" style="width:100px"> 
+<img src="../fig/sample_workflow.png" alt="Sample_workflow" style="width:150px"> 
 
 The containers containing the environment and executables needed run each of the two steps are already available on docker hub. For the purpose of writing our workflow, we're not really concerned with the code that actually produces the executables. All we need to know how to run them inside their respective containers.
 

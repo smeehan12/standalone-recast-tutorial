@@ -1,7 +1,7 @@
 ---
 title: "Gitlab CI and Docker for Environment Preservation"
-teaching: 30
-exercises: 30
+teaching: 20
+exercises: 20
 questions:
 - "How does gitlab CI/CD help me continuously keep my containerized analysis environment(s) up-to-date?"
 - "What do I need to add to my gitlab repo(s) to enable this functionality?"

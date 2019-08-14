@@ -1,7 +1,7 @@
 ---
 title: "Athena Release Image"
-teaching: 20
-exercises: 0
+teaching: 10
+exercises: 20
 questions:
 - "What is an Athena release?"
 - "How are ATLAS release images built?"
