@@ -49,7 +49,7 @@ Here is a sample plot of the mock background, signal, and toy data produced by t
 > 
 >   d) Generates a toy data histogram, where the number of events in each bin is randomly generated from a Poisson distribution with central value &lambda; equal to the amplitude of the MC background in the same bin.
 > > ## Solution
-> > For the solution implemented in python for this interpretation step, see lines 47-58 of [run_fit.py](https://gitlab.cern.ch/damacdon/bootcamp-pyhf-fit/blob/master/run_fit.py)
+> > For the solution implemented in python for this interpretation step, see lines 39-50 of [run_fit.py](https://gitlab.cern.ch/damacdon/bootcamp-pyhf-fit/blob/master/run_fit.py)
 > {: .solution}
 {: .challenge}
 
