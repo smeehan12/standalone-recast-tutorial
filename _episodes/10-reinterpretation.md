@@ -1,7 +1,7 @@
 ---
 title: "Signal (Re)interpretation"
 teaching: 10
-exercises: 20
+exercises: 10
 questions:
 - "What is a &mu;-scan, and how do I interpret it?"
 - "How is the final interpretation step for the VHbb analysis encoded in yadage?"
@@ -9,11 +9,15 @@ objectives:
 - "Understand the idea, but not necessarily the details, of how the physics interpretation of the VHbb signal is implemented."
 - "See how the final interpretations step is implemented in yadage to complete our RECAST framework."
 keypoints:
-- "FIXME"
+- "The interpretation produces a &mu;-scan, which essentially represents a p-value as a function of the hypothesized signal strength &mu;."
+- "Our &mu;-scan result is consistent with the null background-only hypothesis."
+- "We haven't delved into much detail on exactly how the pyhf code does its thing, but just knowing what it produces and how it's executed is enough to encode the interpretation step with yadage."
 ---
 
 
 ## Understanding the (Re)interpretation step
+
+<img src="../fig/InterpretationStep.png" alt="Interpretation" style="width:250px">
 
 The final step of our VHbb analysis chain receives five inputs, four of which are for the MC scaling discussed in the last episode:
 
@@ -39,7 +43,7 @@ Here is a sample plot of the mock background, signal, and toy data produced by t
 > 
 >   a) Inputs the signal histogram we produced as a text file in the reformatting step
 > 
->   b) Generates 100000 MC background samples from an exponential distribution in dijet invariant mass with a decay constant of 150
+>   b) Generates 50000 MC background samples from an exponential distribution in dijet invariant mass with a decay constant of 150
 > 
 >   c) Bins the generated MC background samples according to the binning of the signal histogram, and 
 > 
@@ -117,6 +121,7 @@ This step can be tested with the following `packtivity_run` command which incorp
 packtivity-run -p signal="'{workdir}/workdir/reformatting_step/selected.txt'" -p xsection=44.837 -p sumweights=6813.025800 -p kfactor=1.
 0 -p filterfactor=1.0 -p luminosity=140.1 -p plot_png="'{workdir}/hists.png'" -p fit_result="'{workdir}/limit.png'" steps.yml#/interpretation_step
 ~~~
+{: .source}
 
 With so many input parameters at this point, it gets a bit cumbersome to keep listing them on the command line - yadage has a solution for this! Create a new file called `inputs.yml` at the top level of your workflow directory, and fill it with the following:
 

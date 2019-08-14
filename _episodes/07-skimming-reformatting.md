@@ -18,7 +18,7 @@ We now have all the Yadage tools we need to put together our VHbb RECAST workflo
 
 ### Skimming Step
 
-<img src="../fig/SkimmingStep.png" alt="Skimming" style="width:200px">
+<img src="../fig/SkimmingStep.png" alt="Skimming" style="width:220px">
 
 We can use essentially the same yadage structure and syntax for defining our analysis steps as we did for the message writing and shouting steps we saw in the intermezzo. So let's start with this structure and fill it in with the information needed to run the `AnalysisPayload` skimming step of our workflow. In your browser, navigate to `https://gitlab.cern.ch/` and click the green `New Project` button. Give your project a name (eg. `my-workflow`), set the visibility level as desired, and click `Create Project`. Now you can copy the repo url from the browser and clone your new project onto your computer:
 
@@ -55,7 +55,7 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 > {: .source}
 {: .callout}
 
-> ## Exercise
+> ## Exercise (10 min)
 >
 > #### Part 1: 
 > Fill in the FIXMEs in the following skeleton code to encode the first skimming step of the analysis in your steps.yml file.
@@ -158,7 +158,7 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 
 ### Reformatting Step
 
-<img src="../fig/ReformattingStep.png" alt="Reformatting" style="width:200px">
+<img src="../fig/ReformattingStep.png" alt="Reformatting" style="width:230px">
 
 In this step, we read in the dijet invariant mass histogram `h_mjj_kin` that was written out to a ROOT file in the last step, and write it out to a text file so it can be easily read in by the final interpretation step. The required format of the output text file is space-separated histogram bin edges in the first row and space-separated bin contents in the second row. For a five-bin triangle-shaped histogram with bin edges ranging from 0 to 10, for example, the contents would be:
 
@@ -170,7 +170,7 @@ In this step, we read in the dijet invariant mass histogram `h_mjj_kin` that was
 
 You can try setting up the container for this step yourself in the following exercise.
 
-> ## Exercise
+> ## Exercise (25 min)
 > 
 > #### Part 1
 > On your local machine, create a new file named ReformatHist.cxx in your AnalysisPayload sub-repo to contain code that will receive as input the path to the ROOT file containing the histograms written out by `AnalysisPayload`, and outputs the text file described above. Now, `cd` up into the main repo and run a container from the `atlas/analysisbase:21.2.75` image, volume-mounting the whole analysis repo into the container, as well as the ROOT histogram file that you previously produced with the `AnalysisPayload` executable.
@@ -294,7 +294,7 @@ along with the corresponding workflow.yml stage:
 ~~~
 {: .source}
 
-> ## Exercise
+> ## Exercise (5 min)
 > Put together and run a `packtivity-run` command to test the reformatting step.
 > 
 > > ## Solution

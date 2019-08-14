@@ -37,7 +37,7 @@ These all sound like tasks that a Dockerfile would be great for! And indeed, the
 So far, you've been starting your containers from the atlas/analysisbase:21.2.75 base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts [FIXME: will this statement be accurate??]. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
 
 
-> ## Exercise
+> ## Exercise (10 min)
 > Working from your shell, cd into the top level of your gitlab repo for the VHbb analysis. Create an empty file named Dockerfile
 >
 > ~~~

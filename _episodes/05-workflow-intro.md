@@ -94,7 +94,8 @@ So here is an idea of what our workflow should look like:
 
 <img src="../fig/Workflow.png" alt="Workflow" style="width:1200px"> 
 
-> ## Exercise
+> ## Exercise (10 min)
+> #### Part 1
 > Looking at the workflow, you'll notice that the signal DAOD file gets passed to the analysis code in the first skimming step. Since our ultimate goal with RECAST is to make it possible to trivially re-interpret our analysis with any signal model, we should be able to pass any signal DAOD to this skimming step, not just the one we've been working with so far. It would also be good for clarity (and in fact necessary if we wanted to start considering different background samples) to be able to specify the name of the ROOT file containing the output histograms depending on the input DAOD. But at present, the filename and path to the input signal DAOD and output ROOT file are hard-coded into the AnalysisPayload.cxx code. 
 >
 > So, with an eye on re-interpretation, update the AnalysisPayload.cxx in your gitlab repo so it can read in both:
@@ -106,26 +107,39 @@ So here is an idea of what our workflow should look like:
 > AnalysisPayload /path/to/input/DAOD.root.1 /path/to/output/ROOT/file.root
 > ~~~
 > {: .source}
+> 
+> #### Part 2
+> While we're at it, we'll also need to make the binning a bit coarser for when we output the histogram to the `pyhf` fitting step, since the `pyhf` fitter takes a lot longer to run with many bins without necessarily much/any gain in sensitivity. So let's do that now. Update your AnalysisPayload.cxx so that it produces the `h_mjj_raw` and `h_mjj_kin` histograms with 20 rather than 100 bins.
+> 
 > > ## Solution
+> > #### Part 1
 > > The updates should look something like:
 > > 
-> > 1. `int main() {` --> `int main(int argc, char **argv) {`
+> > * `int main() {` --> `int main(int argc, char **argv) {`
 > > 
-> > 2. `TString inputFilePath = /path/to/ROOT/file.root.1;` becomes:
+> > * `TString inputFilePath = /path/to/ROOT/file.root.1;` becomes:
+> >
 > > ~~~
 > > TString inputFilePath = argv[1];
 > > TString outputFilePath = argv[2];
 > > ~~~
 > > {: .source}
 > > 
-> > 3. `TFile *fout = new TFile("myOutputFile.root","RECREATE");` --> `TFile *fout = new TFile(outputFilePath), "RECREATE");`
+> > * `TFile *fout = new TFile("myOutputFile.root","RECREATE");` --> `TFile *fout = new TFile(outputFilePath), "RECREATE");`
+> > 
+> > #### Part 2
+> > The code to create the new `h_mjj` histogram objects should be updated as follows:
+> >
+> > `TH1D *h_mjj_raw = new TH1D("h_mjj_raw","",100,0,500);` --> `TH1D *h_mjj_raw = new TH1D("h_mjj_raw","",20,0,500);`
+> >
+> > `TH1D *h_mjj_kin = new TH1D("h_mjj_kin","",100,0,500);` --> `TH1D *h_mjj_kin = new TH1D("h_mjj_kin","",20,0,500);`
 > {: .solution}
 > 
 > Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo. Make sure the main repo is updated to use the latest AnalysisPayload commit.
 {: .challenge}
 
 > ## Hints
-> This should only require changing three lines in AnalysisPayload.cxx
+> Part 1 should require changing three lines in AnalysisPayload.cxx (and adding one additional line). Part 2 should only require changing two lines.
 > 
 > The simplest way to implement command-line arguments in C/C++ is by passing the number `argc` of command line arguments and the list `*argv[]` of arguments to the `main()` function (see eg. this quick [cplusplus.com tutorial](http://www.cplusplus.com/articles/DEN36Up4/)).
 {: .callout}

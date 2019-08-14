@@ -1,14 +1,15 @@
 ---
-title: "MC Scaling"
+title: "Scaling the MC Signal for (Re)interpretation"
 teaching: 10
-exercises: 20
+exercises: 30
 questions:
 - "How do I ensure that my MC histograms are scaled properly relative to one another, and to the data?"
 objectives:
 - "Understand the pieces that go into scaling your MC histograms."
 - "Practice obtaining the cross section, k-factor, and filter efficiency using both the AMI webpage, and a pyAMI command-line tool."
 keypoints:
-- "FIXME"
+- "A proper scaling of your MC for comparison with data involves both event-by-event weighting and an overall scaling of your MC histograms involving several scaling factors."
+- "Once you're familiar with the tools to obtain and apply these weights and scaling factors, MC scaling can be done in a pretty quick and automated way."
 ---
 
 ## Introduction
@@ -40,7 +41,7 @@ In addition to this event-by-event weighting, we also need to deal with the fact
 
 What we haven't yet addressed is how to actually obtain these MC event weights or sum of event weights to begin with. The sum of MC event weights can be obtained from the `CutBookkeepers` container - the [The AthAnalysisBase Handbook](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_access_EventBookkeeper_in) includes code for doing so either in [pure ROOT](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_access_EventBookkeeper_in) or [pyROOT](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_print_the_sum_of_weights) - the result for our signal sample is **6813.025800** (see bonus part 3 in the next exercise to try getting this number yourself!). The next exercise will guide you through implementing the MC event weighting.
 
-> ## Exercise
+> ## Exercise (15 min)
 > Update your AnalysisPayload.cxx code to (a) obtain the MC event weight for each event and (b) weight each event by its MC event weight when filling your histograms. 
 >
 > **Bonus:** Obtain the sum of event weights produced by the generator for later use in normalizing the histogram.
@@ -49,7 +50,7 @@ What we haven't yet addressed is how to actually obtain these MC event weights o
 > The MC event weight is stored as a vector named `mcEventWeights` in the [`EventInfo` object](proquest-safaribooksonline-com.ezproxy.library.uvic.ca/), which we're already retrieving to print out the run number and event number for each event. The weight that we're interested in is the "nominal" event weight, which is the 0th element in this vector. Add code to AnalysisPayload.cxx to collect the nominal event weight for each event as a `float` variable and print this variable out along with the run number and event number.
 > 
 > #### Part 2
-> Now, weight each event by its MC event weight when filling the four histograms in AnalysisPayload.cxx.
+> Now, weight each event by its MC event weight when filling the four histograms in AnalysisPayload.cxx. Once you're happy with your updates, you can commit and push them to your AnalysisPayload repo. Remember to update the main repo to the latest commit of AnalysisPayload.
 > 
 > #### Part 3 (**Bonus**)
 > Adapt the sample python script provided [here](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_print_the_sum_of_weights) to access your DAOD file and obtain the associated sum of MC event weights at AOD level (remember to volume-mount the signal DAOD file along with the python script so the script can access this file in the container). Add this script to your local analysis repo (eg. in a directory named `python`), and push the update to gitlab.
@@ -121,7 +122,7 @@ Sometimes, generators will also provide a "k-factor" (set to 1 by default), whic
 
 The next exercise will guide you through obtaining the predicted cross section, filter efficiency, and k-factor from AMI via both the online site and the command line.
 
-> ## Exercise
+> ## Exercise (15 min)
 > Obtain the cross section, filter efficiency, and k-factor for our signal sample `mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_s3126_r10724_p3840`. To complete this exercise, you'll need to have a valid grid certificate on your browser, have registered it with VOMS, and uploaded to your home directory on lxplus (see details in [Setup section](https://danikam.github.io/2019-08-19-usatlas-recast-tutorial/setup.html)).
 > 
 > #### Part 1
