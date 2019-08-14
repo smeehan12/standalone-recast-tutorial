@@ -1,5 +1,5 @@
 ---
-title: "Interpreting our Signal, and Putting it all Together"
+title: "Signal (Re)interpretation"
 teaching: 10
 exercises: 50
 questions:
