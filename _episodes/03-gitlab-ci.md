@@ -159,7 +159,7 @@ Notice that the script to run is just a dummy 'ignore' command. This is because 
 > > ## Hint
 > > ~~~
 > > docker pull gitlab-registry.cern.ch/[your partner's username]/[repo name]:[branch name]
-> > docker run --rm -it -v /path/to/local/directory/containing/DAOD/file:/path/to/directory/where/AnalysisPayload/finds/DAOD/file [repo name]:[branch name] bash
+> > docker run --rm -it -v /path/to/local/DAOD/file:/path/to/file/that/AnalysisPayload/reads/in [repo name]:[branch name] bash
 > > /path/to/AnalysisPayload/executable [any command-line arguments the executable may expect]
 > > ~~~
 > > {: .source}
