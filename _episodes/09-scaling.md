@@ -47,7 +47,7 @@ What we haven't yet addressed is how to actually obtain these MC event weights o
 > **Bonus:** Obtain the sum of event weights produced by the generator for later use in normalizing the histogram.
 >
 > #### Part 1
-> The MC event weight is stored as a vector named `mcEventWeights` in the [`EventInfo` object](proquest-safaribooksonline-com.ezproxy.library.uvic.ca/), which we're already retrieving to print out the run number and event number for each event. The weight that we're interested in is the "nominal" event weight, which is the 0th element in this vector. Add code to AnalysisPayload.cxx to collect the nominal event weight for each event as a `float` variable and print this variable out along with the run number and event number.
+> The MC event weight is stored as a vector named `mcEventWeights` in the [`EventInfo` object](https://atlassoftwaredocs.web.cern.ch/ABtutorial/alg_basic_xaod/), which we're already retrieving to print out the run number and event number for each event. The weight that we're interested in is the "nominal" event weight, which is the 0th element in this vector. Add code to AnalysisPayload.cxx to collect the nominal event weight for each event as a `float` variable and print this variable out along with the run number and event number.
 >
 > #### Part 2
 > Now, weight each event by its MC event weight when filling the four histograms in AnalysisPayload.cxx. Once you're happy with your updates, you can commit and push them to your AnalysisPayload repo. Remember to update the main repo to the latest commit of AnalysisPayload.
