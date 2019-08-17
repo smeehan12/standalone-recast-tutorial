@@ -51,7 +51,7 @@ So far, you've been starting your containers from the atlas/analysisbase:21.2.75
 > # Specify the image and release tag from which we're working
 > atlas/analysisbase:21.2.75
 > 
-> # Put the current repo (the one in which this Dockerfile resides) in the /Bootcamp/source directory
+> # Put the current repo (the one in which this Dockerfile resides) in the /Bootcamp directory
 > # Note that this directory is created on the fly and does not need to reside in the repo already
 > [FIXME] 
 > 
@@ -75,7 +75,7 @@ So far, you've been starting your containers from the atlas/analysisbase:21.2.75
 > > 
 > > # Put the current repo (the one in which this Dockerfile resides) in the directory specified here
 > > # Note that this directory is created on the fly and does not need to reside in the repo already
-> > ADD . /Bootcamp/source
+> > ADD . /Bootcamp
 > > 
 > > # Go into the directory specified here (again, it will create the directory if it doesn't already exist)
 > > WORKDIR /Bootcamp/build

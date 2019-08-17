@@ -21,7 +21,7 @@ keypoints:
 
 The final step of our VHbb analysis chain receives five inputs, four of which are for the MC scaling discussed in the last episode:
 
-* normalized event-weighted `h_mjj_kin` histogram
+* normalized event-weighted `h_mjj_kin_cal` histogram
 * sum of MC generator event weights
 * predicted signal cross-section
 * filter efficiency

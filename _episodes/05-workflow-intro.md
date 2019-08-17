@@ -109,7 +109,7 @@ So here is an idea of what our workflow should look like:
 > {: .source}
 >
 > #### Part 2
-> While we're at it, we'll also need to make the binning a bit coarser for when we output the histogram to the `pyhf` fitting step, since the `pyhf` fitter takes a lot longer to run with many bins without necessarily much/any gain in sensitivity. So let's do that now. Update your AnalysisPayload.cxx so that it produces the `h_mjj_raw` and `h_mjj_kin` histograms with 20 rather than 100 bins.
+> While we're at it, we'll also need to make the binning a bit coarser for when we output the histogram to the `pyhf` fitting step, since the `pyhf` fitter takes a lot longer to run with many bins without necessarily much/any gain in sensitivity. So let's do that now. Update your AnalysisPayload.cxx so that it produces the `h_mjj_*` histograms with 20 rather than 100 bins.
 >
 > > ## Solution
 > > #### Part 1
@@ -133,13 +133,17 @@ So here is an idea of what our workflow should look like:
 > > `TH1D *h_mjj_raw = new TH1D("h_mjj_raw","",100,0,500);` --> `TH1D *h_mjj_raw = new TH1D("h_mjj_raw","",20,0,500);`
 > >
 > > `TH1D *h_mjj_kin = new TH1D("h_mjj_kin","",100,0,500);` --> `TH1D *h_mjj_kin = new TH1D("h_mjj_kin","",20,0,500);`
+> >
+> > `TH1D *h_mjj_raw_cal = new TH1D("h_mjj_raw_cal","",100,0,500);` --> `TH1D *h_mjj_raw_cal = new TH1D("h_mjj_raw_cal","",20,0,500);`
+> >
+> > `TH1D *h_mjj_kin_cal = new TH1D("h_mjj_kin_cal","",100,0,500);` --> `TH1D *h_mjj_kin_cal = new TH1D("h_mjj_kin_cal","",20,0,500);`
 > {: .solution}
 >
 > Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo. Make sure the main repo is updated to use the latest AnalysisPayload commit.
 {: .challenge}
 
 > ## Hints
-> Part 1 should require changing three lines in AnalysisPayload.cxx (and adding one additional line). Part 2 should only require changing two lines.
+> Part 1 should require changing three lines in AnalysisPayload.cxx (and adding one additional line). Part 2 should require changing four lines.
 >
 > The simplest way to implement command-line arguments in C/C++ is by passing the number `argc` of command line arguments and the list `*argv[]` of arguments to the `main()` function (see eg. this quick [cplusplus.com tutorial](http://www.cplusplus.com/articles/DEN36Up4/)).
 {: .callout}

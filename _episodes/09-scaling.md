@@ -17,7 +17,7 @@ keypoints:
 The final step of our analysis workflow is to make a statistical comparison of the data with our signal model and SM background. Our goal is to determine whether we can detect any signicant evidence for our signal in the data or, if not, what signal cross sections the data can exclude.
 
 
-The interpretation step will receive the `h_mjj_kin` histogram that we converted to text file format in the previous step and perform the statistical comparison with some simulated background and data. The fitting will be done with [pyhf](https://diana-hep.org/pyhf/), a specialized fitting module designed for HEP applications and written in pure python (i.e. no ROOT dependencies). We won't dig into the actual details of the `pyhf` implementation during this tutorial, but if you're interested in learning more, check out the "Fitting Fun with pyhf" module on Friday!
+The interpretation step will receive the `h_mjj_kin_cal` histogram that we converted to text file format in the previous step and perform the statistical comparison with some simulated background and data. The fitting will be done with [pyhf](https://diana-hep.org/pyhf/), a specialized fitting module designed for HEP applications and written in pure python (i.e. no ROOT dependencies). We won't dig into the actual details of the `pyhf` implementation during this tutorial, but if you're interested in learning more, check out the "Fitting Fun with pyhf" module on Friday!
 
 
 ## Scaling the Signal Histogram
@@ -73,6 +73,8 @@ What we haven't yet addressed is how to actually obtain these MC event weights o
 > >     // fill the analysis histograms accordingly
 > >     h_njets_raw->Fill( jets_raw.size(), mc_evt_weight_nom );
 > >     h_njets_kin->Fill( jets_kin.size(), mc_evt_weight_nom );
+> >     h_njets_raw_cal->Fill( jets_raw_cal.size(), mc_evt_weight_nom );
+> >     h_njets_kin_cal->Fill( jets_kin_cal.size(), mc_evt_weight_nom );
 > >
 > >     if( jets_raw.size()>=2 ){
 > >       h_mjj_raw->Fill( (jets_raw.at(0).p4()+jets_raw.at(1).p4()).M()/1000., mc_evt_weight_nom );
@@ -80,6 +82,14 @@ What we haven't yet addressed is how to actually obtain these MC event weights o
 > >
 > >     if( jets_kin.size()>=2 ){
 > >       h_mjj_kin->Fill( (jets_kin.at(0).p4()+jets_kin.at(1).p4()).M()/1000., mc_evt_weight_nom );
+> >     }
+> >
+> >     if( jets_raw_cal.size()>=2 ){
+> >     h_mjj_raw_cal->Fill( (jets_raw_cal.at(0).p4()+jets_raw_cal.at(1).p4()).M()/1000., mc_evt_weight_nom );
+> >     }
+> >
+> >     if( jets_kin_cal.size()>=2 ){
+> >     h_mjj_kin_cal->Fill( (jets_kin_cal.at(0).p4()+jets_kin_cal.at(1).p4()).M()/1000., mc_evt_weight_nom );
 > >     }
 > > ~~~
 > > {: .source}

@@ -68,7 +68,7 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 >      [FIXME]
 >
 >      # Run the AnalysisPayload executable to produce the output ROOT file. 
->      cd [FIXME]
+>      [FIXME: source setup script to run executables]
 >      [FIXME] {input_file} {output_file}
 >  environment:
 >    environment_type: docker-encapsulated
@@ -104,8 +104,8 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 > >     script: |
 > >       # Run the AnalysisPayload executable to produce analysis plots
 > >       source /home/atlas/release_setup.sh
-> >       cd /Bootcamp/build
-> >       ./AnalysisPayload/AnalysisPayload {input_file} {output_file}
+> >       source /Bootcamp/build/x86_64-slc6-gcc62-opt/setup.sh
+> >       AnalysisPayload {input_file} {output_file}
 > >   environment:
 > >     environment_type: docker-encapsulated
 > >     image: [gitlab registry image for your analysis repo]
@@ -160,7 +160,7 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 
 <img src="../fig/ReformattingStep.png" alt="Reformatting" style="width:230px">
 
-In this step, we read in the dijet invariant mass histogram `h_mjj_kin` that was written out to a ROOT file in the last step, and write it out to a text file so it can be easily read in by the final interpretation step. The required format of the output text file is space-separated histogram bin edges in the first row and space-separated bin contents in the second row. For a five-bin triangle-shaped histogram with bin edges ranging from 0 to 10, for example, the contents would be:
+In this step, we read in the dijet invariant mass histogram `h_mjj_kin_cal` that was written out to a ROOT file in the last step, and write it out to a text file so it can be easily read in by the final interpretation step. The required format of the output text file is space-separated histogram bin edges in the first row and space-separated bin contents in the second row. For a five-bin triangle-shaped histogram with bin edges ranging from 0 to 10, for example, the contents would be:
 
 ~~~
 0.0 2.0 4.0 5.0 6.0 8.0
@@ -179,7 +179,7 @@ You can try setting up the container for this step yourself in the following exe
 > 
 The command to run the finalized executable will be:
 > ~~~
-> ./ReformatHist /path/to/ROOT/file /path/to/text/file
+> ReformatHist /path/to/ROOT/file /path/to/text/file
 > ~~~ 
 > #### Part 3
 > Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in part a. Remember to `#include` any needed libraries. You can compile and test the code in the container as you work. 
@@ -189,7 +189,7 @@ The command to run the finalized executable will be:
 > > #### Part 2
 > > The addition to CMakeLists.txt should look like:
 > > ~~~
-> > ATLAS_ADD_EXECUTABLE ( ReformatHist AnalysisPayload/ReformatHist.cxx
+> > ATLAS_ADD_EXECUTABLE ( ReformatHist utils/ReformatHist.cxx
 > >                      INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
 > >                      LINK_LIBRARIES ${ROOT_LIBRARIES})
 > > ~~~
@@ -210,7 +210,7 @@ The command to run the finalized executable will be:
 > >   TFile *f_in = new TFile(argv[1]);
 > >
 > >   // Collect the histogram from the file                                                                                                                             
-> >   TH1D * hist = (TH1D*)f_in->Get("h_mjj_kin");
+> >   TH1D * hist = (TH1D*)f_in->Get("h_mjj_kin_cal");
 > >
 > >   // Write the bin edges and contents to the output file
 > >   std::ofstream f_out(argv[2]);
@@ -250,9 +250,9 @@ The command to run the finalized executable will be:
 > 
 > ### Starter repos
 > 
-> * **uproot ([link to gitlab repo](https://gitlab.cern.ch/damacdon/uproot)):** The Dockerfile starts from the official python:3.6 base image, and installs the uproot python module on top of it. The [uproot.open function](https://uproot.readthedocs.io/en/latest/opening-files.html#uproot-open) can convert the ROOT file into a "ROOTDirectory" object, from which the `h_mjj_kin` can be read and converted to a numpy array with the `numpy()` function, [as described in the github README](https://github.com/scikit-hep/uproot#histograms-tprofiles-tgraphs-and-others).
+> * **uproot ([link to gitlab repo](https://gitlab.cern.ch/damacdon/uproot)):** The Dockerfile starts from the official python:3.6 base image, and installs the uproot python module on top of it. The [uproot.open function](https://uproot.readthedocs.io/en/latest/opening-files.html#uproot-open) can convert the ROOT file into a "ROOTDirectory" object, from which the `h_mjj_kin_cal` can be read and converted to a numpy array with the `numpy()` function, [as described in the github README](https://github.com/scikit-hep/uproot#histograms-tprofiles-tgraphs-and-others).
 >
-> * **rootpy_numpy ([link to gitlab repo](https://gitlab.cern.ch/damacdon/rootpy_numpy)):** The Dockerfile starts from a centos7 image with ROOT (+python2.7 bindings) pre-installed, and   installs the rootpy and root_numpy python modules on top of it. rootpy's [root_open](http://www.rootpy.org/reference/generated/rootpy.io.root_open.html) function can be used to read in the `h_mjj_kin` histogram from the ROOT file (this part is already filled in since the online documentation isn't very thorough), and root_numpy's [hist2array](http://scikit-hep.org/root_numpy/reference/generated/root_numpy.hist2array.html) function can be used to convert the ROOT histogram to a numpy array.
+> * **rootpy_numpy ([link to gitlab repo](https://gitlab.cern.ch/damacdon/rootpy_numpy)):** The Dockerfile starts from a centos7 image with ROOT (+python2.7 bindings) pre-installed, and   installs the rootpy and root_numpy python modules on top of it. rootpy's [root_open](http://www.rootpy.org/reference/generated/rootpy.io.root_open.html) function can be used to read in the `h_mjj_kin_cal` histogram from the ROOT file (this part is already filled in since the online documentation isn't very thorough), and root_numpy's [hist2array](http://scikit-hep.org/root_numpy/reference/generated/root_numpy.hist2array.html) function can be used to convert the ROOT histogram to a numpy array.
 > 
 > Make a personal fork of the repo you want to work with (or try making your own from scratch if you're wanting an extra challenge!), and make any updates you need to the source code and Dockerfile to create the desired executable. Add a .gitlab-ci.yml file to automatically build the docker image when you push commits to the repo. 
 > > ## Solution
@@ -268,7 +268,8 @@ reformatting_step:
     process_type: interpolated-script-cmd
     script: |
       source ~/release_setup.sh		# NOTE: This command shouldn't be needed if you're using an image you produced in the bonus "python-implementation" exercise!
-      /Bootcamp/build/AnalysisPayload/ReformatHist {hist_root} {hist_txt}     # Change the exact run command if your executable has a different name or location
+      source /Bootcamp/build/x86_64-slc6-gcc62-opt/setup.sh
+      ReformatHist {hist_root} {hist_txt}     # Change the exact run command if your executable has a different name or location
   publisher:
     publisher_type: interpolated-pub
     publish:
