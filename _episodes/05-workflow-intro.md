@@ -21,7 +21,7 @@ keypoints:
 
 ### Interpreting our Analysis
 
-So far in our VHbb analysis, we've taken a Monte Carlo simulated signal DAOD, looped through this MC data event-by-event, applied some kinematic selections, and output the data to a histogram of the dijet invariant mass. But what we really want to do in the end is compare our simulated signal sample with data from the ATLAS detector to determine whether we can see our signal in the data, and if so, to what extent. In a real analysis, a proper comparison with the data would require accounting for all the events from SM background processes that make it through our selection, and adding these events to our histograms. We could then perform a fit to determine whether the observed data is best explained by the SM background alone, or by some combination of the background and signal - in which case we can claim to have "seen" our signal in the data. 
+So far in our VHbb analysis, we've taken a Monte Carlo simulated signal DAOD, looped through this MC data event-by-event, applied some kinematic selections, and output the data to a histogram of the dijet invariant mass. But what we really want to do in the end is compare our simulated signal sample with data from the ATLAS detector to determine whether we can see our signal in the data, and if so, to what extent. In a real analysis, a proper comparison with the data would require accounting for all the events from SM background processes that make it through our selection, and adding these events to our histograms. We could then perform a fit to determine whether the observed data is best explained by the SM background alone, or by some combination of the background and signal - in which case we can claim to have "seen" our signal in the data.
 
 
 
@@ -30,38 +30,38 @@ However, the time it would take us to properly account for all the SM background
 
 This approach is illustrated in the following doodle, where some data is fit with the background plus signal, with the signal amplitude (linearly proportional to the cross section) allowed to vary. The fit shows that the data is best represented with a signal component, where the signal cross section is 1/5th of its simulated value. Note that the signal in this doodle is **not** meant to represent the particular signal we get from our DAOD, it's just drawn from a Gaussian distribution for illustration.
 
-<img src="../fig/doodle.png" alt="Background preservation" style="width:900px"> 
+<img src="../fig/doodle.png" alt="Background preservation" style="width:900px">
 
 
 
 ### Analysis Preservation and Re-interpretation
-Thanks to gitlab and docker, we've now successfully preserved our analysis code and the environment in which we run it. The final piece of RECAST analysis preservation is to preserve our analysis workflow for interpreting the signal as described above, and automate the process of passing an arbitrary signal model through the workflow to re-interpret the analysis in a new context. 
+Thanks to gitlab and docker, we've now successfully preserved our analysis code and the environment in which we run it. The final piece of RECAST analysis preservation is to preserve our analysis workflow for interpreting the signal as described above, and automate the process of passing an arbitrary signal model through the workflow to re-interpret the analysis in a new context.
 
 
 If it weren't for the docker containers involved in RECAST, this could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. Lukas Heinrich has written a great tool called "yadage" to handle this situation. Before diving into the gory details of how to actually program with yadage, let's start with a high-level overview of what it is and how it accomplishes the goal of preserving and re-interpreting our analysis.
 
 > ## Background preservation
-> In our sample analysis, we're using an analytic falling exponential as our background, but a real ATLAS analysis will have many different sources of background, each obtained from its own set of DAODs, and involving its own set of systematics that will affect the fit result. Since these background contributions won't change when the analysis is re-interpreted with a new model, it's in general important to preserve the contribution of these backgrounds to the final analysis results in the analysis code so that only need to run the signal DAOD through the whole analysis chain when the analysis is re-interpreted with RECAST. 
+> In our sample analysis, we're using an analytic falling exponential as our background, but a real ATLAS analysis will have many different sources of background, each obtained from its own set of DAODs, and involving its own set of systematics that will affect the fit result. Since these background contributions won't change when the analysis is re-interpreted with a new model, it's in general important to preserve the contribution of these backgrounds to the final analysis results in the analysis code so that only need to run the signal DAOD through the whole analysis chain when the analysis is re-interpreted with RECAST.
 >
-> <img src="../fig/background_preservation.png" alt="Background preservation" style="width:300px"> 
+> <img src="../fig/background_preservation.png" alt="Background preservation" style="width:300px">
 >
 > Another important point to keep in mind is that RECAST does **not** on its own document the exact version of Athena code that was originally used to produce your background and signal DAODs, since your code may not necessarily be compatible with DAODs produced with different releases of the ATLAS derivation framework. Therefore, it would be good document somewhere in your gitlab repo exactly which ATLASDerivation cache and p-tags were used to produce the DAODs used in your analysis (this could just be a list of all the dataset names used) so other analysts know to produce new signals for RECAST with this same version. See the [DerivationProductionTeam](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/DerivationProductionTeam#Info_on_AtlasDerivation_caches_a) page for more information about derivation production and organzation.
-> 
+>
 {: .callout}
 
 ## Yadage
 
 [Yadage](https://yadage.readthedocs.io/en/latest/) is both:
- * a syntax for describing workflows made up of containerized steps, and 
- * an execution engine for actually running these workflows. 
+ * a syntax for describing workflows made up of containerized steps, and
+ * an execution engine for actually running these workflows.
 
-We'll get into the syntax part of yadage in the upcoming *intermezzo*, during which you'll get to practice writing a basic helloworld workflow in yadage. But before venturing too far into the forest of syntax, let's first fly overhead and see where this is all going. 
+We'll get into the syntax part of yadage in the upcoming *intermezzo* lesson, during which you'll get to practice writing a basic helloworld workflow in yadage. But before venturing too far into the forest of syntax, let's first fly overhead and see where this is all going.
 
 In the yadage approach, the workflow is divided into distinct steps, called packaged activities - or "packtivities" - each of which will run inside a docker container. The steps get linked into a workflow using something called a dynamic acyclic graph (DAG), where each node of the DAG is a step, and directed edges connecting the steps represent the (not necessarily linear) dependencies between steps. The yadage workflow engine then uses this DAG to optimize the execution of the workflow.
 
 > ## More reading on Yadage
 > Nice introductory yadage tutorial: [https://yadage.github.io/tutorial/](https://yadage.github.io/tutorial/)
-> 
+>
 > [Yadage and Packtivity – analysis preservation using parametrized workflows](https://arxiv.org/pdf/1706.01878.pdf) (paper on arXiv with lots of great background info)
 {: .callout}
 
@@ -78,13 +78,13 @@ and these three components are codified with dedicated yadage syntax, as we'll s
 
 The three steps involved in interpreting our VHbb analysis are as follows:
 
-* **Skimming Step:** This is the step that we're already familiar with, where we take in the signal DAOD, loop through it event-by-event, apply some selections, and output a histogram of the dijet invariant mass variable that we'll want to fit our model to the data. This step will take place in the custom `AnalysisBase` container we recently created for our analysis repo. 
-* **Reformatting Step:** The pyhf statistical interpretation framework that we'll use for re-interpretation is written in pure python and runs outside of ROOT, so we can simplify the fitting step somewhat by reformatting the histogram that we wrote to a ROOT file in the previous skimming step into a text file that is readable in pure python, and outputting this text file to the interpretation step.  
-* **Interpretation Step:** Here, we use pyhf to do our statistical analysis of the signal, background, and data to determine whether we can detect our signal model in the data. We need some extra pieces of information to scale the signal appropriately, which we can get from the AMI database (this will be discussed further soon). 
+* **Skimming Step:** This is the step that we're already familiar with, where we take in the signal DAOD, loop through it event-by-event, apply some selections, and output a histogram of the dijet invariant mass variable that we'll want to fit our model to the data. This step will take place in the custom `AnalysisBase` container we recently created for our analysis repo.
+* **Reformatting Step:** The pyhf statistical interpretation framework that we'll use for re-interpretation is written in pure python and runs outside of ROOT, so we can simplify the fitting step somewhat by reformatting the histogram that we wrote to a ROOT file in the previous skimming step into a text file that is readable in pure python, and outputting this text file to the interpretation step.
+* **Interpretation Step:** Here, we use pyhf to do our statistical analysis of the signal, background, and data to determine whether we can detect our signal model in the data. We need some extra pieces of information to scale the signal appropriately, which we can get from the AMI database (this will be discussed further soon).
 
 These steps are summarized in the following illustration:
 
-<img src="../fig/Steps.png" alt="Steps" style="width:800px"> 
+<img src="../fig/Steps.png" alt="Steps" style="width:800px">
 
 ## Workflow
 
@@ -92,31 +92,31 @@ The workflow description specifies how all the steps "fit together". It accompli
 
 So here is an idea of what our workflow should look like:
 
-<img src="../fig/Workflow.png" alt="Workflow" style="width:1200px"> 
+<img src="../fig/Workflow.png" alt="Workflow" style="width:1200px">
 
 > ## Exercise (10 min)
 > #### Part 1
-> Looking at the workflow, you'll notice that the signal DAOD file gets passed to the analysis code in the first skimming step. Since our ultimate goal with RECAST is to make it possible to trivially re-interpret our analysis with any signal model, we should be able to pass any signal DAOD to this skimming step, not just the one we've been working with so far. It would also be good for clarity (and in fact necessary if we wanted to start considering different background samples) to be able to specify the name of the ROOT file containing the output histograms depending on the input DAOD. But at present, the filename and path to the input signal DAOD and output ROOT file are hard-coded into the AnalysisPayload.cxx code. 
+> Looking at the workflow, you'll notice that the signal DAOD file gets passed to the analysis code in the first skimming step. Since our ultimate goal with RECAST is to make it possible to trivially re-interpret our analysis with any signal model, we should be able to pass any signal DAOD to this skimming step, not just the one we've been working with so far. It would also be good for clarity (and in fact necessary if we wanted to start considering different background samples) to be able to specify the name of the ROOT file containing the output histograms depending on the input DAOD. But at present, the filename and path to the input signal DAOD and output ROOT file are hard-coded into the AnalysisPayload.cxx code.
 >
 > So, with an eye on re-interpretation, update the AnalysisPayload.cxx in your gitlab repo so it can read in both:
-> * the path to the input DAOD, and 
+> * the path to the input DAOD, and
 > * the path to the output ROOT file that will contain the histograms created by AnalysisPayload.cxx
-> 
+>
 > such that the `AnalysisPayload` executable can be executed as follows:
 > ~~~
 > AnalysisPayload /path/to/input/DAOD.root.1 /path/to/output/ROOT/file.root
 > ~~~
 > {: .source}
-> 
+>
 > #### Part 2
 > While we're at it, we'll also need to make the binning a bit coarser for when we output the histogram to the `pyhf` fitting step, since the `pyhf` fitter takes a lot longer to run with many bins without necessarily much/any gain in sensitivity. So let's do that now. Update your AnalysisPayload.cxx so that it produces the `h_mjj_raw` and `h_mjj_kin` histograms with 20 rather than 100 bins.
-> 
+>
 > > ## Solution
 > > #### Part 1
 > > The updates should look something like:
-> > 
+> >
 > > * `int main() {` --> `int main(int argc, char **argv) {`
-> > 
+> >
 > > * `TString inputFilePath = /path/to/ROOT/file.root.1;` becomes:
 > >
 > > ~~~
@@ -124,9 +124,9 @@ So here is an idea of what our workflow should look like:
 > > TString outputFilePath = argv[2];
 > > ~~~
 > > {: .source}
-> > 
+> >
 > > * `TFile *fout = new TFile("myOutputFile.root","RECREATE");` --> `TFile *fout = new TFile(outputFilePath), "RECREATE");`
-> > 
+> >
 > > #### Part 2
 > > The code to create the new `h_mjj` histogram objects should be updated as follows:
 > >
@@ -134,13 +134,13 @@ So here is an idea of what our workflow should look like:
 > >
 > > `TH1D *h_mjj_kin = new TH1D("h_mjj_kin","",100,0,500);` --> `TH1D *h_mjj_kin = new TH1D("h_mjj_kin","",20,0,500);`
 > {: .solution}
-> 
+>
 > Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo. Make sure the main repo is updated to use the latest AnalysisPayload commit.
 {: .challenge}
 
 > ## Hints
 > Part 1 should require changing three lines in AnalysisPayload.cxx (and adding one additional line). Part 2 should only require changing two lines.
-> 
+>
 > The simplest way to implement command-line arguments in C/C++ is by passing the number `argc` of command line arguments and the list `*argv[]` of arguments to the `main()` function (see eg. this quick [cplusplus.com tutorial](http://www.cplusplus.com/articles/DEN36Up4/)).
 {: .callout}
 
