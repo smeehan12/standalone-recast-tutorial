@@ -27,18 +27,18 @@ So how is this automated container re-building actually accomplished? As you've 
 These all sound like tasks that a Dockerfile would be great for! And indeed, the first key component of automated environment preservation with gitlab CI/CD is to add a Dockerfile to the repo with these specifications.  
 
 > ## `atlas` User in ATLAS Containers
-> By default, files added to a docker container will be owned by root user. However, it's considered good practice to avoid actually working as root user unnecessarily since this minimizes the risk of accidentally misusing root privileges [FIXME: Lukas, is this the main reason?], so the analysisbase images use a non-root `atlas` user by default. 
+> By default, files added to a docker container will be owned by root user. However, it's considered good practice to avoid actually working as root user unnecessarily since this minimizes the risk of accidentally misusing root privileges, so the analysisbase images use a non-root `atlas` user by default. 
 > 
 > Because of this, if we don't explicitly make the directory containing your analysis code owned by `atlas` user, you may run into permission issues when your code tries to run (as atlas user) and create new files and plots, etc. inside the directory.
 {: .callout}
 
 ### Writing your Gitlab Dockerfile
 
-So far, you've been starting your containers from the atlas/analysisbase:21.2.75 base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts [FIXME: will this statement be accurate??]. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
+So far, you've been starting your containers from the atlas/analysisbase:21.2.75 base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
 
 
 > ## Exercise (10 min)
-> Working from your shell, cd into the top level of your gitlab repo for the VHbb analysis. Create an empty file named Dockerfile
+> Working from your shell (i.e. **not** from inside the `atlas/analysisbase:21.2.75` container), cd into the top level of your gitlab repo for the VHbb analysis. Create an empty file named Dockerfile
 >
 > ~~~
 > touch Dockerfile
@@ -144,7 +144,7 @@ Once this is done, you can commit and push the updated .gitlab-ci.yml file to yo
 
 ~~~
 docker login gitlab-registry.cern.ch
-docker pull gitlab-registry.cern.ch/[repo owner]/[repo name]:[branch name]
+docker pull gitlab-registry.cern.ch/[repo owner's username]/[repo name]:[branch name]
 ~~~
 {: .source}
 
@@ -153,6 +153,18 @@ Notice that the script to run is just a dummy 'ignore' command. This is because 
 > ## Recommended Tag Structure
 > You'll notice the environment variable `TO` in the `.gitlab-ci.yml` script above. This controls the name of the Docker image that is produced in the CI step. Here, the image name will be `<reponame>:<branch or tagname>`. This way images built from different branches do not overwrite each other and tagged commits will correspond to tagged images.
 {: .callout} 
+
+> ## Exercise (10 min)
+> Find a partner and pull the image they just built from the gitlab registry. Launch a container using your partner's image, volume-mounting your DAOD file to the location and filename where your partner's AnalysisPayload executable looks for the file. Try to locate and run your partner's AnalysisPayload executable on the volume-mounted DAOD file.
+> > ## Hint
+> > ~~~
+> > docker pull gitlab-registry.cern.ch/[your partner's username]/[repo name]:[branch name]
+> > docker run --rm -it -v /path/to/local/directory/containing/DAOD/file:/path/to/directory/where/AnalysisPayload/finds/DAOD/file [repo name]:[branch name] bash
+> > /path/to/AnalysisPayload/executable [any command-line arguments the executable may expect]
+> > ~~~
+> > {: .source}
+> {: .solution}
+{: .challenge}
 
 {% include links.md %}
 
