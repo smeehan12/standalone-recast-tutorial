@@ -17,7 +17,7 @@ keypoints:
 ---
 
 ## Introduction
-This morning's docker tutorial introduced you to containerization as an industry-standard computing tool that makes it quick and easy to bring up a customized computing environment to suit the needs of your application. In this tutorial, we'll explore how ATLAS is leveraging the power of containerization for data analysis applications. You've already seen that standard ATLAS computing tools can be packaged into the `atlas/analysisbase` docker image, which lets you develop an analysis on your local machine. Now we'll see how ATLAS is using docker and gitlab to preserve and re-interpret ATLAS analyses using a tool called RECAST.
+This morning's docker tutorial introduced you to containerization as an industry-standard computing tool that makes it quick and easy to bring up a customized computing environment to suit the needs of your application. In this tutorial, we'll explore how ATLAS is leveraging the power of containerization for data analysis applications. You've already seen that standard ATLAS computing tools can be packaged into the `atlas/analysisbase` docker image, which lets you develop an analysis on your local machine. Now we'll see how ATLAS is using docker and gitlab to preserve and re-interpret ATLAS analyses using a tool called RECAST (Request Efficiency Computation for Alternative Signal Theories).
 
 
 To understand why analysis preservation, and RECAST in particular, is useful, consider that it can take months or even years for a multi-person analysis team to develop cuts that optimally carve out a phase space sensitive to the model they want to test, and estimate the standard model backgrounds and systematics in this phase space.
