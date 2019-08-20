@@ -14,7 +14,7 @@ keypoints:
 ---
 
 ## Introduction
-Now that we've deconstructed the `atlas/analysisbase` image that you've been using for your analysis to see where it actually comes from, we're going to take the next step of using this image as a base for preserving our ATLAS environment. Gitlab CI/CD automates the task of keeping your analysis environment up-to-date so you don't have to think about it (much). This is accomplished by re-building the container in which your analysis environment is preserved on top of `atlas/analysisbase` for each analysis repo each time that new commits are pushed to the repos. 
+Now that we've deconstructed the `atlas/analysisbase` image that you've been using for your analysis to see where it actually comes from, we're going to take the next step of using this image as a base for preserving our ATLAS environment. Gitlab CI/CD automates the task of keeping your analysis environment up-to-date so you don't have to think about it (much). This is accomplished by re-building the container in which your analysis environment is preserved on top of `atlas/analysisbase` for each analysis repo, each time that new commits are pushed to the repos. 
 
 
 ## RECAST and Gitlab CI/CD
@@ -22,19 +22,19 @@ Now that we've deconstructed the `atlas/analysisbase` image that you've been usi
 So how is this automated container re-building actually accomplished? As you've already learned, each time that an analyst pushes new commits to the docker repo with gitlab CI/CD set up, gitlab starts a pipeline that runs the tests you wrote in your `.gitlab-ci.yml` file to validate the new commits. In addition to these code tests, it's also possible to add code to the `.gitlab-ci.yml` file to build a container in which the analysis code and environment reside, and store it in the "gitlab registry". But to build this container correctly, you first need some specific instructions on:
  * how to set up the exact environment in the container that your code depends on,
  * how to add your analysis code to the container, and 
- * how to pre-build the code so that it can be just run trivially inside the container (ideally with only a single command).
+ * how to pre-build the code so that it can just be run trivially inside the container (ideally with only a single command).
 
 These all sound like tasks that a Dockerfile would be great for! And indeed, the first key component of automated environment preservation with gitlab CI/CD is to add a Dockerfile to the repo with these specifications.  
 
 > ## `atlas` User in ATLAS Containers
-> By default, files added to a docker container will be owned by root user. However, it's considered good practice to avoid actually working as root user unnecessarily since this minimizes the risk of accidentally misusing root privileges, so the analysisbase images use a non-root `atlas` user by default. 
+> By default, files added to a docker container will be owned by root user. However, it's considered good practice to avoid actually working as root user unnecessarily since this minimizes the risk of accidentally misusing root privileges, so the `analysisbase` images use a non-root `atlas` user by default. 
 > 
-> Because of this, if we don't explicitly make the directory containing your analysis code owned by `atlas` user, you may run into permission issues when your code tries to run (as atlas user) and create new files and plots, etc. inside the directory.
+> Because of this, if you don't explicitly make the directory containing your analysis code owned by `atlas` user, you may run into permission issues when your code tries to run (as atlas user) and create new files and plots, etc. inside the directory.
 {: .callout}
 
 ### Writing your Gitlab Dockerfile
 
-So far, you've been starting your containers from the atlas/analysisbase:21.2.75 base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
+So far, you've been starting your containers from the `atlas/analysisbase:21.2.75` base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
 
 
 > ## Exercise (10 min)
@@ -140,7 +140,7 @@ build_image:
 ~~~
 {: .source}
 
-Once this is done, you can commit and push the updated .gitlab-ci.yml file to your gitlab repo and check to make sure the pipeline passed. If it passed, the repo image built by the pipeline should now be stored on the docker registry, and accessible as follows:
+Once this is done, you can commit and push the updated .gitlab-ci.yml file to your gitlab repo and check to make sure the pipeline passed. If it passed, the repo image built by the pipeline should now be stored on the docker registry, and be accessible as follows:
 
 ~~~
 docker login gitlab-registry.cern.ch
@@ -155,7 +155,7 @@ Notice that the script to run is just a dummy 'ignore' command. This is because 
 {: .callout} 
 
 > ## Exercise (10 min)
-> Find a partner and pull the image they just built from the gitlab registry. Launch a container using your partner's image, volume-mounting your DAOD file to the location and filename where your partner's AnalysisPayload executable looks for the file. Try to locate and run your partner's AnalysisPayload executable on the volume-mounted DAOD file.
+> Find a partner and pull the image they just built from the gitlab registry. Launch a container using your partner's image, volume-mounting your DAOD file to the location and filename where your partner's `AnalysisPayload` executable looks for the file. Try to locate and run your partner's `AnalysisPayload` executable on the volume-mounted DAOD file.
 > > ## Hint
 > > ~~~
 > > docker pull gitlab-registry.cern.ch/[your partner's username]/[repo name]:[branch name]

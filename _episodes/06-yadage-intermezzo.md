@@ -45,9 +45,9 @@ The goal of the workflow is to take an input message, concatenate it with anothe
 
 <img src="../fig/sample_workflow.png" alt="Sample_workflow" style="width:150px"> 
 
-The containers containing the environment and executables needed run each of the two steps are already available on docker hub. For the purpose of writing our workflow, we're not really concerned with the code that actually produces the executables. All we need to know how to run them inside their respective containers.
+The containers containing the environment and executables needed run each of the two steps are already available on docker hub. For the purpose of writing our workflow, we're not really concerned with the code that actually produces the executables. All we need to know is how to run them inside their respective containers.
 
-* [https://hub.docker.com/r/yadage/tutorial-messagewriter/](https://hub.docker.com/r/yadage/tutorial-messagewriter/): contains a compiled C++ executable that takes a message and a path to an output file, concatenates the message onto `Hello, the message was: `, and writes the concatenated message to the output file. Try running it yourself! We'll volume-mount your current working directory to the container so that the output file will persist after the container exits. 
+* [https://hub.docker.com/r/yadage/tutorial-messagewriter/](https://hub.docker.com/r/yadage/tutorial-messagewriter/): contains a compiled C++ executable that takes a message and a path to an output file, concatenates the message onto `Hello, the message was: `, and writes the concatenated message to the output file. Try running it yourself! You can volume-mount your current working directory to the container so that the output file will persist after the container exits. 
 
 ~~~
 docker run --rm -it -v $PWD:/workdir yadage/tutorial-messagewriter sh

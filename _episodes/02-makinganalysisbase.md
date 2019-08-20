@@ -109,7 +109,7 @@ While we're waiting for the build to finish, let's take a look at the Dockerfile
 > > 
 > >     b) `docker build -t meehan/slc6-atlasos:latest  --build-arg BASEIMAGE=centos:7 .`
 > > 2. It's one of the `yum` packages installed in the first `RUN` instruction: `atlas-devel`.
-> > 3. `\root`, specified with the WORKDIR instruction.
+> > 3. `/root`, specified with the `WORKDIR` instruction.
 > > 4. `cat /etc/motd && /bin/bash`, as specified by the `CMD` instruction.
 > > 5. The `wheel` group, as specified by the `RUN` instruction `usermod -aG wheel atlas`. This gives it superuser rights because the first run command in this `RUN` instruction adds a line to the `sudoers` file to give all users belonging to the `wheel` group superuser rights with no password required.
 > > 
@@ -135,7 +135,7 @@ Again, let's go though the Dockerfile to see if we can understand what's it's do
 >
 > **Question 2** 
 >
-> Open up the file `release_setup.sh.in` in another text editor window and review it sets up the environment. Identify how the `release_setup.sh` script in an athanalysisbase container gets the information to specifically set up the AnalysisBase environment.
+> Open up the file `release_setup.sh.in` in another text editor window and review how it sets up the environment. Identify how the `release_setup.sh` script in an athanalysisbase container gets the information to specifically set up the AnalysisBase environment.
 > 
 > **Question 3**
 > Identify where the specific `AnalysisBase:21.2.75` code package is installed.
@@ -144,9 +144,9 @@ Again, let's go though the Dockerfile to see if we can understand what's it's do
 > > 
 > > 1. These will persist as environment variables in any container that's started up with this image, unlike the variables set with `ARG` which only persist through the build process.
 > >
-> > 2. The last RUN instruction in the Dockerfile (line 34) replaces all instances of `{{PROJECT}}` in `release_setup.sh.in` with AthAnalysis, and outputs the result to `release_setup.sh`, then removes `release_setup.sh.in` from the image.
+> > 2. The last `RUN` instruction in the Dockerfile (line 34) replaces all instances of `{{PROJECT}}` in `release_setup.sh.in` with AthAnalysis, and outputs the result to `release_setup.sh`, then removes `release_setup.sh.in` from the image.
 > >
-> > 3. The first RUN instruction (line 27) installs all the yum packages, including the `AnalysisBase_21.2.3_x86_64-slc6-gcc62-opt` package specified as a variable.
+> > 3. The first `RUN` instruction (line 27) installs all the yum packages, including the `AnalysisBase_21.2.3_x86_64-slc6-gcc62-opt` package specified as a variable.
 > {: .solution}
 {: .challenge}
 
