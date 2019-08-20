@@ -173,7 +173,7 @@ You can try setting up the container for this step yourself in the following exe
 > ## Exercise (25 min)
 > 
 > #### Part 1
-> On your local machine, create a new file named ReformatHist.cxx in your AnalysisPayload sub-repo to contain code that will receive as input the path to the ROOT file containing the histograms written out by `AnalysisPayload`, and outputs the text file described above. Now, `cd` up into the main repo and run a container from the `atlas/analysisbase:21.2.75` image, volume-mounting the whole analysis repo into the container, as well as the ROOT histogram file that you previously produced with the `AnalysisPayload` executable.
+> On your local machine, create a new file named ReformatHist.cxx in your AnalysisPayload sub-repo to contain code that will receive as input the path to the ROOT file containing the histograms written out by `AnalysisPayload`, and outputs the text file described above. Now, `cd` up into the main repo and run a container from the `atlas/analysisbase:21.2.85-centos7` image, volume-mounting the whole analysis repo into the container, as well as the ROOT histogram file that you previously produced with the `AnalysisPayload` executable.
 > #### Part 2
 > Now, add a new executable to your CMakeLists.txt file in AnalysisPayload named ReformatHist that will run the code. Consider which libraries will actually need to be linked, and which ones can be safely omitted for this executable. 
 > 
@@ -240,7 +240,7 @@ The command to run the finalized executable will be:
 {: .challenge}
 
 > ## Bonus Exercise!
-> The task we accomplished above in pure ROOT could also be accomplished with a fair bit less coding by making use of python's uproot or rootpy+root_numpy packages. Since the amount of data encoded in the histograms is very small compared with the original DAOD, any speed losses we may suffer in going from pure ROOT code to python for this step are essentially negligible. As such, this is a situation in which it may well be to our benefit to take advantage of high level python modules. The main downside in our particular case is that `atlas/analysisbase:21.2.75` doesn't have a ROOT installation with python bindings (needed for rootpy+root_numpy) or python 3.6 (needed for uproot), so it's best to build or own docker images for this task. 
+> The task we accomplished above in pure ROOT could also be accomplished with a fair bit less coding by making use of python's uproot or rootpy+root_numpy packages. Since the amount of data encoded in the histograms is very small compared with the original DAOD, any speed losses we may suffer in going from pure ROOT code to python for this step are essentially negligible. As such, this is a situation in which it may well be to our benefit to take advantage of high level python modules. The main downside in our particular case is that `atlas/analysisbase:21.2.85-centos7` doesn't have a ROOT installation with python bindings (needed for rootpy+root_numpy) or python 3.6 (needed for uproot), so it's best to build or own docker images for this task. 
 > 
 > we provide "starter" repos for . You can choose to work with one of them depending on your desired implementation. 
 >

@@ -143,11 +143,11 @@ So here is an idea of what our workflow should look like:
 {: .challenge}
 
 > ## Hints
-> * You can test your updates by volume-mounting your repo directory and DAOD to the `atlas/analysisbase:21.2.75`:
+> * You can test your updates by volume-mounting your repo directory and DAOD to the `atlas/analysisbase:21.2.85-centos7`:
 > 
 > ~~~
 > cd /top/level/of/local/gitlab/repo
-> docker run --rm -it -v /path/to/DAOD:/Data/signal_daod.root -v $PWD:/Bootcamp atlas/analysisbase:21.2.75 bash
+> docker run --rm -it -v /path/to/DAOD:/Data/signal_daod.root -v $PWD:/Bootcamp atlas/analysisbase:21.2.85-centos7 bash
 > ~~~
 > {: .source}
 > * Part 1 should require changing three lines in AnalysisPayload.cxx (and adding one additional line). Part 2 should require changing four lines.

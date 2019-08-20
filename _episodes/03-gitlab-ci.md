@@ -34,11 +34,11 @@ These all sound like tasks that a Dockerfile would be great for! And indeed, the
 
 ### Writing your Gitlab Dockerfile
 
-So far, you've been starting your containers from the `atlas/analysisbase:21.2.75` base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
+So far, you've been starting your containers from the `atlas/analysisbase:21.2.85-centos7` base image, volume-mounting your analysis code, and building the code manually, maybe with the help of some aliases and shell scripts. Now we're going to write a Dockerfile that automatically adds your code to the container and builds it, then bundles all this into a new container that's ready to run your code!
 
 
 > ## Exercise (10 min)
-> Working from your shell (i.e. **not** from inside the `atlas/analysisbase:21.2.75` container), cd into the top level of your gitlab repo for the VHbb analysis. Create an empty file named Dockerfile
+> Working from your shell (i.e. **not** from inside the `atlas/analysisbase:21.2.85-centos7` container), cd into the top level of your gitlab repo for the VHbb analysis. Create an empty file named Dockerfile
 >
 > ~~~
 > touch Dockerfile
@@ -49,7 +49,7 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.7
 > 
 > ~~~
 > # Specify the image and release tag from which we're working
-> atlas/analysisbase:21.2.75
+> atlas/analysisbase:21.2.85-centos7
 > 
 > # Put the current repo (the one in which this Dockerfile resides) in the /Bootcamp directory
 > # Note that this directory is created on the fly and does not need to reside in the repo already
@@ -71,7 +71,7 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.7
 > > ## Solution
 > > ~~~
 > > # Specify the image from which you are working
-> > FROM atlas/analysisbase:21.2.75
+> > FROM atlas/analysisbase:21.2.85-centos7
 > > 
 > > # Put the current repo (the one in which this Dockerfile resides) in the directory specified here
 > > # Note that this directory is created on the fly and does not need to reside in the repo already
