@@ -84,7 +84,7 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.8
 > > WORKDIR /Bootcamp/build
 > >
 > > # Create a run directory
-> > RUN mkdir /Bootcamp/run
+> > RUN sudo mkdir /Bootcamp/run
 > > 
 > > # Source the ATLAS analysis environment
 > > # Make sure the directory containing your analysis code (and the code inside it) is owned by atlas user
