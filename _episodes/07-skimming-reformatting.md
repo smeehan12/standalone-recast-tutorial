@@ -226,21 +226,21 @@ You can try setting up the container for this step yourself in the following exe
 >  //---- First write the bin edges -----//
 >  // Get the bin width and number of bins from the histogram
 >  double bin_width = [FIXME] 	   // Relevant function: GetBinWidth()
->  int n_bins = [FIXME]		   // Relevant function: GetNbinsX()
+>  int n_bins = [FIXME]            // Relevant function: GetNbinsX()
 >
 >  // Loop through all the bins, and write the lower bin edge to the ouput file (with a space between subsequent bin edges)
 >  for(int iBin=1; iBin < n_bins+1; iBin++)
 >  {
->    [FIXME]
+>    [FIXME]                       // Relevant function: GetBinLowEdge()
 >  }
 >
 >  // Add the bin width to the lower edge of the last bin to get the upper edge of the last bin, and write it to the text file
->  [FIXME]
+>  [FIXME]                         // Relevant function: GetBinLowEdge()
 >
 >  // Now write the bin contents, again with a space between subsequent bin contents
 >  for(int iBin=1; iBin < n_bins+1; iBin++)
 >  {
->    [FIXME]
+>    [FIXME]                        // Relevant function: GetBinContent()
 >  }
 >
 >  f_out.close();
