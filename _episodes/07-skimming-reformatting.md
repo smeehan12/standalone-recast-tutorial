@@ -201,7 +201,53 @@ You can try setting up the container for this step yourself in the following exe
 > Now, add a **new executable** to your CMakeLists.txt file in AnalysisPayload named `ReformatHist` that will run the code. Consider which libraries will actually need to be linked, and which ones can be safely omitted for this executable. 
 > 
 > #### Part 3
-> Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in the beginning of the exercise. Remember to `#include` any needed libraries. You can compile and test the code in the container as you work. 
+> Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in the beginning of the exercise. Remember to `#include` any needed libraries. You can compile and test the code in the container as you work. You can start with the following skeleton:
+> 
+> ~~~
+> // stdlib functionality     
+> #include <iostream>
+> #include <fstream>
+>
+> // ROOT functionality
+> #include <TFile.h>
+> #include <TH1D.h>
+> 
+> int main(int argc, char **argv) {
+> 
+>   // Open the input file
+>   TFile *f_in = new TFile([FIXME]);
+>
+>   // Collect the histogram from the file as a TH1D                                                                                                                             
+>   TH1D * hist = (TH1D*)f_in->Get("[FIXME]");
+> 
+>  // Initialize the outputfile object
+>  std::ofstream f_out([FIXME]);
+>
+>  //---- First write the bin edges -----//
+>  // Get the bin width and number of bins from the histogram
+>  double bin_width = [FIXME] 	   // Relevant function: GetBinWidth()
+>  int n_bins = [FIXME]		   // Relevant function: GetNbinsX()
+>
+>  // Loop through all the bins, and write the lower bin edge to the ouput file (with a space between subsequent bin edges)
+>  for(int iBin=1; iBin < n_bins+1; iBin++)
+>  {
+>    [FIXME]
+>  }
+>
+>  // Add the bin width to the lower edge of the last bin to get the upper edge of the last bin, and write it to the text file
+>  [FIXME]
+>
+>  // Now write the bin contents, again with a space between subsequent bin contents
+>  for(int iBin=1; iBin < n_bins+1; iBin++)
+>  {
+>    [FIXME]
+>  }
+>
+>  f_out.close();
+>}
+> ~~~
+> {: .source}
+>
 > #### Part 4
 > When you're satisfied with the result, you can commit and push your updates. Check to ensure that the new image builds on gitlab without any errors. 
 > > ## Solution
