@@ -21,10 +21,16 @@ keypoints:
 
 ### Interpreting our Analysis
 
-So far in our VHbb analysis, we've taken a Monte Carlo simulated signal DAOD, looped through this MC data event-by-event, applied some kinematic selections, and output the data to a histogram of the dijet invariant mass. But what we really want to do in the end is compare our simulated signal sample with data from the ATLAS detector to determine whether we can see our signal in the data, and if so, to what extent. In a real analysis, a proper comparison with the data would require accounting for all the events from SM background processes that make it through our selection, and adding these events to our histograms. We could then perform a fit to determine whether the observed data is best explained by the SM background alone, or by some combination of the background and signal.
+
+#### What do we want?
+So far in our VHbb analysis, we've taken a Monte Carlo simulated signal DAOD, looped through this MC data event-by-event, applied some kinematic selections, and output the data to a histogram of the dijet invariant mass. But what we really want to do in the end is compare our simulated signal sample with data from the ATLAS detector to determine whether we can see our signal in the data, and if so, to what extent. 
 
 
+#### What would we do in a "real" analysis?
+In a real analysis, a proper comparison with the data would require accounting for all the events from SM background processes that make it through our selection, and adding these events to our histograms. We could then perform a fit to determine whether the observed data is best explained by the SM background alone, or by some combination of the background and signal.
 
+
+#### What are we actually going to do?
 However, the time it would take us to properly account for all the SM backgrounds would probably take away from the main purpose of this "docker in ATLAS" tutorial. So we'll instead assume that our SM background distribution can be modeled analytically by some smoothly decaying exponential in the dijet invariant mass, and move along (keeping in mind that this would in no way fly in a real analysis!). We'll also provide some toy data for the interpretation. The fit will be done using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/).
 
 
@@ -35,16 +41,24 @@ This approach is illustrated in the following doodle, where some data is fit wit
 
 
 ### Analysis Preservation and Re-interpretation
+
+#### Workflow preservation/automation
+
 Thanks to gitlab and docker, we've now successfully preserved our analysis code and the environment in which we run it. The final piece of RECAST analysis preservation is to preserve our analysis workflow for interpreting the signal as described above, and automate the process of passing an arbitrary signal model through the workflow to re-interpret the analysis in a new context.
 
+
+#### Why do we need to get fancy?
 
 If it weren't for the docker containers involved in RECAST, this could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. Lukas Heinrich has written a great tool called "yadage" to handle this situation. Before diving into the gory details of how to actually program with yadage, let's start with a high-level overview of what it is and how it accomplishes the goal of preserving and re-interpreting our analysis.
 
 > ## Background preservation
+>
+> ### Preserving background contributions to fit
 > In our sample analysis, we're using an analytic falling exponential as our background, but a real ATLAS analysis will have many different sources of background, each obtained from its own set of DAODs, and involving its own set of systematics that will affect the fit result. Since these background contributions won't change when the analysis is re-interpreted with a new model, it's in general important to preserve the contribution of these backgrounds to the final analysis results in the analysis code so that one only needs to run the signal DAOD through the analysis chain when the analysis is re-interpreted with RECAST.
 >
 > <img src="../fig/background_preservation.png" alt="Background preservation" style="width:350px">
 >
+> ### What RECAST **doesn't** do
 > Another important point to keep in mind is that RECAST does **not** on its own document the exact version of Athena code that was originally used to produce your background and signal DAODs. Your code may not necessarily be compatible with DAODs produced with future releases of the ATLAS derivation framework. Therefore, it would be good document somewhere in your gitlab repo exactly which ATLASDerivation cache and p-tags were used to produce the DAODs used in your analysis (this could just be, eg. a list of all the dataset names used) so other analysts know to produce new signals for RECAST with this same version. See the [DerivationProductionTeam](https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/DerivationProductionTeam#Info_on_AtlasDerivation_caches_a) page for more information about derivation production and organzation.
 >
 {: .callout}

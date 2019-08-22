@@ -55,7 +55,7 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.8
 > # Note that this directory is created on the fly and does not need to reside in the repo already
 > [FIXME] 
 > 
-> # Go into the /Bootcamp/build directory (again, it will create the directory if it doesn't already exist)
+> # Go into the /Bootcamp/build directory and make /Bootcamp/build the default working directory (again, it will create the directory if it doesn't already exist)
 > [FIXME]
 >
 > # Create a run directory
