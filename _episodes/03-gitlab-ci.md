@@ -57,6 +57,9 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.8
 > 
 > # Go into the /Bootcamp/build directory (again, it will create the directory if it doesn't already exist)
 > [FIXME]
+>
+> # Create a run directory
+> RUN [FIXME]
 > 
 > # Source the ATLAS analysis environment
 > # Make sure the directory containing your analysis code (and the code inside it) is owned by atlas user
@@ -79,6 +82,9 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.8
 > > 
 > > # Go into the directory specified here (again, it will create the directory if it doesn't already exist)
 > > WORKDIR /Bootcamp/build
+> >
+> > # Create a run directory
+> > RUN mkdir /Bootcamp/run
 > > 
 > > # Source the ATLAS analysis environment
 > > # Make sure the directory containing your analysis code (and the code inside it) is owned by atlas user
@@ -115,18 +121,10 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.8
 > * If new functionality has been added to the code, any corresponding new executable(s) are being properly built.
 {: .callout}
 
-Now that you've added a Dockerfile to your gitlab repo, you can proceed with updating your `.gitlab-ci.yml` to actually build the container during the CI/CD pipeline and store it in the gitlab registry. You can later pull it from the gitlab registry just as you would any other container, but in this case using your CERN credentials. 
+Now, you can proceed with updating your `.gitlab-ci.yml` to actually build the container during the CI/CD pipeline and store it in the gitlab registry. You can later pull it from the gitlab registry just as you would any other container, but in this case using your CERN credentials. 
 
 
-So, if there isn't yet code in your `.gitlab-ci.yml` file to build the container, you can add a build stage under the `stages` section.
-
-~~~
-stages:
-  - build
-~~~
-{: .source}
-
-Next, add the following lines somewhere underneath to build the image and save it to the docker registry. 
+Add the following lines at the end of the `.gitlab-ci.yml` file to build the image and save it to the docker registry. 
 
 ~~~
 build_image:
@@ -140,7 +138,7 @@ build_image:
 ~~~
 {: .source}
 
-Once this is done, you can commit and push the updated .gitlab-ci.yml file to your gitlab repo and check to make sure the pipeline passed. If it passed, the repo image built by the pipeline should now be stored on the docker registry, and be accessible as follows:
+Once this is done, you can commit and push the updated `.gitlab-ci.yml` file to your gitlab repo and check to make sure the pipeline passed. If it passed, the repo image built by the pipeline should now be stored on the docker registry, and be accessible as follows:
 
 ~~~
 docker login gitlab-registry.cern.ch
@@ -154,7 +152,7 @@ Notice that the script to run is just a dummy 'ignore' command. This is because 
 > You'll notice the environment variable `TO` in the `.gitlab-ci.yml` script above. This controls the name of the Docker image that is produced in the CI step. Here, the image name will be `<reponame>:<branch or tagname>`. This way images built from different branches do not overwrite each other and tagged commits will correspond to tagged images.
 {: .callout} 
 
-> ## Exercise (10 min)
+> ## Friend Time Activity (10 min)
 > Find a partner and pull the image they just built from the gitlab registry. Launch a container using your partner's image, volume-mounting your DAOD file to the location and filename where your partner's `AnalysisPayload` executable looks for the file. Try to locate and run your partner's `AnalysisPayload` executable on the volume-mounted DAOD file.
 > > ## Hint
 > > ~~~
@@ -164,7 +162,7 @@ Notice that the script to run is just a dummy 'ignore' command. This is because 
 > > ~~~
 > > {: .source}
 > {: .solution}
-{: .challenge}
+{: .testimonial}
 
 {% include links.md %}
 

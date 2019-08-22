@@ -14,40 +14,37 @@ keypoints:
 
 ## Introduction
 
-We now have all the Yadage tools we need to put together our VHbb RECAST workflow, starting by "yadage-ifying" our three analysis steps using the syntax we learned during the intermezzo. First, we'll create a new gitlab repo to contain our analysis workflow. 
+We now have all the yadage tools to put together our VHbb RECAST workflow, starting by "yadage-ifying" our first two analysis steps using the syntax we just learned. We can use essentially the same yadage structure and syntax for defining our analysis steps as we did for the message writing and shouting steps. 
 
 ### Skimming Step
 
 <img src="../fig/SkimmingStep.png" alt="Skimming" style="width:220px">
 
-We can use essentially the same yadage structure and syntax for defining our analysis steps as we did for the message writing and shouting steps we saw in the intermezzo. So let's start with this structure and fill it in with the information needed to run the `AnalysisPayload` skimming step of our workflow. In your browser, navigate to `https://gitlab.cern.ch/` and click the green `New Project` button. Give your project a name (eg. `my-workflow`), set the visibility level as desired, and click `Create Project`. Now you can copy the repo url from the browser and clone your new project onto your computer:
+On gitlab, create a new repo to contain your workflow. Name it something like `danika-workflow` (but with your name instead of mine). Clone your new repo onto your computer.
+
+
+**In another shell**, cd into the workflow repo and start the yadage container so you can validate and test the steps and workflow as you develop. You'll also need to log in to the gitlab docker registry using your CERN credentials so yadage can automatically pull images from the gitlab registry:
 
 ~~~
-git clone [repo url].git
-~~~
-{: .source}
-
-In another shell, cd into the workflow project and start the yadage container so you can validate and test the steps and workflow as you develop. You'll also need to log in to the gitlab docker registry using your CERN credentials so yadage can automatically pull images from the gitlab registry:
-
-~~~
+cd [your workflow repo]
 docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
 docker login gitlab-registry.cern.ch
 ~~~
 {: .source}
 
-Working from your shell, cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`, and rename it `recast_daod.root`:
+cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`, and rename it `recast_daod.root`:
 
 ~~~
 cd /path/to/new/workflow/repo
 touch steps.yml
 touch workflow.yml
 mkdir inputdata
-cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
+cp /path/to/DAOD_EXOT27.17882744._000026.pool.root.1 inputdata/recast_daod.root
 ~~~
 {: .source}
 
 > ## Providing files to yadage
-> Since we have a signal DAOD file for yadage to process, we'll need a way to tell the yadage-run command where to look for the DOAD file. This functionality is provided by `yadage-run`'s `-d initdir=` option. For example, if the file to input is named `inputfile.txt`, and it's located in the directory `inputdata` syntax for passing it to yadage-run as the variable inputfile would be:
+> Since we have a signal DAOD file for yadage to process, we'll need a way to tell the yadage-run command where to look for the DOAD file. This functionality is provided by the `-d initdir=` option. For example, if the file to input is named `inputfile.txt`, and it's located in the directory `inputdata` syntax for passing it to yadage-run as the variable inputfile would be:
 > 
 > ~~~
 > yadage-run workdir workflow.yml -p inputfile=inputfile.txt -d initdir=$PWD/inputdata
@@ -67,8 +64,9 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 >      # Source the ATLAS environment
 >      [FIXME]
 >
->      # Run the AnalysisPayload executable to produce the output ROOT file. 
+>      # Run the AnalysisPayload executable from the run directory to produce the output ROOT file, looping over **all** events. 
 >      [FIXME: source setup script to run executables]
+>      cd [FIXME]
 >      [FIXME] {input_file} {output_file}
 >  environment:
 >    environment_type: docker-encapsulated
@@ -102,9 +100,10 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 > >   process:
 > >     process_type: interpolated-script-cmd
 > >     script: |
-> >       # Run the AnalysisPayload executable to produce analysis plots
+> >       # Run the AnalysisPayload executable to produce the output ROOT file, looping over **all** events. 
 > >       source /home/atlas/release_setup.sh
-> >       source /Bootcamp/build/x86_64-slc6-gcc62-opt/setup.sh
+> >       source /Bootcamp/build/x86_64-centos7-gcc8-opt/setup.sh
+> > 	  cd /Bootcamp/run
 > >       AnalysisPayload {input_file} {output_file}
 > >   environment:
 > >     environment_type: docker-encapsulated
@@ -133,6 +132,8 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 {: .challenge}
 
 > ## Debugging Hints
+> 
+> * Could temporarily reduce the number of events you run over with `AnalysisPayload` for the purposes of debugging
 >
 > * Remember you can use the `packtivity-validate` command in your yadage container to quickly check if your step definition is valid:
 > 
@@ -160,7 +161,7 @@ cp /path/to/signal_daod.root.1 inputdata/recast_daod.root
 
 <img src="../fig/ReformattingStep.png" alt="Reformatting" style="width:230px">
 
-In this step, we read in the dijet invariant mass histogram `h_mjj_kin_cal` that was written out to a ROOT file in the last step, and write it out to a text file so it can be easily read in by the final interpretation step. The required format of the output text file is space-separated histogram bin edges in the first row and space-separated bin contents in the second row. For a five-bin triangle-shaped histogram with bin edges ranging from 0 to 10, for example, the contents would be:
+In this step, we read in the dijet invariant mass histogram `h_mjj_kin_cal` that was written out to a ROOT file in the last step, and write it out to a text file so it can be easily read in by the final interpretation step. The required format of the output text file is space-separated histogram bin edges in the first row and space-separated bin contents in the second row. For a five-bin triangle-shaped histogram with bin edges ranging from 0 to 8, for example, the contents would be:
 
 ~~~
 0.0 2.0 4.0 5.0 6.0 8.0
@@ -172,19 +173,37 @@ You can try setting up the container for this step yourself in the following exe
 
 > ## Exercise (25 min)
 > 
-> #### Part 1
-> On your local machine, create a new file named ReformatHist.cxx in your AnalysisPayload sub-repo to contain code that will receive as input the path to the ROOT file containing the histograms written out by `AnalysisPayload`, and outputs the text file described above. Now, `cd` up into the main repo and run a container from the `atlas/analysisbase:21.2.85-centos7` image, volume-mounting the whole analysis repo into the container, as well as the ROOT histogram file that you previously produced with the `AnalysisPayload` executable.
-> #### Part 2
-> Now, add a new executable to your CMakeLists.txt file in AnalysisPayload named ReformatHist that will run the code. Consider which libraries will actually need to be linked, and which ones can be safely omitted for this executable. 
-> 
-The command to run the finalized executable will be:
+> Create an executable named `ReformatHist` that takes the ROOT histogram produced by `AnalysisPayload`, and converts it to a text file containing the `h_mjj_kin_cal` histogram in the format described just above this exercise. The command to run the finished executable will be:
+>
 > ~~~
-> ReformatHist /path/to/ROOT/file /path/to/text/file
+> ReformatHist /path/to/output/hist.root /path/to/output/textfile.txt
 > ~~~ 
+> 
+> #### Part 1
+> In your git repo, create a new file named ReformatHist.cxx in the AnalysisPayload/utils directory. 
+>
+> ~~~
+> cd AnalysisPayload/utils
+> touch ReformatHist.cxx
+> ~~~
+> {: .source}
+> cd up the main repo and, if you haven't already, run a container from the `atlas/analysisbase:21.2.85-centos7` image, volume-mounting the whole analysis repo into the container.
+>
+> ~~~
+> cd ../..
+> docker run --rm -it -w /home/atlas/Bootcamp -v \
+> $PWD:/home/atlas/Bootcamp atlas/analysisbase:21.2.85-centos7 \
+> bash -c 'cp -r ssh-credentials ~/.ssh; cp gitconfig ~/.gitconfig ; bash'
+> ~~~
+> {: .source}
+> 
+> #### Part 2
+> Now, add a **new executable** to your CMakeLists.txt file in AnalysisPayload named `ReformatHist` that will run the code. Consider which libraries will actually need to be linked, and which ones can be safely omitted for this executable. 
+> 
 > #### Part 3
-> Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in part a. Remember to `#include` any needed libraries. You can compile and test the code in the container as you work. 
+> Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in the beginning of the exercise. Remember to `#include` any needed libraries. You can compile and test the code in the container as you work. 
 > #### Part 4
-> When you're satisfied with the result, you can commit and push your updates to your AnalysisPayload sub-repo from your local machine. Remember to update your main repo so that it uses the updated AnalysisPayload commit. Check to ensure that the new image builds on gitlab without any errors. 
+> When you're satisfied with the result, you can commit and push your updates. Check to ensure that the new image builds on gitlab without any errors. 
 > > ## Solution
 > > #### Part 2
 > > The addition to CMakeLists.txt should look like:
@@ -268,7 +287,8 @@ reformatting_step:
     process_type: interpolated-script-cmd
     script: |
       source ~/release_setup.sh		# NOTE: This command shouldn't be needed if you're using an image you produced in the bonus "python-implementation" exercise!
-      source /Bootcamp/build/x86_64-slc6-gcc62-opt/setup.sh
+      source /Bootcamp/build/x86_64-centos7-gcc8-opt/setup.sh
+      cd /Bootcamp/run
       ReformatHist {hist_root} {hist_txt}     # Change the exact run command if your executable has a different name or location
   publisher:
     publisher_type: interpolated-pub

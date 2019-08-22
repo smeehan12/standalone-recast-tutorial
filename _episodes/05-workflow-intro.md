@@ -96,7 +96,7 @@ So here is an idea of what our workflow should look like:
 
 > ## Exercise (10 min)
 > #### Part 1
-> Looking at the workflow, you'll notice that the signal DAOD file gets passed to the analysis code in the first skimming step. Since our ultimate goal with RECAST is to make it possible to trivially re-interpret our analysis with any signal model, we should be able to pass any signal DAOD to this skimming step, not just the one we've been working with so far. It would also be good for clarity (and in fact necessary if we wanted to start considering different background samples) to be able to specify the name of the ROOT file containing the output histograms depending on the input DAOD. But at present, the filename and path to the input signal DAOD and output ROOT file are hard-coded into the AnalysisPayload.cxx code.
+> Giordon has already shown you how to make your code more flexible by making the path to the input file and the number of events to loop over optional input arguments to the `AnalysisPayload` executable. It would also be good for clarity (and in fact necessary if we wanted to start considering different background samples) to be able to specify the name of the ROOT file containing the output histograms depending on the input DAOD. But at present, the filename and path to the output ROOT file is hard-coded into the AnalysisPayload.cxx code.
 >
 > So, with an eye on re-interpretation, update the AnalysisPayload.cxx in your gitlab repo so it can read in both:
 > * the path to the input DAOD, and
@@ -104,30 +104,57 @@ So here is an idea of what our workflow should look like:
 >
 > such that the `AnalysisPayload` executable can be executed as follows:
 > ~~~
-> AnalysisPayload /path/to/input/DAOD.root.1 /path/to/output/ROOT/file.root
+> AnalysisPayload /path/to/input/DAOD.root.1 /path/to/output/ROOT/file.root number_of_events_to_loop_over
 > ~~~
 > {: .source}
 >
 > #### Part 2
+> Now, update the run stage in your `.gitlab-ci.yml` file so that the `AnalysisPayload` executable writes the output file to `ci_outputFile.root` and, again, loops over 1000 events.
+>
+> #### Part 3
+> If you haven't already, reduce the printout frequency in AnalysisPayload.cxx, since this is by far its rate-limiting factor:
+>
+> To do this, add `if(i%10000==0) ` in front of the two `std::cout()` printouts in the event loop.
+>
+> #### Part 4
 > While we're at it, we'll also need to make the binning a bit coarser for when we output the histogram to the `pyhf` fitting step, since the `pyhf` fitter takes a lot longer to run with many bins without necessarily much/any gain in sensitivity. So let's do that now. Update your AnalysisPayload.cxx so that it produces the `h_mjj_*` histograms with 20 rather than 100 bins.
 >
 > > ## Solution
 > > #### Part 1
 > > The updates should look something like:
 > >
-> > * `int main() {` --> `int main(int argc, char **argv) {`
-> >
-> > * `TString inputFilePath = /path/to/ROOT/file.root.1;` becomes:
-> >
+> > Underneaath 
+> > 
 > > ~~~
-> > TString inputFilePath = argv[1];
-> > TString outputFilePath = argv[2];
+> > if(argc >= 2) inputFilePath = argv[1];
 > > ~~~
 > > {: .source}
+> > 
+> > add
+> > 
+> > ~~~
+> > TString outputFilePath = "myOutputFile.root";
+> > if(argc >=3) outputFilePath = argv[2];
+> > ~~~
+> > {: .source}
+> >
 > >
 > > * `TFile *fout = new TFile("myOutputFile.root","RECREATE");` --> `TFile *fout = new TFile(outputFilePath), "RECREATE");`
 > >
 > > #### Part 2
+> > ~~~
+> > - AnalysisPayload root://eosuser.cern.ch//eos/user/g/gstark/public/DAOD_EXOT27.17882744._000026.pool.root.1 1000
+> > ~~~
+> > {: .source}
+> > 
+> > on line 49 becomes
+> > 
+> > ~~~
+> > - AnalysisPayload root://eosuser.cern.ch//eos/user/g/gstark/public/DAOD_EXOT27.17882744._000026.pool.root.1 ci_outputFile.root 1000
+> > ~~~
+> > {: .source}
+> > 
+> > #### Part 4
 > > The code to create the new `h_mjj` histogram objects should be updated as follows:
 > >
 > > `TH1D *h_mjj_raw = new TH1D("h_mjj_raw","",100,0,500);` --> `TH1D *h_mjj_raw = new TH1D("h_mjj_raw","",20,0,500);`
@@ -139,7 +166,7 @@ So here is an idea of what our workflow should look like:
 > > `TH1D *h_mjj_kin_cal = new TH1D("h_mjj_kin_cal","",100,0,500);` --> `TH1D *h_mjj_kin_cal = new TH1D("h_mjj_kin_cal","",20,0,500);`
 > {: .solution}
 >
-> Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo. Make sure the main repo is updated to use the latest AnalysisPayload commit.
+> Once you're happy with your updates to AnalysisPayload.cxx, you can commit and push them to your gitlab repo.
 {: .challenge}
 
 > ## Hints

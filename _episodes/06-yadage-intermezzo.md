@@ -45,9 +45,11 @@ The goal of the workflow is to take an input message, concatenate it with anothe
 
 <img src="../fig/sample_workflow.png" alt="Sample_workflow" style="width:150px"> 
 
-The containers containing the environment and executables needed run each of the two steps are already available on docker hub. For the purpose of writing our workflow, we're not really concerned with the code that actually produces the executables. All we need to know is how to run them inside their respective containers.
+The containers containing the environment and executables needed to run the two steps are already available on docker hub. For the purpose of writing our workflow, we're not really concerned with the code that actually produces the executables. All we need to know is how to run them inside their respective containers.
 
-* [https://hub.docker.com/r/yadage/tutorial-messagewriter/](https://hub.docker.com/r/yadage/tutorial-messagewriter/): contains a compiled C++ executable that takes a message and a path to an output file, concatenates the message onto `Hello, the message was: `, and writes the concatenated message to the output file. Try running it yourself! You can volume-mount your current working directory to the container so that the output file will persist after the container exits. 
+* [https://hub.docker.com/r/yadage/tutorial-messagewriter/](https://hub.docker.com/r/yadage/tutorial-messagewriter/): contains an executable that takes a message and a path to an output file, concatenates the message onto `Hello, the message was: `, and writes the new message to the output file. Try running it yourself:
+
+<!-- ! You can volume-mount your current working directory to the container so that the output file will persist after the container exits. -->
 
 ~~~
 docker run --rm -it -v $PWD:/workdir yadage/tutorial-messagewriter sh
@@ -55,9 +57,17 @@ docker run --rm -it -v $PWD:/workdir yadage/tutorial-messagewriter sh
 ~~~
 {: .source}
 
-You can then exit the container and check that your working directory now has a file outputfile.txt, which has some text written in it. 
+Exit the container and check that your working directory now has a file outputfile.txt, which has some text written in it. 
 
-* [https://hub.docker.com/r/yadage/tutorial-uppermaker/](https://hub.docker.com/r/yadage/tutorial-uppermaker/): contains a python script that takes paths to input and output files as command line arguments. It capitalizes the contents of the input file and writes the result to an output file. Let's try this out! We'll again volume mount our working directory and feed the output file from the last step into the program to see what happens to it:
+~~~
+exit
+cat outputfile.txt
+~~~
+{: .source}
+
+* [https://hub.docker.com/r/yadage/tutorial-uppermaker/](https://hub.docker.com/r/yadage/tutorial-uppermaker/): contains a python script that takes paths to input and output files as command line arguments. It capitalizes the contents of the input file and writes the result to an output file. Let's try this out:
+
+<!-- ! We'll again volume mount our working directory and feed the output file from the last step into the program to see what happens to it: -->
 
 ~~~
 docker run --rm -it -v $PWD:/workdir yadage/tutorial-uppermaker sh
@@ -65,14 +75,29 @@ python /code/uppermaker.py /workdir/outputfile.txt /workdir/capped_output.txt
 ~~~
 {: .source}
 
-Again, you can exit the container and confirm that your working directory now has a file `capped_output.txt` containing the capitalized text. 
+Exit the container and confirm that your working directory now has a file `capped_output.txt` containing the capitalized text. 
+
+~~~
+exit
+cat capped_output.txt
+~~~
+{: .source}
 
 
-The workflow we're about to construct essentially does the role of automating the procedure we just went through by hand. 
+The workflow we're about to construct basically automates the procedure we just went through by hand. 
 
 ### Steps 
 
-The two steps in our workflow are encoded in a yaml file steps.yml. Make a directory named `workflow` somewhere on your computer, cd into it, and create an empty file named `steps.yml`. In another shell, `cd` into this directory and paste the command listed above to start the yadage container in which you'll run yadage commands (eg. `packtivity-validate`, `yadage-run`, etc.):
+The two steps in our workflow are encoded in a yaml file steps.yml. Make a directory named `workflow` somewhere on your computer, and create an empty file named `steps.yml` in it. 
+
+~~~
+mkdir workflow
+cd workflow
+touch steps.yml
+~~~
+{: .source}
+
+**In another shell**, `cd` into this directory and start the yadage container in which you'll run yadage commands (eg. `packtivity-validate`, `yadage-run`, etc.):
 
 ~~~
 docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
@@ -101,13 +126,14 @@ messagewriter:
 
 This code fully describes the first step of taking the input message and using the `message_writer` executable to produce the output file. Let's look at the three components separately:
 
-* The `process` component specifies the type and content of the process that the container will run. The process type `interpolated-script-cmd` means that it runs a bash script that can include variables denoted by {curly brackets}. This is quite possibly the only type of process you'll ever need to use for RECAST.
+* **`process`:** specifies the type and content of the process that the container will run. The `interpolated-script-cmd` type means that it runs a bash script that can include variables denoted by {curly brackets}. 
+<!--This is quite possibly the only type of process you'll ever need to use for RECAST.-->
 
-* The `publisher` component specifies how the output of the step will be published (in this case `interpolated-pub`), and what variable(s) it will be published to. 
+* **`publisher`:** specifies how the output of the step will be published (in this case `interpolated-pub`), and what variable(s) it will be published to. 
 
-* The `environment` component indicates that the script will be run inside a docker container produced from the base image `yadage/tutorial-messagewriter`.
+* **`environment`:** indicates that the script will be run inside a docker container produced from the base image `yadage/tutorial-messagewriter`.
 
-We can use the `packtivity-validate` command to check that we wrote this specification correctly:
+You can use the `packtivity-validate` command to check that we wrote this specification correctly:
 
 ~~~
 packtivity-validate steps.yml#/messagewriter
@@ -119,14 +145,21 @@ packtivity definition is valid
 ~~~
 {: .output}
 
-We can now use a very helpful debugging tool called `packtivity-run` to try executing the task as a standalone `packtivity`, where we specify both the message and the location of the output file:
+We can now use a great debugging tool called `packtivity-run` to try executing the task as a standalone `packtivity`, specifying both the message and the location of the output file:
 
 ~~~
 packtivity-run steps.yml#/messagewriter -p message="Hi there." -p outputfile="'{workdir}/outputfile.txt'" 
 ~~~
 {: .source}
 
-You can now check that a file `outputfile.txt` has been produced in the current directory with the expected output. Note that you'll need to remove the `_packtivity` directory before running the `packtivity-run` command again, otherwise the command will crash with a message like this:
+Check that a file `outputfile.txt` has been produced in the current directory with the expected output:
+
+~~~
+cat outputfile.txt
+~~~
+{: .source}
+
+**Note that you'll need to remove the `_packtivity` directory before running the `packtivity-run` command again, otherwise the command will crash with a message like this:**
 
 ~~~
 w134-87-144-175:workflow danikam$ packtivity-run steps.yml#/messagewriter -p message="Hi there." -p outputfile="'{workdir}/outputfile.txt'" 
@@ -222,7 +255,7 @@ HELLO, THE MESSAGE WAS: HI THERE.
 ~~~
 {: .output}
 
-Note that, as with the `packtivity-run` command, you'll need to remove the `workdir` directory produced by the `yadage_run` command before you can re-run the command.
+Note that, as with the `packtivity-run` command, you'll need to remove the `workdir` directory produced by the `yadage-run` command before you can re-run the command.
 
 > ## Debugging Hint
 > As with `packtivity-run`, the `yadage-run` command also produces log files for each step that can be super handy for debugging. These are located in the respective `_packtivity` directory for each step. For example, the log files for the second `shouting_stage` step are located in `workdir/shouting_stage/_packtivity/`. 

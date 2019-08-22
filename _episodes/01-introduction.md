@@ -19,6 +19,7 @@ keypoints:
 ## Introduction
 This morning's docker tutorial introduced you to containerization as an industry-standard computing tool that makes it quick and easy to bring up a customized computing environment to suit the needs of your application. In this tutorial, we'll explore how ATLAS is leveraging the power of containerization for data analysis applications. You've already seen that standard ATLAS computing tools can be packaged into the `atlas/analysisbase` docker image, which lets you develop an analysis on your local machine. Now we'll see how ATLAS is using docker and gitlab to preserve and re-interpret ATLAS analyses using a tool called RECAST (Request Efficiency Computation for Alternative Signal Theories).
 
+### Plausible and Likely Scenario
 
 To understand why analysis preservation, and RECAST in particular, is useful, consider that it can take months or even years for a multi-person analysis team to develop cuts that optimally carve out a phase space sensitive to the model they want to test, and estimate the standard model backgrounds and systematics in this phase space.
 
@@ -36,14 +37,18 @@ This is where RECAST comes in! RECAST, [initially developed during Run1 of the L
 
 ## Three Key Components of RECAST
 
+### Analysis code preservation
+
 Analysts write a custom code framework that they pass data and signal/background MC through to search for a particular physics model in the data. The first part of analysis preservation is therefore to preserve this code framework. Gitlab is great for this. It fully preserves not only the final version of the code, but also every single version and offshoot of the code that was ever used by the analysts.
 
+### Environment preservation
 
 But as we've seen, the code framework is far from standalone. It relies on having specific libraries, compilers, and even operating systems in place, and it may be really fussy about the exact versions of all these dependencies. So the second part of analysis preservation is to capture the exact environment in which the code was run by the original analysts. This is where docker comes in.
 
 
 ATLAS has developed [version-controlled docker base images](https://hub.docker.com/u/atlas) that encapsulate the OS, compilers, standard libraries, and ATLAS-specific dependencies commonly used in ATLAS analyses. You've already had a chance to work with one of them, `atlas/analysisbase`. Individual searches design custom Dockerfiles in the Github repo(s) to add the analysis code to the base image, along with any analysis-specific dependencies, and then build the code to produce the exact environment needed to run it.
 
+### Automated re-interpretation
 
 The third and final piece of analysis preservation is to fully automate the steps that an analyst would go through in order to pass a new signal model through the analysis chain to arrive at the new result. This is accomplished using a tool called yadage, which allows the user to codify each step of the analysis, which analysis environment (i.e. container) a given step needs to run in, and how each step fits into the overall analysis workflow to arrive at the final result.
 

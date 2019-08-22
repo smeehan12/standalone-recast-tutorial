@@ -15,7 +15,7 @@ keypoints:
 
 ## Introduction
 Throughout the week, you have been developing and running your AnalysisPayload within a
-docker image `atlas/analysisbase:21.2.85-centos7`.  It transported you into something that feels like
+docker image `atlas/analysisbase:21.2.75`.  It transported you into something that feels like
 lxplus, and at this point you may have an appreciation for how to think about this image and how
 it is like lxplus, and how it is different. Before we proceed with exploring how this image and others are used in analysis preservation, let's first take a step back and try to understand a bit better where the image actually comes from.
 
@@ -90,7 +90,7 @@ While we're waiting for the build to finish, let's take a look at the Dockerfile
 >
 > **Question 2**
 >
-> Identify the step in which the atlas development libraries are obtained.
+> Identify the step in which the base packages needed to build the atlas release are installed.
 >
 > **Question 3**
 >
@@ -119,10 +119,10 @@ While we're waiting for the build to finish, let's take a look at the Dockerfile
 ### Building the Release Layer
 
 Once the base image is finished building, you can now use it locally!  So now change your working directory and go into the `slc6-analysisbase`
-directory.  Open up the `Dockerfile` here and update the line `ARG RELEASE=21.2.3` (line 11) to `ARG RELEASE=21.2.85-centos7` so we'll build the exact release we've been running. Notice that this `Dockerfile` again uses an argument to specify the base image: `ARG BASEIMAGE=atlas/slc6-atlasos:latest`. Use the `docker build` option `--build-arg` to replace this default base image with the one we just built: 
+directory.  Open up the `Dockerfile` here and update the line `ARG RELEASE=21.2.3` (line 11) to `ARG RELEASE=21.2.75` so we'll build the exact release we've been running. Notice that this `Dockerfile` again uses an argument to specify the base image: `ARG BASEIMAGE=atlas/slc6-atlasos:latest`. Use the `docker build` option `--build-arg` to replace this default base image with the one we just built: 
 
 ~~~bash
-docker build -t meehan/analysisbase:21.2.85-centos7  --build-arg BASEIMAGE=meehan/slc6-atlasos .
+docker build -t meehan/analysisbase:21.2.75  --build-arg BASEIMAGE=meehan/slc6-atlasos .
 ~~~
 
 Again, let's go though the Dockerfile to see if we can understand what's it's doing, using the following exercise questions to test your understanding:
@@ -133,12 +133,14 @@ Again, let's go though the Dockerfile to see if we can understand what's it's do
 > 
 > How are the variables `AtlasProject` and `AtlasVersion` set with the `ENV` instruction different from the other variables set with `ARG`?
 >
+<!--
 > **Question 2** 
 >
-> Open up the file `release_setup.sh.in` in another text editor window and review how it sets up the environment. Identify how the `release_setup.sh` script in an athanalysisbase container gets the information to specifically set up the AnalysisBase environment.
+> Open up the file `release_setup.sh.in` in another text editor window and review how it sets up the environment. Identify how the `release_setup.sh` script in an athanalysisbase container gets the information to specifically set up the AnalysisBase environment. 
+ -->
 > 
-> **Question 3**
-> Identify where the specific `AnalysisBase:21.2.85-centos7` code package is installed.
+> **Question 2**
+> Identify where the specific `AnalysisBase:21.2.75` code package is installed.
 > 
 > > ## Solution
 > > 
@@ -173,7 +175,7 @@ And finally check to see that the image is present in the repository.
 > Try running your `AnalysisPayload` within this image that you just created! Remember that the analysis release image doesn't yet contain your analysis code, so you'll need to volume-mount the top level of your gitlab repo to it:
 > ~~~
 > cd /your/gitlab/repo
-> docker run --rm -it -v $PWD:/home/atlas/Bootcamp meehan/analysisbase:21.2.85-centos7 bash
+> docker run --rm -it -v $PWD:/home/atlas/Bootcamp meehan/analysisbase:21.2.75 bash
 > ~~~
 >
 {: .challenge}
