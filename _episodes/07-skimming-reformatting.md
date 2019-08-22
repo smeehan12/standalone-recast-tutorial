@@ -201,7 +201,7 @@ You can try setting up the container for this step yourself in the following exe
 > Now, add a **new executable** to your CMakeLists.txt file in AnalysisPayload named `ReformatHist` that will run the code. Consider which libraries will actually need to be linked, and which ones can be safely omitted for this executable. 
 > 
 > #### Part 3
-> Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in the beginning of the exercise. Remember to `#include` any needed libraries. You can compile and test the code in the container as you work. You can start with the following skeleton:
+> Fill in ReformatHist.cxx so the corresponding ReformatHist executable can accomplish the task described in the beginning of the exercise. You can compile and test the code in the container as you work. Start with the following skeleton:
 > 
 > ~~~
 > // stdlib functionality     
