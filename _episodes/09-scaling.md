@@ -14,7 +14,7 @@ keypoints:
 
 ## Introduction
 
-The final step of our analysis workflow is to make a statistical comparison of the data with our signal model and SM background. 
+The final step of our analysis workflow is to make a statistical comparison of the data with our signal model and SM background.
 
 <!--Our goal is to determine whether we can detect any signicant evidence for our signal in the data or, if not, what signal cross sections the data can exclude.-->
 
@@ -45,7 +45,7 @@ In addition to this event-by-event weighting, we also need to deal with the fact
 
 #### Accessing MC Event Weights and Sum-of-Weights
 
-The sum of MC event weights can be obtained from the `CutBookkeepers` container - the [The AthAnalysisBase Handbook](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_access_EventBookkeeper_in) includes code for doing so either in [pure ROOT](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_access_EventBookkeeper_in) or [pyROOT](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_print_the_sum_of_weights) - the result for our signal sample is **6813.025800** (see bonus part 3 in the next exercise to try getting this number yourself!). 
+The sum of MC event weights can be obtained from the `CutBookkeepers` container - the [The AthAnalysisBase Handbook](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_access_EventBookkeeper_in) includes code for doing so either in [pure ROOT](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_access_EventBookkeeper_in) or [pyROOT](https://twiki.cern.ch/twiki/bin/view/AtlasProtected/AthAnalysisBase#How_to_print_the_sum_of_weights) - the result for our signal sample is **6813.025800** (see bonus part 3 in the next exercise to try getting this number yourself!).
 
 The next exercise will guide you through implementing the MC event weighting.
 
@@ -132,7 +132,7 @@ The next exercise will guide you through implementing the MC event weighting.
 {: .callout}
 
 ### Cross Section, Filter Factor, and k Factor Scaling: AMI
-Now that the events in our histogram are properly weighted, we can proceed with scaling the histogram such that its amplitude relative to other MC samples represents the predicted production rate of our signal process relative to those of background processes. 
+Now that the events in our histogram are properly weighted, we can proceed with scaling the histogram such that its amplitude relative to other MC samples represents the predicted production rate of our signal process relative to those of background processes.
 
 #### Cross Section and Filter Factor
 
@@ -140,7 +140,7 @@ If the MC generator indiscriminately produced the full range of events for a giv
 
 #### k-factor
 
-Sometimes, generators will also provide a "k-factor" (set to 1 by default), which becomes relevant when there's an expectation that higher-order terms in the process - beyond what the generator produces - will contribute non-negligibly to the cross section. The k-factor then tries to correct for the absence of these higher-order terms. 
+Sometimes, generators will also provide a "k-factor" (set to 1 by default), which becomes relevant when there's an expectation that higher-order terms in the process - beyond what the generator produces - will contribute non-negligibly to the cross section. The k-factor then tries to correct for the absence of these higher-order terms.
 
 
 So in general, we scale MC histograms by the product of their cross section, filter efficiency, and k-factor to reflect their relative production rates. The next exercise will guide you through obtaining the predicted cross section, filter efficiency, and k-factor from AMI via both the online site and the command line.
@@ -152,8 +152,8 @@ So in general, we scale MC histograms by the product of their cross section, fil
 > and uploaded to your home directory on lxplus (see details in [Setup section](https://danikam.github.io/2019-08-19-usatlas-recast-tutorial/setup.html)).
 >
 > #### Part 1: AMI Website
-> First, we'll try getting the information from the AMI website. 
-> * Go to [https://ami.in2p3.fr](https://ami.in2p3.fr), then click on "Dataset Browser for AMI V2". 
+> First, we'll try getting the information from the AMI website.
+> * Go to [https://ami.in2p3.fr](https://ami.in2p3.fr), then click on "Dataset Browser for AMI V2".
 >
 > * Press the `mc16` button corresponding to the type of data we have, then you'll arrive at a page with a column of buttons on the left-hand side that you can use to refine your search and find the exact dataset we've been using.
 >
@@ -196,12 +196,26 @@ So in general, we scale MC histograms by the product of their cross section, fil
 > all of the details really requires that you attend the [Offline Software Tutorial](https://indico.cern.ch/category/397/).
 > You can also spend some time exploring the site on your own.
 >
-> One thing that is useful to know how to do with AMI
-> is derive the configurations for a production tag, which is that set of things like `e5706_s3126_r10724_p3840` at the end of a container.
-> These refer to very specific configurations and Athena reconstruction releases as explained in the pre-workshop material.
-> You can use AMI to look this up by selecting the "AMI-Tags" option on the main page and entering one of the tags, like `r10724`,
-> for which we can see the Athena release and the jobOption configurations used for this reconstruction.  This is really venturing
-> into the weeds, but will likely be something you will be interested to know later in your work in the experiment.
+> **_Optional Exercise 1_** : One thing that is useful to know how to do with AMI is derive the configurations for a production tag, which is that set of things like `e5706_s3126_r10724_p3840` at the end of a container. These refer to very specific configurations and Athena reconstruction releases as explained in the pre-workshop material. You can use AMI to look this up by selecting the "AMI-Tags" option on the main page and entering one of the tags, like `p3840`, for which we can see the Athena release and the jobOptions used for the creation of the derivation.  (This is really venturing into the weeds a bit, but will likely be something you will be interested to know later in your work in the experiment.)  From here, click on the `preExec` to see some of the configurations that are added "on the fly" to the derivations.  One of the important things that is done here is the configuration for b-tagging, which you should see to be "BTagCalibRUN12-08-47".
+>
+> **_Optional Exercise 2_** : If you are really curious, try to figure out how to _compare_ the configuration of two different releases.  For example, the dataset that you have been using actually exists in a few different incarnations, shown below.
+>
+> ~~~
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10201_r10210_p3712
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r9364_r9315_p3712
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10724_r10726_p3712
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r9364_r9315_p3780
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10201_r10210_p3780
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10724_r10726_p3780
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10201_r10210_p3840
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r9364_r9315_p3840
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10724_r10726_p3840
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10201_r10210_p3947
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r10724_r10726_p3947
+> mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_e5984_s3126_r9364_r9315_p3947
+> ~~~
+>
+> Now, choose two of the derivation tags and enter them into the `Compare` fields.  Then see if you can figure out whether the same b-tagging was run for these two datasets.  This will tell you, to a large extent, whether the precise values of MV2c10 or DL1 will be the same.
 >
 {: .callout}
 
