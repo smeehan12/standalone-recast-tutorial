@@ -49,7 +49,7 @@ So far, you've been starting your containers from the `atlas/analysisbase:21.2.8
 > 
 > ~~~
 > # Specify the image and release tag from which we're working
-> atlas/analysisbase:21.2.85-centos7
+> FROM atlas/analysisbase:21.2.85-centos7
 > 
 > # Put the current repo (the one in which this Dockerfile resides) in the /Bootcamp directory
 > # Note that this directory is created on the fly and does not need to reside in the repo already
