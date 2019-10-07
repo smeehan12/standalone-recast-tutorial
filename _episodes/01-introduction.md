@@ -17,20 +17,20 @@ keypoints:
 ---
 
 ## Introduction
-This morning's docker tutorial introduced you to containerization as an industry-standard computing tool that makes it quick and easy to bring up a customized computing environment to suit the needs of your application. In this tutorial, we'll explore how ATLAS is leveraging the power of containerization for data analysis applications. You've already seen that standard ATLAS computing tools can be packaged into the `atlas/analysisbase` docker image, which lets you develop an analysis on your local machine. Now we'll see how ATLAS is using docker and gitlab to preserve and re-interpret ATLAS analyses using a tool called RECAST (Request Efficiency Computation for Alternative Signal Theories).
+This tutorial provides a hands-on introduction to using docker and gitlab to preserve and re-interpret ATLAS analyses using a tool called RECAST (Request Efficiency Computation for Alternative Signal Theories).
 
 ### Plausible and Likely Scenario
 
 To understand why analysis preservation, and RECAST in particular, is useful, consider that it can take months or even years for a multi-person analysis team to develop cuts that optimally carve out a phase space sensitive to the model they want to test, and estimate the standard model backgrounds and systematics in this phase space.
 
 
-Years later, other physicists may dream up new theories leading to alternative models that would show up in the same or similar phase space. Since the cuts and standard model background estimates won't be affected by considering different signal models in the same phase space, it would probably be way faster for them just to make some tweaks to the original analysis to re-run it with the new models. But the original analysts have moved on, and even if they can dig up the analysis code, they may not remember exactly how to use it or what sort of environment they were running it in.
+Years later, other physicists may dream up new models that would show up in the same or similar phase space as your original analysis. Since the cuts and standard model background estimates won't be affected by considering different signal models in the same phase space, it would probably be way faster for them just to make some tweaks to the original analysis to re-run it with the new models. But the original analysts have moved on, and even if they can dig up the analysis code, they may not remember exactly how to use it or what sort of environment they were running it in.
 
 
 This is where RECAST comes in! RECAST, [initially developed during Run1 of the LHC](https://link.springer.com/article/10.1007%2FJHEP04%282011%29038) is a part of a broader effort called [REANA](http://www.reanahub.io/) which aims to improve the reproducibility of particle physics data analysis.  These efforts are all part of a broader effort of [analysis preservation](https://www.nature.com/articles/s41567-018-0342-2) ongoing at CERN.  RECAST in particular, the tool you will be learning about here, automates the process of passing a new signal model through an analysis at the time that the analysis is being developed. The idea is that the analysis can then be trivially reused at any time in the future to re-interpret new signal models in the phase space that it so painstakingly revealed.
 
 > ## RECAST in Action
-> All this RECAST business may seem like a thing of the future in ATLAS, and up until recently it sort of was. But, as of last week, it is officially a thing of the **now**! The mono-Hbb dark matter search, which looks for dark matter production in association with a Higgs boson decaying to a pair of b-quarks (not so different from our VHbb signal actually...) was recently re-interpreted ([link to paper](https://cds.cern.ch/record/2686290)) in the context of replacing the standard model Higgs decay with a dark sector Higgs decaying to two b-quarks. This re-interpretation was done using the RECAST framework set up by the mono-Hbb analysis!
+> All this RECAST business may seem like a thing of the future in ATLAS. But, as of August 2019, is officially a thing of the **now**! The mono-Hbb dark matter search, which looks for dark matter production in association with a Higgs boson decaying to a pair of b-quarks (not so different from our VHbb signal actually...) has been re-interpreted ([link to paper](https://cds.cern.ch/record/2686290)) in the context of replacing the standard model Higgs decay with a dark sector Higgs decaying to two b-quarks. This re-interpretation was done using the RECAST framework set up by the mono-Hbb analysis!
 > <img src="../fig/recast_doodle.png" alt="MonoHbb Reinterpretation" style="width:500px">
 > <img src="../fig/monosbb_exclusion.png" alt="MonoSbb Exclusion" style="width:375px">
 {: .callout}
@@ -43,7 +43,7 @@ Analysts write a custom code framework that they pass data and signal/background
 
 ### Environment preservation
 
-But as we've seen, the code framework is far from standalone. It relies on having specific libraries, compilers, and even operating systems in place, and it may be really fussy about the exact versions of all these dependencies. So the second part of analysis preservation is to capture the exact environment in which the code was run by the original analysts. This is where docker comes in.
+But the code framework is far from standalone. It relies on having specific libraries, compilers, and even operating systems in place, and it may be really fussy about the exact versions of all these dependencies. So the second part of analysis preservation is to capture the exact environment in which the code was run by the original analysts. This is where docker comes in.
 
 
 ATLAS has developed [version-controlled docker base images](https://hub.docker.com/u/atlas) that encapsulate the OS, compilers, standard libraries, and ATLAS-specific dependencies commonly used in ATLAS analyses. You've already had a chance to work with one of them, `atlas/analysisbase`. Individual searches design custom Dockerfiles in the Github repo(s) to add the analysis code to the base image, along with any analysis-specific dependencies, and then build the code to produce the exact environment needed to run it.
