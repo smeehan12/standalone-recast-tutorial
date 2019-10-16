@@ -19,7 +19,7 @@ The final step of our analysis workflow is to make a statistical comparison of t
 <!--Our goal is to determine whether we can detect any signicant evidence for our signal in the data or, if not, what signal cross sections the data can exclude.-->
 
 
-The interpretation step will receive the `h_mjj` histogram and perform the statistical comparison with some simulated background and data. The fitting will be done with [pyhf](https://diana-hep.org/pyhf/), a specialized fitting module designed for HEP applications and written in pure python (i.e. no ROOT dependencies). We won't dig into the actual details of the `pyhf` implementation during this tutorial, but if you're interested in learning more, check out the "Fitting Fun with pyhf" module on Friday!
+The interpretation step will receive the `h_mjj` histogram and perform the statistical comparison with some simulated background and data. The fitting will be done with [pyhf](https://diana-hep.org/pyhf/), a specialized fitting module designed for HEP applications and written in pure python (i.e. no ROOT dependencies). We won't dig into the actual details of the `pyhf` implementation during this tutorial, but feel free to [check out the code](https://gitlab.cern.ch/damacdon/bootcamp-pyhf-fit/blob/standalone/run_fit.py) if you're interested!
 
 
 ## Scaling the Signal Histogram
