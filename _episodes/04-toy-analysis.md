@@ -3,16 +3,22 @@ title: "Toy Analysis"
 teaching: 15
 exercises: 15
 questions:
-- "Insert questions"
+- "What type of physics will I be analyzing during the tutorial?"
+- "How do I run a simplified event loop to get the dijet invariant mass distribution from our signal sample?"
 objectives:
-- "Insert objective"
+- "Famliarize yourself with the physics context for our toy analysis"
+- "Practice compiling running a simplified event loop over our signal sample to get some distributions of interest"
+- "Get an idea (but not necessarily an exhaustive understanding) of how our toy analysis is encoded"
 keypoints:
-- "insert keypoints"
+- We'll be studying the reconstruction of a Higgs decaying to a pair of b-quarks
+- The dijet invariant mass is the key observable
+- We have a simple event loop in place to extract the dijet invariant mass (m<sub>jj</sub>) distribution from a signal sample
+- The key takeaway is to understand how to run the code to get the m<sub>jj</sub> distribution - it's not necessary to understand every detail of how it works
 ---
 
 # Introduction
 
-To introduce the RECAST concepts during the tutorial, we'll work with a small, simple stand-alone toy analysis. We'll look at the "VHbb" Higgs search channel, with the Higgs decaying to b-quarks:
+To introduce the RECAST concepts during the tutorial, we'll work on RECASTing a small, simple stand-alone toy analysis. We'll look at the "VHbb" Higgs search channel, with the Higgs decaying to b-quarks:
 
 ![](../fig/VHbb.png)
 

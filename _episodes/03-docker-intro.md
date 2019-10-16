@@ -3,12 +3,14 @@ title: "Docker Crash Course Part 2: Running and Building Containers"
 teaching: 20
 exercises: 0
 questions:
-- "What do I need to know about working with docker containers in order to RECAST my analysis?"
+- "How can I customize docker images and run them as containers on my machine?"
+- "How do I give a running docker container access to files and directories on my machine?"
 objectives:
 - "Understand how containers help you encapsulate your environment"
-- "Practice pulling, creating, and running docker containers"
+- "Practice creating and running docker containers"
 keypoints:
-- "Add keypoints"
+- "Dockerfiles let you to customize a base docker image to get the exact environment you want"
+- "Volume-mounting lets you specify the exact files and directories on your machine that you want a running container to have access to"
 ---
 
 # Running containers

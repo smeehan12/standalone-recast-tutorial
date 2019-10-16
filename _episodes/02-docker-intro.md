@@ -3,12 +3,13 @@ title: "Docker Crash Course Part 1: Images and Containers"
 teaching: 10
 exercises: 0
 questions:
-- "What do I need to know about working with docker containers in order to RECAST my analysis?"
+- "What's a docker container, and how is it related to a docker image?"
+- "How do I pull docker images onto my machine and see which ones I've already pulled?"
 objectives:
-- "Understand how containers help you encapsulate your environment"
-- "Practice pulling, creating, and running docker containers"
+- "Get an idea of what a docker container is and what it can offer"
+- "Practice pulling docker containers"
 keypoints:
-- "Add keypoints"
+- "Containers offer a quick and accessible way to customize your environment!"
 ---
 
 # Introduction
