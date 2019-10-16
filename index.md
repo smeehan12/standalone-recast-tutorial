@@ -12,9 +12,7 @@ Welcome to the US ATLAS/First-HEP computing bootcamp's tutorial on ATLAS analysi
 
 > ## Prerequisites
 >
-> * A personal repo containing a working version of your VHbb analysis code and gitlab-ci files from [the ATLAS CI/CD tutorial](https://kratsg.github.io/2019-08-19-usatlas-computing-bootcamp/).
->   If you have fallen a bit behind on this, don't worry, as a tutor and we will help you come up to speed lickety split.
-> * Knowledge gained from the bootcamp so far, especially this morning's docker tutorial!
+> * Make sure you've installed docker on your computer and downloaded the files and docker images described in the [setup page](https://danikam.github.io/standalone-recast-tutorial/setup.html).
 {: .prereq}
 
 {% include links.md %}
