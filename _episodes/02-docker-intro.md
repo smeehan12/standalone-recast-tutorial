@@ -1,6 +1,6 @@
 ---
 title: "Docker Crash Course Part 1: Images and Containers"
-teaching: 20
+teaching: 10
 exercises: 0
 questions:
 - "What do I need to know about working with docker containers in order to RECAST my analysis?"

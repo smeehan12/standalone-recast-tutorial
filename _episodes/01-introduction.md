@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-teaching: 20
+teaching: 15
 exercises: 0
 questions:
 - "What is RECAST and how can it help me make the most of my analysis?"
@@ -21,7 +21,7 @@ This tutorial provides a hands-on introduction to using docker and gitlab to pre
 
 ### Plausible and Likely Scenario
 
-To understand why analysis preservation, and RECAST in particular, is useful, consider that it can take months or even years for a multi-person analysis team to develop cuts that optimally carve out a phase space sensitive to the model they want to test, and estimate the standard model backgrounds and systematics in this phase space.
+To understand why analysis preservation and re-interpretation is important, consider that it can take months or even years for a multi-person analysis team to develop cuts that optimally carve out a phase space sensitive to the model they want to test, and estimate the standard model backgrounds and systematics in this phase space.
 
 
 Years later, other physicists may dream up new models that would show up in the same or similar phase space as your original analysis. Since the cuts and standard model background estimates won't be affected by considering different signal models in the same phase space, it would probably be way faster for them just to make some tweaks to the original analysis to re-run it with the new models. But the original analysts have moved on, and even if they can dig up the analysis code, they may not remember exactly how to use it or what sort of environment they were running it in.
