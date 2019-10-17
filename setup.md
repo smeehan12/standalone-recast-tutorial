@@ -6,7 +6,7 @@ title: Setup
 
 2. Please do the following docker pulls beforehand to save time during the tutorial:
   ~~~bash
-  docker pull atlas/analysisbase:21.2.85-centos
+  docker pull atlas/analysisbase:21.2.85-centos7
   docker pull matthewfeickert/intro-to-docker
   docker pull debian:buster
   docker pull yadage/yadage
