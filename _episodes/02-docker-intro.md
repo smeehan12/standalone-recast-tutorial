@@ -39,18 +39,16 @@ allows for downloading images as they are needed.
 To begin with we're going to [pull][docker-docs-pull] down the Docker image we're going
 to be working in for the tutorial
 
-~~~
+~~~bash
 docker pull matthewfeickert/intro-to-docker
 ~~~
-{: .source}
 
 
 and then [list the images][docker-docs-images] that we have available to us locally
 
-~~~
+~~~bash
 docker images
 ~~~
-{: .source}
 
 You can see here that there is the `TAG` field associated with the
 `matthewfeickert/intro-to-docker` image.
@@ -59,11 +57,10 @@ As an example, let's pull the buster release tag of the
 [Debian image](https://hub.docker.com/_/debian).
 
 
-~~~
+~~~bash
 docker pull debian:buster
 docker images debian
 ~~~
-{: .source}
 
 
 > ## Pulling Python
@@ -72,11 +69,10 @@ docker images debian
 >
 > > ## Solution
 > >
-> > ~~~
+> > ~~~bash
 > > docker pull python:3.7
 > > docker images
 > > ~~~
-> > {: .source}
 > >
 > > ~~~
 > > REPOSITORY                        TAG                 IMAGE ID            CREATED             SIZE

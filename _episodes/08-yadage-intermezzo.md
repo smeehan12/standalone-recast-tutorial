@@ -27,17 +27,15 @@ In this *intermezzo*, we'll take our first step into the forest of workflow auth
 Yadage is available as both a [pip package](https://pypi.org/project/yadage/) and a [docker container image](https://hub.docker.com/r/yadage/yadage) with yadage pre-installed. To avoid any need to download pip, yadage and its dependencies onto our computers - and since we're already in a container groove! - let's run with the container. 
 
 First, pull the container from docker hub:
-~~~
+~~~bash
 docker pull yadage/yadage
 ~~~
-{: .source}
 
 Now, if you want to use yadage commands in your directory, you can start the yadage container in the directory and bind-mount the directory contents and your docker daemon to the container with the following command:
 
-~~~
+~~~bash
 docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
 ~~~
-{: .source}
 
 ### Helloworld Workflow
 
@@ -51,37 +49,33 @@ The containers containing the environment and executables needed to run the two 
 
 <!-- ! You can volume-mount your current working directory to the container so that the output file will persist after the container exits. -->
 
-~~~
+~~~bash
 docker run --rm -it -v $PWD:/workdir yadage/tutorial-messagewriter sh
 /code/message_writer hello /workdir/outputfile.txt
 ~~~
-{: .source}
 
 Exit the container and check that your working directory now has a file outputfile.txt, which has some text written in it. 
 
-~~~
+~~~bash
 exit
 cat outputfile.txt
 ~~~
-{: .source}
 
 * [https://hub.docker.com/r/yadage/tutorial-uppermaker/](https://hub.docker.com/r/yadage/tutorial-uppermaker/): contains a python script that takes paths to input and output files as command line arguments. It capitalizes the contents of the input file and writes the result to an output file. Let's try this out:
 
 <!-- ! We'll again volume mount our working directory and feed the output file from the last step into the program to see what happens to it: -->
 
-~~~
+~~~bash
 docker run --rm -it -v $PWD:/workdir yadage/tutorial-uppermaker sh
 python /code/uppermaker.py /workdir/outputfile.txt /workdir/capped_output.txt
 ~~~
-{: .source}
 
 Exit the container and confirm that your working directory now has a file `capped_output.txt` containing the capitalized text. 
 
-~~~
+~~~bash
 exit
 cat capped_output.txt
 ~~~
-{: .source}
 
 
 The workflow we're about to construct basically automates the procedure we just went through by hand. 
@@ -90,25 +84,23 @@ The workflow we're about to construct basically automates the procedure we just 
 
 The two steps in our workflow are encoded in a yaml file steps.yml. Make a directory named `workflow` somewhere on your computer, and create an empty file named `steps.yml` in it. 
 
-~~~
+~~~bash
 mkdir workflow
 cd workflow
 touch steps.yml
 ~~~
-{: .source}
 
 **In another shell**, `cd` into this directory and start the yadage container in which you'll run yadage commands (eg. `packtivity-validate`, `yadage-run`, etc.):
 
-~~~
+~~~bash
 docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
 ~~~
-{: .source}
 
 #### Message Writing Step
 
 Paste the following into your `steps.yml` file:
 
-~~~
+~~~yaml
 messagewriter:
   process:
     process_type: interpolated-script-cmd
@@ -122,7 +114,6 @@ messagewriter:
     environment_type: docker-encapsulated
     image: yadage/tutorial-messagewriter
 ~~~
-{: .source}
 
 This code fully describes the first step of taking the input message and using the `message_writer` executable to produce the output file. Let's look at the three components separately:
 
@@ -135,10 +126,9 @@ This code fully describes the first step of taking the input message and using t
 
 You can use the `packtivity-validate` command to check that we wrote this specification correctly:
 
-~~~
+~~~bash
 packtivity-validate steps.yml#/messagewriter
 ~~~
-{: .source}
 
 ~~~
 packtivity definition is valid
@@ -147,17 +137,15 @@ packtivity definition is valid
 
 We can now use a great debugging tool called `packtivity-run` to try executing the task as a standalone `packtivity`, specifying both the message and the location of the output file:
 
-~~~
+~~~bash
 packtivity-run steps.yml#/messagewriter -p message="Hi there." -p outputfile="'{workdir}/outputfile.txt'" 
 ~~~
-{: .source}
 
 Check that a file `outputfile.txt` has been produced in the current directory with the expected output:
 
-~~~
+~~~bash
 cat outputfile.txt
 ~~~
-{: .source}
 
 **Note that you'll need to remove the `_packtivity` directory before running the `packtivity-run` command again, otherwise the command will crash with a message like this:**
 
@@ -173,7 +161,7 @@ w134-87-144-175:workflow danikam$ packtivity-run steps.yml#/messagewriter -p mes
 
 Now, add the following to your steps.yml file to describe the second step which will take the file produced by the first step, and write the capitalized contents to an output file. 
 
-~~~
+~~~yaml
 uppermaker:
   process:
     process_type: interpolated-script-cmd
@@ -187,14 +175,12 @@ uppermaker:
     environment_type: docker-encapsulated
     image: yadage/tutorial-uppermaker
 ~~~
-{: .source}
 
 You can validate and test this step using the same `packtivity-validate` and `packtivity-run` tools as before, where the `packtivity-run` command would be:
 
-~~~
+~~~bash
 packtivity-run steps.yml#/uppermaker -p inputfile="'{workdir}/outputfile.txt'" -p outputfile="'{workdir}/capped_output.txt'" 
 ~~~
-{: .source}
 
 > ## Debugging Hint
 > When `packtivity-run` fails and crashes, the info in its core dump can sometimes be a little cryptic. But if you look in the `_packtivity` directory that gets created when you run `packtivity-run`, you'll find several log files, and usually one of them (often `packtivity_syncbackend.run.log`) will be able to point you to the cause of the crash.
@@ -204,7 +190,7 @@ packtivity-run steps.yml#/uppermaker -p inputfile="'{workdir}/outputfile.txt'" -
 
 Now we can combine the two steps specified above together to form the full workflow. Create a new file named workflow.yml, and paste the following into it:
 
-~~~
+~~~yaml
 stages:
 - name: writing_stage
   dependencies: [init]
@@ -223,7 +209,6 @@ stages:
       outputfile: '{workdir}/capped_output.txt'
     step: {$ref: 'steps.yml#/uppermaker'}
 ~~~
-{: .source}
 
 Each stage in the workflow specifies:
 
@@ -236,17 +221,15 @@ Each stage in the workflow specifies:
 
 Finally, let's validate the workflow using the `yadage-validate` command line tool:
 
-~~~
+~~~bash
 yadage-validate workflow.yml
 ~~~
-{: .source}
 
 If there are no errors, we can go ahead and try running the full yadage workflow with `yadage-run`:
 
-~~~
+~~~bash
 yadage-run workdir workflow.yml -p msg='Hi there.'
 ~~~
-{: .source}
 
 If the workflow runs successfully, you should find the file `capped_output.txt` in the `workdir/shouting_stage` directory, with the following content:
 

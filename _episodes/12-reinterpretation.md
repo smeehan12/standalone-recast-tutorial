@@ -69,7 +69,7 @@ The following figure shows a sample &mu;-scan produced by this step, where the o
 
 Please add the following to your steps.yml file to encode this final step:
 
-~~~
+~~~yaml
 interpretation_step:
   process:
     process_type: interpolated-script-cmd
@@ -93,11 +93,10 @@ interpretation_step:
       inference_result: '{fit_result}'
       visualization: '{plot_png}'
 ~~~
-{: .source}
 
 and the corresponding workflow step to your workflow.yml:
 
-~~~
+~~~yaml
 - name: interpretation_step
   dependencies: [skimming_step]
   scheduler:
@@ -113,19 +112,17 @@ and the corresponding workflow step to your workflow.yml:
       plot_png: '{workdir}/hists.png'
     step: {$ref: steps.yml#/interpretation_step}
 ~~~
-{: .source}
 
 This step can be tested with the following `packtivity_run` command which incorporates all the scaling factors we've obtained:
 
-~~~
+~~~bash
 packtivity-run -p signal="'{workdir}/workdir/reformatting_step/selected.txt'" -p xsection=44.837 -p sumweights=6813.025800 -p kfactor=1.
 0 -p filterfactor=1.0 -p luminosity=140.1 -p plot_png="'{workdir}/hists.png'" -p fit_result="'{workdir}/limit.png'" steps.yml#/interpretation_step
 ~~~
-{: .source}
 
 With so many input parameters at this point, it gets a bit cumbersome to keep listing them on the command line - yadage has a solution for this! Create a new file called `inputs.yml` at the top level of your workflow directory, and fill it with the following:
 
-~~~
+~~~yaml
 signal_daod: recast_daod.root
 xsection: 44.837
 sumweights: 6813.025800
@@ -133,14 +130,12 @@ kfactor: 1.0
 filterfactor: 1.0
 luminosity: 140.1
 ~~~
-{: .source}
 
 The full yadage-run command can now be run as follows, with an optional third argument giving the name of the file with the input parameters:
 
-~~~
+~~~bash
 yadage-run workdir workflow.yml inputs.yml -d initdir=$PWD/inputdata
 ~~~
-{: .source}
 
 {% include links.md %}
 

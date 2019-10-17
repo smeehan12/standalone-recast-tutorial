@@ -25,38 +25,35 @@ On gitlab, create a new repo to contain your workflow. Name it something like `d
 
 **In another shell**, cd into the workflow repo and start the yadage container so you can validate and test the steps and workflow as you develop. You'll also need to log in to the gitlab docker registry using your CERN credentials so yadage can automatically pull images from the gitlab registry:
 
-~~~
+~~~bash
 cd [your workflow repo]
 docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock yadage/yadage sh
 docker login gitlab-registry.cern.ch
 ~~~
-{: .source}
 
 cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`, and rename it `recast_daod.root`:
 
-~~~
+~~~bash
 cd /path/to/new/workflow/repo
 touch steps.yml
 touch workflow.yml
 mkdir inputdata
 cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 ~~~
-{: .source}
 
 > ## Providing files to yadage
 > Since we have a signal DAOD file for yadage to process, we'll need a way to tell the yadage-run command where to look for the DOAD file. This functionality is provided by the `-d initdir=` option. For example, if the file to input is named `inputfile.txt`, and it's located in the directory `inputdata` syntax for passing it to yadage-run as the variable inputfile would be:
 > 
-> ~~~
+> ~~~bash
 > yadage-run workdir workflow.yml -p inputfile=inputfile.txt -d initdir=$PWD/inputdata
 > ~~~
-> {: .source}
 {: .callout}
 
 > ## Exercise (10 min)
 >
 > #### Part 1: 
 > Fill in the FIXMEs in the following skeleton code to encode the first skimming step of the analysis in your steps.yml file.
-> ~~~
+> ~~~yaml
 > skimming_step:
 >  process:
 >    process_type: interpolated-script-cmd
@@ -76,25 +73,23 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 >    publish:
 >      selected_events: [FIXME]
 > ~~~
-> {: .source}
 > 
 > #### Part 2: 
 > Fill in the following skeleton code to encode the corresponding workflow stage in your workflow.yml file.
-> ~~~
+> ~~~yaml
 > stages:
 > - name: skimming_step
 >  dependencies: [FIXME]
 >  scheduler:
 >    scheduler_type: singlestep-stage
 >    parameters:
-      input_file: {[FIXME], output: signal_daod}
-      [FIXME]: '{workdir}/selected.root'
-    step: [FIXME]
+>      input_file: {[FIXME], output: signal_daod}
+>      [FIXME]: '{workdir}/selected.root'
+>    step: [FIXME]
 > ~~~
-> {: .source}
 > > ## Solution
 > > #### Part 1
-> > ~~~
+> > ~~~yaml
 > > skimming_step:
 > >   process:
 > >     process_type: interpolated-script-cmd
@@ -114,9 +109,8 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 > >     publish:
 > >       selected_events: '{output_file}'
 > > ~~~
-> > {: .source}
 > > #### Part 2
-> > ~~~
+> > ~~~yaml
 > > stages:
 > > - name: skimming_step
 > >   dependencies: [init]
@@ -127,7 +121,6 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 > >       output_file: '{workdir}/selected.root'
 > >     step: {$ref: steps.yml#/skimming_step}
 > > ~~~
-> > {: .source}
 > {: .solution}
 {: .challenge}
 
@@ -137,21 +130,18 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 >
 > * Remember you can use the `packtivity-validate` command in your yadage container to quickly check if your step definition is valid:
 > 
-> ~~~
+> ~~~bash
 > packtivity-validate steps.yml#/skimming_step
 > ~~~
-> {: .source}
 > * The step can be tested in your yadage container with a `packtivity-run` command like:
 >
-> ~~~
+> ~~~bash
 > packtivity-run steps.yml#/skimming_step -p input_file="'{workdir}/inputdata/recast_daod.root'" -p output_file="'{workdir}/selected.root'"
 > ~~~
-> {: .source}
 > * The workflow can be tested with a `yadage-run` command like:
-> ~~~
+> ~~~bash
 > yadage-run workdir workflow.yml -p signal_daod=recast_daod.root -d initdir=$PWD/inputdata
 > ~~~
-> {: .source}
 >
 > * The output file should be located under `workdir/skimming_step/selected.root` after a successful `yadage-run`.
 {: .callout}

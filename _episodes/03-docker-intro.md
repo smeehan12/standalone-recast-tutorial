@@ -21,17 +21,15 @@ You can run in either a [detached or foreground][docker-docs-run-detached] (inte
 
 Run the image we pulled as an interactive container
 
-~~~
+~~~bash
 docker run -it matthewfeickert/intro-to-docker:latest /bin/bash
 ~~~
-{: .source}
 
 You are now inside the container in an interactive bash session. Check the file directory
 
-~~~
+~~~bash
 pwd
 ~~~
-{: .source}
 
 ~~~
 /home/docker/data
@@ -40,20 +38,18 @@ pwd
 
 and check the host to see that you are not in your local host system
 
-~~~
+~~~bash
 hostname
 ~~~
-{: .source}
 
 ## Monitoring Containers
 
 Open up a new terminal tab on the host machine and
 [list the containers that are currently running][docker-docs-ps]
 
-~~~
+~~~bash
 docker ps
 ~~~
-{: .source}
 
 ~~~
 CONTAINER ID        IMAGE         COMMAND             CREATED             STATUS              PORTS               NAMES
@@ -69,33 +65,29 @@ containers with the `-v` flag.
 This allows for direct access to the host file system inside of the container and for
 container processes to write directly to the host file system.
 
-~~~
+~~~bash
 docker run -v <path on host>:<path in container> <image>
 ~~~
-{: .source}
 
 For example, to mount your current working directory on your local machine to the `data`
 directory in the example container
 
-~~~
+~~~bash
 docker run --rm -it -v $PWD:/home/docker/data matthewfeickert/intro-to-docker
 ~~~
-{: .source}
 
 From inside the container you can `ls` to see the contents of your directory on your local
 machine
 
-~~~
+~~~bash
 ls
 ~~~
-{: .source}
 
 and yet you are still inside the container
 
-~~~
+~~~bash
 pwd
 ~~~
-{: .source}
 
 ~~~
 /home/docker/data
@@ -104,12 +96,11 @@ pwd
 
 You can also see that any files created in this path in the container persist upon exit
 
-~~~
+~~~bash
 touch created_inside.txt
 exit
 ls *.txt
 ~~~
-{: .source}
 
 ~~~
 created_inside.txt
@@ -136,15 +127,14 @@ some simple extensions of the [official Python 3.6.8 Docker image][python-docker
 As a very simple of extending the example image into a new image create a `Dockerfile`
 on your local machine
 
-~~~
+~~~bash
 touch Dockerfile
 ~~~
-{: .source}
 
 and then write in it the Docker engine instructions to add [`cowsay`][cowsay] and
 [`scikit-learn`][scikit-learn] to the environment
 
-~~~
+~~~yaml
 # Dockerfile
 FROM matthewfeickert/intro-to-docker:latest
 USER root
@@ -158,7 +148,6 @@ RUN apt-get -qq -y update && \
 RUN pip install --no-cache-dir -q scikit-learn
 USER docker
 ~~~
-{: .source}
 
 > ## Dockerfile layers
 >
@@ -178,21 +167,19 @@ USER docker
 Then [`build`][docker-docs-build] an image from the `Dockerfile` and tag it with a human
 readable name
 
-~~~
+~~~bash
 docker build -f Dockerfile -t extend-example:latest --compress .
 ~~~
-{: .source}
 
 You can now run the image as a container and verify for yourself that your additions exist
 
-~~~
+~~~bash
 docker run --rm -it extend-example:latest /bin/bash
 which cowsay
 cowsay "Hello from Docker"
 pip list | grep scikit
 python3 -c "import sklearn as sk; print(sk)"
 ~~~
-{: .source}
 
 
 ~~~
