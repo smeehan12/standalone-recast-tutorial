@@ -31,10 +31,10 @@ docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /va
 docker login gitlab-registry.cern.ch
 ~~~
 
-cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`, and rename it `recast_daod.root`:
+**Back in your first shell**, cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`, and rename it `recast_daod.root`:
 
 ~~~bash
-cd /path/to/new/workflow/repo
+cd [your workflow repo]
 touch steps.yml
 touch workflow.yml
 mkdir inputdata
@@ -61,7 +61,7 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 >      # Source the ATLAS environment
 >      [FIXME]
 >
->      # Run the AnalysisPayload executable from the run directory to produce the output ROOT file, looping over **all** events. 
+>      # Run the AnalysisPayload executable to produce the output ROOT file, looping over **all** events. 
 >      [FIXME: source setup script to run executables]
 >      [FIXME] {input_file} {output_file}
 >  environment:
@@ -113,13 +113,13 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 > > ~~~yaml
 > > stages:
 > > - name: skimming_step
-> >   dependencies: [init]
-> >   scheduler:
-> >     scheduler_type: singlestep-stage
-> >     parameters:
-> >       input_file: {step: init, output: signal_daod}
-> >       output_file: '{workdir}/selected.root'
-> >     step: {$ref: steps.yml#/skimming_step}
+> >    dependencies: [init]
+> >    scheduler:
+> >      scheduler_type: singlestep-stage
+> >      parameters:
+> >        input_file: {step: init, output: signal_daod}
+> >        output_file: '{workdir}/selected.root'
+> >      step: {$ref: steps.yml#/skimming_step}
 > > ~~~
 > {: .solution}
 {: .challenge}

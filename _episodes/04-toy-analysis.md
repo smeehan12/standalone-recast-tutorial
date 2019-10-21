@@ -136,12 +136,14 @@ If the compilation was successful, you can now source `setup.sh` to make the `An
 . x86_64-centos7-gcc8-opt/setup.sh
 ~~~
 
-Now, run the `AnalysisPayload` executable to loop over jets in each event - applying some simple cuts - and produce root histograms with distributions of the number of jets and leading dijet invariant mass. The input signal DAOD and output root file are provided as command-line arguments:
+Now, run the `AnalysisPayload` executable to loop over jets in each event - applying some simple cuts - and produce root histograms with distributions of the number of jets and leading dijet invariant mass. The input signal DAOD, output root file, and number of events to run over are provided as command-line arguments:
 
 ~~~bash
 cd ../run
-AnalysisPayload /Data/signal_daod.root output_hist.root
+AnalysisPayload /Data/signal_daod.root output_hist.root 10000
 ~~~
+
+Note that we're just limiting the number of events to 10000 for this quick demo run. If no third argument is specified, the executable will by default run over all events in the DAOD. 
 
 If it ran successfully, you should now have a histogram named `output_hist.root` in the current `run` directory, and two pdf files visualizing the hists contained in `output_hist.root`.
 
@@ -150,7 +152,7 @@ ls
 ~~~
 
 ~~~
-JetCalibTools		mjj.pdf			njets.pdf		output_hist.root
+mjj.pdf			njets.pdf		output_hist.root
 ~~~
 {: .output}
 

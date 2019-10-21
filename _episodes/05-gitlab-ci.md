@@ -53,6 +53,12 @@ In the last lesson, we started a container from the `atlas/analysisbase:21.2.85-
 > ~~~bash
 > touch Dockerfile
 > ~~~
+>
+> Also, remove the run and build directories since they won't be pushed to the gitlab repo (and hence won't be visible to the CI pipeline)
+>
+> ~~~
+> rm -r run build
+> ~~~
 > 
 > Now open the Dockerfile with a text editor and, starting with the following skeleton, fill in the FIXMEs to make a Dockerfile that builds your analysis environment. 
 > 
@@ -62,10 +68,10 @@ In the last lesson, we started a container from the `atlas/analysisbase:21.2.85-
 > 
 > # Put the current repo (the one in which this Dockerfile resides) in the /Tutorial directory
 > # Note that this directory is created on the fly and does not need to reside in the repo already
-> [FIXME] 
+> ADD . /Tutorial
 > 
 > # Go into the /Tutorial/build directory and make /Tutorial/build the default working directory (again, it will create the directory if it doesn't already exist)
-> [FIXME]
+> WORKDIR /Tutorial/build
 >
 > # Create a run directory
 > RUN [FIXME]
@@ -116,7 +122,7 @@ In the last lesson, we started a container from the `atlas/analysisbase:21.2.85-
 > 
 > When your container builds successfully, you can `exec` into it and poke around to make sure it's set up exactly as you want, and that you can successfully run the executable you built:
 > ~~~bash
-> docker run -it --rm vhbb_test bash
+> docker run -it -v /full/path/to/DAOD_EXOT27.17882736._000008.pool.root.1:/Data/signal_daod.root --rm vhbb_test bash
 > ~~~
 {: .callout}
 
