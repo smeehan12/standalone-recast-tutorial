@@ -29,14 +29,14 @@ Importantly, containers share the host machineâ€™s OS system kernel and so donâ€
 
 ## Docker Hub
 
-Much like GitHub allows for web hosting and searching for code, the [Docker Hub][docker-hub]
+Much like GitHub allows for web hosting and searching for code, the [Docker Hub](https://hub.docker.com/)
 image registry allows the same for Docker images.
-Hosting and building of images is [free for public repositories][docker-hub-billing] and
+Hosting and building of images is free for public repositories and
 allows for downloading images as they are needed.
 
 ## Image Pulling
 
-To begin with we're going to [pull][docker-docs-pull] down the Docker image we're going
+To begin with we're going to [pull](https://docs.docker.com/engine/reference/commandline/pull/) down the Docker image we're going
 to be working in for the tutorial
 
 ~~~bash
@@ -44,7 +44,7 @@ docker pull matthewfeickert/intro-to-docker
 ~~~
 
 
-and then [list the images][docker-docs-images] that we have available to us locally
+and then [list the images](https://docs.docker.com/engine/reference/commandline/images/) that we have available to us locally
 
 ~~~bash
 docker images
@@ -65,19 +65,18 @@ docker images debian
 
 > ## Pulling Python
 >
-> Pull the image for Python 3.7 (image name is python, tag is 3.7) and then list all the docker images currently present on your computer.
+> Pull the image for Python 3.7 (image name is python, tag is 3.7) and then list all the python docker images currently present on your computer.
 >
 > > ## Solution
 > >
 > > ~~~bash
 > > docker pull python:3.7
-> > docker images
+> > docker images python
 > > ~~~
 > >
 > > ~~~
 > > REPOSITORY                        TAG                 IMAGE ID            CREATED             SIZE
 > > python                            3.7                 e440e2151380        23 hours ago        918MB
-> > matthewfeickert/intro-to-docker   latest              cf6508749ee0        3 months ago        1.49GB
 > > ~~~
 > > {: .output}
 > {: .solution}

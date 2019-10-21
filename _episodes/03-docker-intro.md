@@ -15,9 +15,9 @@ keypoints:
 
 # Running containers
 
-To use a Docker image as a particular instance on a host machine you [run][docker-docs-run]
+To use a Docker image as a particular instance on a host machine you [run](https://docs.docker.com/engine/reference/run/)
 it as a container.
-You can run in either a [detached or foreground][docker-docs-run-detached] (interactive) mode.
+You can run in either a [detached or foreground](https://docs.docker.com/engine/reference/run/#detached-vs-foreground) (interactive) mode.
 
 Run the image we pulled as an interactive container
 
@@ -45,7 +45,7 @@ hostname
 ## Monitoring Containers
 
 Open up a new terminal tab on the host machine and
-[list the containers that are currently running][docker-docs-ps]
+[list the containers that are currently running](https://docs.docker.com/engine/reference/commandline/ps/)
 
 ~~~bash
 docker ps
@@ -60,8 +60,8 @@ CONTAINER ID        IMAGE         COMMAND             CREATED             STATUS
 
 ## Volume Mounting
 
-What is more common and arguably more useful is to [mount volumes][docker-docs-volumes] to
-containers with the `-v` flag.
+You can make files and directories accessible to the container by [mounting them as volumes](https://docs.docker.com/storage/volumes/) to the
+container with the `-v` flag.
 This allows for direct access to the host file system inside of the container and for
 container processes to write directly to the host file system.
 
@@ -112,17 +112,17 @@ do with the tools or software installed on only the local host machine.
 For example, debugging problems with software that arise on cross-platform software, or
 even just having a specific version of software perform a task (e.g., using Python 2 when
 you don't want it on your machine, or using a specific release of
-[TeX Live][Tex-Live-image] when you aren't ready to update your system release).
+TeX Live when you aren't ready to update your system release).
 
 
 # Writing Dockerfiles to Build Images
 
 Docker images are built through the Docker engine by reading the instructions from a
-[`Dockerfile`][docker-docs-builder].
+[`Dockerfile`](https://docs.docker.com/engine/reference/builder/).
 These text based documents provide the instructions though an API similar to the Linux
 operating system commands to execute commands during the build.
-The [`Dockerfile` for the example image][example-Dockerfile] being used is an example of
-some simple extensions of the [official Python 3.6.8 Docker image][python-docker-image].
+The [`Dockerfile` for the example image](https://hub.docker.com/r/matthewfeickert/intro-to-docker/dockerfile) being used is an example of
+some simple extensions of the [official Python 3.6.8 Docker image](https://hub.docker.com/layers/python/library/python/3.6.8/images/sha256-d5028edbd2793f03125e76c0519b837306b63d7835efd8e7aa62b9d46126a495).
 
 As a very simple of extending the example image into a new image create a `Dockerfile`
 on your local machine
@@ -131,19 +131,14 @@ on your local machine
 touch Dockerfile
 ~~~
 
-and then write in it the Docker engine instructions to add [`cowsay`][cowsay] and
-[`scikit-learn`][scikit-learn] to the environment
+and then write in it the Docker engine instructions to add `cowsay` and
+`scikit-learn` to the environment
 
 ~~~yaml
 # Dockerfile
 FROM matthewfeickert/intro-to-docker:latest
 USER root
-RUN apt-get -qq -y update && \
-  apt-get -qq -y upgrade && \
-  apt-get -qq -y install cowsay && \
-  apt-get -y autoclean && \
-  apt-get -y autoremove && \
-  rm -rf /var/lib/apt-get/lists/* && \
+RUN apt-get -qq -y install cowsay && \
   ln -s /usr/games/cowsay /usr/bin/cowsay
 RUN pip install --no-cache-dir -q scikit-learn
 USER docker
@@ -164,11 +159,11 @@ USER docker
 >greater privileges.
 {: .callout}
 
-Then [`build`][docker-docs-build] an image from the `Dockerfile` and tag it with a human
+Then [`build`](https://docs.docker.com/engine/reference/commandline/build/) an image from the `Dockerfile` and tag it with a human
 readable name
 
 ~~~bash
-docker build -f Dockerfile -t extend-example:latest --compress .
+docker build -f Dockerfile -t extend-example:latest .
 ~~~
 
 You can now run the image as a container and verify for yourself that your additions exist

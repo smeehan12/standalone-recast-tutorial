@@ -31,7 +31,7 @@ detector as hadronic jets ([0712.2447](https://arxiv.org/abs/0712.2447)).  Howev
 the two jets which originate from the Higgs decay, then you can invoke four-momentum conservation and reconstruct
 the invariant mass of that decay.
 
-Therefore, throughout this tutorial, this is the primary observable that we will be exploring : **the invariant mass of a pair of hadronic b-tagged jets**.
+Therefore, throughout this tutorial, this is the primary observable that we will be exploring : **the invariant mass of a pair of hadronic jets**.
 
 <img src="../fig/HiggsPeakATLAS.png" alt="Kitten" title="A cute kitten" width="600" height="500" />
 
@@ -49,7 +49,7 @@ rucio get --nrandom 1 mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_
 
 # Running the Toy Analysis
 
-First, go to https://gitlab.cern.ch/damacdon/recast-standalone, and make a personal fork of the `recast-standalone`  repo by clicking on the white "Fork" button on the upper right (just next to the blue "Clone" button). Clone your fork of the repo:
+First, go to [https://gitlab.cern.ch/damacdon/recast-standalone](https://gitlab.cern.ch/damacdon/recast-standalone), and make a personal fork of the `recast-standalone`  repo by clicking on the white "Fork" button on the upper right (just next to the blue "Clone" button). Clone your fork of the repo:
 
 ~~~bash
 # ssh clone (don't need password verification)
@@ -68,7 +68,7 @@ docker pull atlas/analysisbase:21.2.85-centos7
 
 ## Set up the AnalysisBase environment
 
-Once the signal DOAD finished downloading, run the `atlas/analysisbase:21.2.85-centos7` docker image in interactive mode, volume-mounting the data file and current directory to the container:
+Once the signal DOAD is finished downloading, run the `atlas/analysisbase:21.2.85-centos7` docker image in interactive mode, volume-mounting the data file and current directory to the container:
 
 ~~~bash
 cd recast-standalone
@@ -108,7 +108,7 @@ ls
 ~~~
 
 ~~~
-Data  Dockerfile  README.md  source
+README.md  source
 ~~~
 {: .output}
 
@@ -139,6 +139,7 @@ If the compilation was successful, you can now source `setup.sh` to make the `An
 Now, run the `AnalysisPayload` executable to loop over jets in each event - applying some simple cuts - and produce root histograms with distributions of the number of jets and leading dijet invariant mass. The input signal DAOD and output root file are provided as command-line arguments:
 
 ~~~bash
+cd ../run
 AnalysisPayload /Data/signal_daod.root output_hist.root
 ~~~
 
