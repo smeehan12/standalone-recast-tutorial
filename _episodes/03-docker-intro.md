@@ -114,6 +114,20 @@ even just having a specific version of software perform a task (e.g., using Pyth
 you don't want it on your machine, or using a specific release of
 TeX Live when you aren't ready to update your system release).
 
+> ## CMD Dockerfile Instruction
+>
+> If you're super observant, you may have noticed that the startup command `/bin/bash` was used to start the container in a bash shell when we first ran the `matthewfeickert/intro-to-docker:latest`, but the second time we ran the container (when we added the `-v $PWD:/home/docker/data`), we didn't specify a startup command. How did the container still know to start in a bash shell? 
+> 
+> No, docker doesn't have mind-reading functionality (yet...). Rather, this behaviour comes from the fact that the [Dockerfile used to create this image](https://hub.docker.com/r/matthewfeickert/intro-to-docker/dockerfile) includes an instruction `CMD ["/bin/bash"]` at the end, where the [`CMD` command](https://docs.docker.com/engine/reference/builder/#cmd) specifies that the container should start up in the bash shell by default if no other startup command is specified in the `docker run` command. If another startup command is specified, like 
+>
+> ~~~bash
+> docker run -it matthewfeickert/intro-to-docker:latest python
+> ~~~
+>
+> then this will override the default set by the `CMD` option, so the container will in this case start up with a python command-line prompt instead (try it out!).
+>
+{: .callout}
+
 
 # Writing Dockerfiles to Build Images
 
