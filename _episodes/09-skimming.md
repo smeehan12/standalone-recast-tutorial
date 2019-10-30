@@ -79,13 +79,13 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 > ~~~yaml
 > stages:
 > - name: skimming_step
->  dependencies: [FIXME]
->  scheduler:
->    scheduler_type: singlestep-stage
->    parameters:
->      input_file: {[FIXME], output: signal_daod}
->      [FIXME]: '{workdir}/selected.root'
->    step: [FIXME]
+>   dependencies: [FIXME]
+>   scheduler:
+>     scheduler_type: singlestep-stage
+>     parameters:
+>       input_file: {[FIXME], output: signal_daod}
+>       [FIXME]: '{workdir}/selected.root'
+>     step: [FIXME]
 > ~~~
 > > ## Solution
 > > #### Part 1
@@ -113,13 +113,13 @@ cp /path/to/DAOD_EXOT27.17882736._000008.pool.root.1 inputdata/recast_daod.root
 > > ~~~yaml
 > > stages:
 > > - name: skimming_step
-> >    dependencies: [init]
-> >    scheduler:
-> >      scheduler_type: singlestep-stage
-> >      parameters:
-> >        input_file: {step: init, output: signal_daod}
-> >        output_file: '{workdir}/selected.root'
-> >      step: {$ref: steps.yml#/skimming_step}
+> >   dependencies: [init]
+> >   scheduler:
+> >     scheduler_type: singlestep-stage
+> >     parameters:
+> >       input_file: {step: init, output: signal_daod}
+> >       output_file: '{workdir}/selected.root'
+> >     step: {$ref: steps.yml#/skimming_step}
 > > ~~~
 > {: .solution}
 {: .challenge}
