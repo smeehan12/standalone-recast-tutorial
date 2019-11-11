@@ -19,7 +19,7 @@ keypoints:
 
 <img src="../fig/InterpretationStep.png" alt="Interpretation" style="width:250px">
 
-The final step of our VHbb analysis chain receives five inputs, four of which are for the MC scaling discussed in the last episode:
+The final step of our VHbb analysis chain, originally developed by Lukas Heinrich, receives five inputs (four of which are for the MC scaling discussed in the last episode):
 
 * `h_mjj` histogram
 * sum of MC generator event weights

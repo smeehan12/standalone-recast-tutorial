@@ -18,7 +18,9 @@ keypoints:
 
 # Introduction
 
-To introduce the RECAST concepts during the tutorial, we'll work on RECASTing a small, simple stand-alone toy analysis. We'll look at the "VHbb" Higgs search channel, with the Higgs decaying to b-quarks:
+To introduce the RECAST concepts during the tutorial, we'll work on RECASTing a simple stand-alone toy analysis originally developed by Adam Parker, Samuel Meehan and Karol Krizka for the 2019 US-ATLAS computing bootcamp. 
+
+The toy analysis looks at the "VHbb" Higgs search channel, with the Higgs decaying to b-quarks:
 
 ![](../fig/VHbb.png)
 
@@ -49,7 +51,7 @@ rucio get --nrandom 1 mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_
 
 # Running the Toy Analysis
 
-First, go to [https://gitlab.cern.ch/damacdon/recast-standalone](https://gitlab.cern.ch/damacdon/recast-standalone), and make a personal fork of the `recast-standalone`  repo by clicking on the white "Fork" button on the upper right (just next to the blue "Clone" button). Clone your fork of the repo:
+First, go to [https://gitlab.cern.ch/damacdon/recast-standalone](https://gitlab.cern.ch/damacdon/recast-standalone), and make a personal fork of the `recast-standalone` repo by clicking on the white "Fork" button on the upper right (just next to the blue "Clone" button). Clone your fork of the repo:
 
 ~~~bash
 # ssh clone (don't need password verification)
