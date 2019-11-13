@@ -6,7 +6,7 @@ permalink: index.html  # Is the only page that doesn't follow the pattern /:path
 ---
 Welcome to the UVic ATLAS tutorial on analysis preservation with RECAST! RECAST combines docker and gitlab to fully preserve your ATLAS search analysis so that it can be trivially re-interpreted with a new signal model.
 
-<b>Credits:</b> This tutorial is adapted from a [RECAST tutorial](https://danikam.github.io/2019-08-19-usatlas-recast-tutorial/) given at the [first US-ATLAS computing bootcamp](https://smeehan12.github.io/2019-08-19-usatlas-computing-bootcamp/) held at LBNL in August 2019, and as such makes heavy use of other materials developed for the bootcamp by Matthew Feickert, Lukas Heinrich, Karol Krizka, Samuel Meehan, and Giordon Stark. 
+<b>Credits:</b> This tutorial is adapted from a [RECAST tutorial](https://danikam.github.io/2019-08-19-usatlas-recast-tutorial/) given at the [first US-ATLAS computing bootcamp](https://smeehan12.github.io/2019-08-19-usatlas-computing-bootcamp/) held at LBNL in August 2019, and as such makes heavy use of other materials developed for the bootcamp by Matthew Feickert, Lukas Heinrich, Karol Krizka, Samuel Meehan, Adam Parker, and Giordon Stark. 
 
 <!-- this is an html comment -->
 
