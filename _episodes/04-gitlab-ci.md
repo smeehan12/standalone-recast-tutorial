@@ -127,12 +127,14 @@ Add the following lines at the end of the `.gitlab-ci.yml` file to build the ima
 ~~~yaml
 build_image:
   stage: build
-  variables:
-    TO: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-  tags:
-    - docker-image-build
+  image:
+    name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
+    entrypoint: [""]
   script:
-    - ignore
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context "${CI_PROJECT_DIR}"
+                       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+                       --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
 ~~~
 
 You'll also need to add the `-build` stage that this image-building step belongs to underneath the `-greetings` stage under `stages`:
