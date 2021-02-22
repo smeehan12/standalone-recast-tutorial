@@ -69,9 +69,19 @@ be pretending that these are packages written by other people and you are just g
 <h3>Get the Signal Sample</h3>
 Get one file from the VHbb signal sample that we'll be running over with our analysis code from this container :
 ```
-mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_s3126_r10724_p3840
+mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_s3126_r10724_p4320
 ```
-If you don't know or want to use [rucio]() to get this, then there is [one available on EOS at this link](https://cernbox.cern.ch/index.php/s/StRgQkdYUS9FMnV).
+
+The rucio download can be done on lxplus as follows (assuming you have VOMS grid credentials):
+
+```bash
+setupATLAS
+lsetup rucio
+voms-proxy-init -voms atlas
+rucio get --nrandom 1 mc16_13TeV:mc16_13TeV.345055.PowhegPythia8EvtGen_NNPDF3_AZNLO_ZH125J_MINLO_llbb_VpT.deriv.DAOD_EXOT27.e5706_s3126_r10724_p4320
+```
+
+If you don't know or want to use [rucio](https://twiki.cern.ch/twiki/bin/view/AtlasComputing/RucioClientsHowTo) to get this, then there is [one available on EOS at this link](https://cernbox.cern.ch/index.php/s/StRgQkdYUS9FMnV).
 This file is being housed under the `jesjer` service account (created by Sam, it's not some official JetEtMiss thing, don't worry, though it has some jet calibration stuff there), which you will use later as well.  The credentials can be obtained
 by asking the organizers of the workshop.  After downloading, just keep it somewhere where you'll be able to find it again during the tutorial.
 
