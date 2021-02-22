@@ -19,7 +19,7 @@ keypoints:
 
 The interpretation step will receive the `h_mjj` histogram, which has now been scaled to a physically meaningful cross section by the `scaling_step`, and perform the statistical comparison with some simulated background and data. The fitting will be done with [pyhf](https://diana-hep.org/pyhf/), a specialized fitting module designed for HEP applications and written in pure python (i.e. no ROOT dependencies). We won't dig into the actual details of the `pyhf` implementation during this tutorial and in fact, you shouldn't have to look at the implementation, but rather just use the interface described in the previous step.
 
-<img src="../fig/InterpretationStep.png" alt="Interpretation" style="width:250px">
+<img src="../fig/diagram_fitting.png" alt="Interpretation" style="width:250px">
 
 The final step of our VHbb analysis chain receives three "physics inputs" :
   - **Signal Histogram** : This is going to come from the previous `scaling_step` of the analysis since that will have to be done each time we want to pass a new signal through this workflow. So we will need to do some linking of that step with this new step.

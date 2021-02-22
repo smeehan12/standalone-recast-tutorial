@@ -115,7 +115,7 @@ The three steps involved in interpreting our VHbb analysis are as follows:
 
 These steps are summarized in the following illustration:
 
-<img src="../fig/Steps.png" alt="Steps" style="width:500px">
+<img src="../fig/diagram_steps.png" alt="Steps" style="width:800px">
 
 ### Workflow (`workflow.yml`)
 
@@ -123,7 +123,7 @@ The workflow description specifies how all the steps "fit together". It accompli
 
 Here is an idea of what our workflow should look like:
 
-<img src="../fig/Workflow.png" alt="Workflow" style="width:1200px">
+<img src="../fig/diagram_workflow.png" alt="Workflow" style="width:1200px">
 
 {% include links.md %}
 

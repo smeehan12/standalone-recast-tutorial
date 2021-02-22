@@ -24,7 +24,7 @@ to properly account for how we expect the sum of **MC weighted** events produced
 
 In terms of the workflow, we can already conceptually identify the *parameters* of this step of the workflow.  In total, this step is going to each the `h_mjj` histogram along with these five numerical quantities : `sum of event weights`, `filter efficiency`, `k-factor`, `cross section`, and `luminosity`.  We'll briefly review each of these factors and then extend our workflow to include this next step.
 
-<img src="../fig/SkimmingStep.png" alt="Scaling" style="width:220px">
+<img src="../fig/diagram_scaling.png" alt="Scaling" style="width:220px">
 
 ### Sum-of-Weights Normalization
 

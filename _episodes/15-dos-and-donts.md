@@ -25,5 +25,14 @@ Embrace these best practices:
 Try to stear clear of these things:
   - Hardcoding is bad.
 
+
+## Cheat Sheet
+And now a buried easter egg cheat sheet.  Hopefully you have made it entirely though the tutorial and learned things, but if it helps, then here are the implementations of all the bits of code:
+ - [Event Selection](https://gitlab.cern.ch/recast-examples/event-selection/-/tree/final): Note that for this, the solutions are implemented on the `final` branch of the repository.
+ - [Post Processing](https://gitlab.cern.ch/recast-examples/post-processing): Used for the `scaling` step.
+ - [Fitting](https://gitlab.cern.ch/recast-examples/fitting): Used for the `fitting` step.
+ - [Workflow](https://gitlab.cern.ch/recast-examples/workflow): Used for the workflow.
+ - [Background Generation](https://gitlab.cern.ch/recast-examples/background-generation): Not actually used in the workflow or anything, but this is how we create the background and data.
+
 {% include links.md %}
 

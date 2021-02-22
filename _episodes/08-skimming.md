@@ -18,9 +18,9 @@ We now have all the yadage tools to put together our VHbb RECAST workflow, start
 
 ### Skimming Step
 
-<img src="../fig/SkimmingStep.png" alt="Skimming" style="width:220px">
+<img src="../fig/diagram_skimming.png" alt="Skimming" style="width:220px">
 
-On gitlab, create a new repo to contain your workflow. Name it something like `danika-workflow` (but with your name instead of mine). Clone your new repo onto your computer.
+On gitlab, create a new repo to contain your workflow. Name it something like `my-workflow` (but with your name instead of mine). Clone your new repo onto your computer.
 
 **In another shell**, cd into the workflow repo and start the yadage container so you can validate and test the steps and workflow as you develop. You'll also need to log in to the gitlab docker registry using your CERN credentials so yadage can automatically pull images from the gitlab registry:
 
