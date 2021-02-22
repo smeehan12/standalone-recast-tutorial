@@ -42,7 +42,7 @@ There are three primary additional components that we will need to use within ou
 Spend some time getting familiar with these utilities and then we will begin to tie them together into a jazzy workflow using some new tools - [packtivity](), [yadage](), and [recast]().
 
 #### Getting our Data and Background (EOS)
-As you have learned in the [HSF GitLab tutorial](), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored at `root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021` and within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial).
+As you have learned in the [HSF GitLab tutorial](), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored at `root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021 [zzz may be updated]`, which is accessible with the `recasttu` service account (password zzz). Within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial). 
   
   > ## Exercise (15 min)
   > Practice running the python scripts that scale the signal to the correct cross section and luminosity and perform the statistical analysis in their respective docker environments.
@@ -95,7 +95,8 @@ As you have learned in the [HSF GitLab tutorial](), data is preserved and distri
   > Run the docker image `gitlab-registry.cern.ch/recast-examples/fitting:master, as a container, run kinit to set up kerboros authentication, then download the input file `external_data.root` into the container:
   > ```bash
   > docker run --rm -it -v $PWD:/code/Tutorial gitlab-registry.cern.ch/recast-examples/fitting:master
-  > kinit [your_username]@CERN.CH
+  > kinit recasttu@CERN.CH
+  > # Enter recasttu password (zzz)
   > xrdcp root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root .
   > ```
   > Now run `run_fit.py`, adapting the command-line arguments to run on the input file `/code/Tutorial/selected_scaled.root` and produce the output `limits.png` and `results.png` in the mounted directory `/code/Tutorial`. Exit out of the container and check that the expected outputs have been produced in the current directory.
