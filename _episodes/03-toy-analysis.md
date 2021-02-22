@@ -41,10 +41,10 @@ First, go to [https://gitlab.cern.ch/recast-examples/event-selection](https://gi
 
 ~~~bash
 # ssh clone (don't need password verification)
-git clone --recursive ssh://git@gitlab.cern.ch:7999/[your_username]/recast-standalone.git
+git clone --recursive ssh://git@gitlab.cern.ch:7999/[your_username]/event-selection.git
 
 # Or, https clone
-git clone --recursive https://gitlab.cern.ch/[your_username]/recast-standalone.git
+git clone --recursive https://gitlab.cern.ch/[your_username]/event-selection.git
 ~~~
 
 If you haven't already, pull the `atlas/analysisbase:21.2.85-centos7` docker image:
