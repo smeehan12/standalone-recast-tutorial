@@ -35,11 +35,11 @@ Spectrum of Data/MC        |  Reinterpreted Limit
 
 
 There are three primary additional components that we will need to use within our workflow :
-  - **EOS** : For storing/retrieving the
+  - **EOS** : For retrieving/storing the workflow inputs and outputs
   - **Post Processing** : For scaling of our signal
   - **Statistical Analysis** : For doing the final fit and interpretation
 
-Spend some time getting familiar with these utilities and then we will begin to tie them together into a jazzy workflow using some new tools - [packtivity](), [yadage](), and [recast]().
+Let's spend some time getting familiar with these utilities and then we will begin to tie them together into a jazzy workflow using some new tools - [packtivity](), [yadage](), and [recast]().
 
 #### Getting our Data and Background (EOS)
 As you have learned in the [HSF GitLab tutorial](), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored at `NEED PATH HERE` and within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial).
