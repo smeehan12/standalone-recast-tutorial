@@ -19,9 +19,9 @@ keypoints:
 In this *intermezzo*, we'll take our first step into the forest of workflow authoring by walking through a simple helloworld example that illustrates the yadage syntax involved. This can also be found in the [Getting Started Tutorial](https://yadage.github.io/tutorial/GettingStarted.html) from the yadage documentation. Once you've mastered this basic workflow, it will be easier to extend it to more complex workflows.
 
 > ## High-level `recast-atlas` Tool
-> In this tutorial, we focus on developing skills for encoding your workflow with yadage syntax, and use yadage commands directly to test and run the workflow. There is also a  really nice high-level wrapper for running yadage called [recast-atlas](https://github.com/recast-hep/recast-atlas) to help facilitate running the workflow, with the ability to encode unit tests and different run configurations in the `recast.yml` steering file. See [this recast tutorial](https://recast-docs.web.cern.ch/recast-docs/) for instructions and examples for developing your workflow with this `recast-atlas` tool!
+> In next few lessons, we focus on developing skills for encoding your workflow with yadage syntax, and use yadage commands directly to test and run the workflow. There is also a  really nice high-level wrapper for running yadage called [`recast-atlas`](https://github.com/recast-hep/recast-atlas) to help facilitate running the workflow, with the ability to encode unit tests and different run configurations in the `recast.yml` steering file. See [this recast tutorial](https://recast-docs.web.cern.ch/recast-docs/) for instructions and examples for developing your workflow with this `recast-atlas` tool!
 >
->We will be introducing that later on once we have our workflow in hand but let's learn to walk before we try to run.
+>We will be introducing the `recast-atlas` tool later on once we have our workflow in hand but let's learn to walk before we try to run.
 {: .callout}
 
 ### Yadage setup
