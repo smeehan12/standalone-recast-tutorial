@@ -1,18 +1,20 @@
 ---
-title: "Workflows in GitLab CICD"
+title: "Workflows in GitLab CI"
 teaching: 10
 exercises: 10
 questions:
-- "xxx"
+- "How do I use gitlab CI to automatically test my RECAST workflow every time it's updated on gitlab?"
+- "What if I want to test my workflow more regularly, like on a schedule?"
 objectives:
-- "xxx"
+- "Add a CI job in your RECAST specs repo which automatically runs the RECAST workflow every time new workflow updates are pushed."
 keypoints:
-- "xxx"
+- "Gitlab CI offers an easy-to-implement solution for automated testing of your RECAST workflow."
+- "You can set up a regular schedule for CI tests to ensure that any updates to the actual analysis code are also being tested on a regular basis."
 ---
 
 
-## Workflows in CICD
-If you followed the [HSF pipelines tutorial](https://hsf-training.github.io/hsf-training-cicd/) (which you really should have, and if you haven't please do back and work through it) then you should appreciate how important testing your code is.  And workflows are nothing more than "your code", so we should plan to implement a mechanism by which to ensure that they do not break as we develop our analysis.  This can be done in GitLab Pipelines as well, and the great part is once we have this workflow in place, then we will quite literally be testing the *entire* analysis workflow, from DAOD to final CLs limit value (or whatever our final product is).  Doing so will require a bit of modification of our workflow, to pull data from EOS instead of a local source, and then implementing a single CI job, but these are things we should be familiar with at this point.
+## Workflows in CI
+If you followed the [HSF pipelines tutorial](https://hsf-training.github.io/hsf-training-cicd/) (which you really should have, and if you haven't please do go back and work through it) then you should appreciate how important testing your code is.  And workflows are nothing more than "your code", so we should plan to implement a mechanism by which to ensure that they do not break as we develop our analysis.  This can be done in GitLab Pipelines as well, and the great part is once we have this workflow in place, then we will quite literally be testing the *entire* analysis workflow, from DAOD to final CLs limit value (or whatever our final product is).  Doing so will require a bit of modification of our workflow, to pull data from EOS instead of a local source, and then implementing a single CI job, but these are things we should be familiar with at this point.
 
 Finally, we will schedule this CI to run on a regular basis so that your full analysis chain will be tested on a daily basis.  Think of it as [ART tests](https://indico.cern.ch/event/773049/contributions/3473241/attachments/1937448/3211191/ATL-COM-SOFT-2019-084.pdf) but for your analysis.
 
