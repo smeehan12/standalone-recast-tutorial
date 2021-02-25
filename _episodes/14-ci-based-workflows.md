@@ -38,9 +38,7 @@ Next, we need to augment our actual workflow, in particular adding a new `skimmi
 > >    process_type: interpolated-script-cmd
 > >    script: |
 > >      source /home/atlas/release_setup.sh
-> >      cat {eospass}
-> >      cat {eosuser}
-> >      echo "{eospass}" | kinit {eosuser}@CERN.CH
+> >      . /recast_auth/getkrb.sh
 > >      xrdcp {input_file} {local_dir}/input.root
 > >      source /Tutorial/build/x86_64-centos7-gcc8-opt/setup.sh
 > >      AnalysisPayload {local_dir}/input.root {output_file} 1000
@@ -48,6 +46,8 @@ Next, we need to augment our actual workflow, in particular adding a new `skimmi
 > >    environment_type: docker-encapsulated
 > >    image: gitlab-registry.cern.ch/recast-examples/event-selection
 > >    imagetag: final
+> >    resources:
+         - GRIDProxy
 > >  publisher:
 > >    publisher_type: interpolated-pub
 > >    publish:
@@ -65,8 +65,6 @@ Next, we need to augment our actual workflow, in particular adding a new `skimmi
 > >   scheduler:
 > >     scheduler_type: singlestep-stage
 > >     parameters:
-> >       eosuser:     {step: init, output: eosuser}
-> >       eospass:     {step: init, output: eospass}
 > >       input_file:  {step: init, output: signal_daod_eos}
 > >       output_file: '{workdir}/selected.root'
 > >       local_dir:   '{workdir}'
