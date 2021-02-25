@@ -66,8 +66,6 @@ example_inputs:
       filter_eff: 1
       luminosity: 140.1
       hist: 'h_mjj'
-      eosuser: 'recasttu'
-      eospass: 'DidiBuki1'
       filedata: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
       histdata: 'data'
       filebkg: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
