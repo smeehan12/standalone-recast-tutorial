@@ -22,10 +22,7 @@ Finally, we will schedule this CI to run on a regular basis so that your full an
 The changes we must implement bring together our understanding of GitLab CI and the recast CLI in a way that involves nothing remarkably new, but requires a bit of retooling of our workflow.  However, the workflow that you will be left with will also be useable on your local machine, just like the one you have been running, so no worries, its only improving the situation.
 
 ### Authentications
-The first piece is to enter the appropriate credentials for our CI to use when executing our CI job.  In particular, we need to enter three variables in the GitLab remote interface :
-  - `RECAST_USER` : This is the username of the service account - in this case `recasttu`
-  - `RECAST_PASS` : This is the associated password of the service account - in this case `DidiBuki1`.
-  - `RECAST_TOKEN` : This is the [gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) associated with the service account - in this case `n44PNWoaG22LJhHxaV94`. The access token should have at minimum `read_registry` permission (see [Before you Begin](https://recast-docs.web.cern.ch/recast-docs/workflowauthoring/intro/#before-you-begin) in RECAST docs)
+The first piece is to enter the appropriate credentials for our CI to use when executing our CI job.  In particular, we need to enter the three variables `RECAST_USER`, `RECAST_PASS` and `RECAST_TOKEN` in the GitLab remote interface, which in the [previous lesson](./13-recast-cli/index.html) we'd been defining by-hand as environment variables.
 
 These will be used to setup the ability to execute yadage on the runner. On the left hand selection bar, go to `Settings` --> `CI/CD` and then expand the section on `Variables` (this should be familiar from entering EOS credentials in normal CI jobs) and enter these three new variables.
 
