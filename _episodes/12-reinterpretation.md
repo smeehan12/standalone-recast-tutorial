@@ -46,7 +46,7 @@ CI jobs.  This was covered in the [HSF CICD tutorial in great detail](https://hs
 You need to provide authenticating information via kerberos `kinit` and then you can access any EOS area to which you have been granted privileges.  The mechanism to do this in recast with yadage is described [here](https://recast-docs.web.cern.ch/recast-docs/workflowauthoring/steps/#authentication).
 
 ### In Real Life
-This is the same mechanism by which your background and data are preserved for a fully recasted ATLAS analysis.  In fact, there is a dedicated storage area for such data for each individual analysis that will be created for you with the path like `/eos/project/r/recast/atlas/ANA-XXXX-20XX-XX`. All of these details, along with how to request this space, etc. are all described in the [recast-docs](https://recast-docs.web.cern.ch/recast-docs) and you are *highly* encouraged to read them thoroughly when moving to your actual analysis, even if this tutorial was a peace of cake.
+This is the same mechanism by which your background and data are preserved for a fully recasted ATLAS analysis.  In fact, there is a dedicated storage area for such data for each individual analysis that will be created for you with the path like `/eos/project/r/recast/atlas/ANA-XXXX-20XX-XX`. All of these details, along with how to request this space, etc. are all described in the [recast-docs](https://recast-docs.web.cern.ch/recast-docs) and you are *highly* encouraged to read them thoroughly when moving to your actual analysis, even if this tutorial was a piece of cake.
 
 ### For this Toy Analysis
 However, for this tutorial, we will be using a toy EOS area at this location - `root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021`. At this location, there will be one file `external_data.root` which contains two histograms : `data` and `background`.  These are the inputs that your job will pull in for the test example.  This is a service account called `jesjer` (created by Sam, it's not some official JetEtMiss thing, don't worry, though it has some jet calibration stuff there) with a password that you can get from the organizers.
@@ -98,9 +98,9 @@ Now you are going to write a new step called `fitting` in your `steps.yml` file.
 {: .challenge}
 
 ### `workflow.yml`
-At this point, you need not be concerned with the particular implementation of a give call to a script.  You are specifying how the parameters in your new step are going to get the parameters and what atomic step they are going to be fed to. Think about the following :
+At this point, you need not be concerned with the particular implementation of a given call to a script.  You are specifying how the parameters in your new step are going to get the parameters and what atomic step they are going to be fed to. Think about the following :
   - What steps must this `fitting_step` get inputs from? What does it depend on?
-  - What parameters must it define and where are these coming from?  Are they coming from the `init` stage, or a previous step? Perhaps they will be hardcoded?
+  - What parameters must it define and where are these coming from?  Are they coming from the `init` stage, or a previous step? Perhaps they can be safely hardcoded?
   - What actual `step` are you going to be parameterizing here? What step are you *referring* to?
 
 Now you are going to write a new step called `fitting_step` in your `workflow.yml` file.
@@ -142,7 +142,7 @@ packtivity-run -p signal="'{workdir}/workdir/skimming_step/selected.root'" -p xs
 
 ## Run It
 
-Running this three-step workflow is rather straightforward by extending the `inputs.yml` file to insert the necessary additional parameters for this last stage of the workflow.  You should begin to think of this file as the very high level set of switches that control the global behavior of your entire analysis.  Every once in a while its good to review whether all of the parameters in here are truly necessary or whether some are purely internal.
+Running this three-step workflow is rather straightforward by extending the `inputs.yml` file to insert the necessary additional parameters for this last stage of the workflow.  You should begin to think of this file as the very high level set of switches that control the global behavior of your entire analysis.  Every once in a while it's good to review whether all of the parameters in here are truly necessary or whether some are purely internal.
 
 ~~~yaml
 initdir: '$PWD/inputdata'
@@ -161,7 +161,7 @@ filebkg: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_dat
 histbkg: 'background'
 ~~~
 
-The full yadage-run command can now be run as follows, with an optional third argument giving the name of the file with the input parameters:
+The full yadage-run command can now be run as follows, with an optional third argument which gives the name of the file with the input parameters:
 
 ~~~bash
 yadage-run workdir workflow.yml inputs.yml -d initdir=$PWD/inputdata
