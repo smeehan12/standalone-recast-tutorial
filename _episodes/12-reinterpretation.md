@@ -150,7 +150,7 @@ Running this three-step workflow is rather straightforward by extending the `inp
 
 ~~~yaml
 initdir: '$PWD/inputdata'    
-signal_daod: 'DAOD_EXOT27.20140688._000071.pool.root.1'    # Note: your filename may be slightly different if you downloaded it from rucio
+signal_daod: 'DAOD_EXOT27.20140688._000071.pool.root.1'    # Note: your filename may be slightly different if you downloaded it with rucio
 cross_section: 44.873
 sum_of_weights: 6813.025800
 k_factor: 1
