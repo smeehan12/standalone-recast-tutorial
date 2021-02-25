@@ -79,7 +79,7 @@ with the input arguments being :
 
 ## Why do we need to get fancy and use jazz hands?
 
-If it weren't for the docker containers involved in RECAST, this could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. This is accomplished through the use of a [declarative]() programming language called [`yadage`]().
+If it weren't for the docker containers involved in RECAST, this whole workflow could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. This is accomplished through the use of a [declarative]() programming language called [`yadage`]().
 
 Before diving into the gory details of how to actually program with yadage in the next lesson, let's start with a high-level overview of what it is and how it accomplishes the goal of preserving and re-interpreting our analysis.
 
