@@ -72,7 +72,7 @@ example_inputs:
       histbkg: 'background'
 ~~~
 
-# Setting up Kerberos Authentication
+## Setting up Kerberos Authentication
 
 The `recast-atlas` client has a built-in tool for setting up kerberos authentication. It uses the following user-defined environment variables to set this up:
 
@@ -139,6 +139,26 @@ fitting:
    publish:
      output_spectrum: '{plotfile}'
      output_limit:    '{outputfile}'
+```
+
+Having done away with these `{eosuser}` and `{eospass}` variables, you can now remove them from the `fitting_step` stage in `specs/workflow.yml`, which should now look like:
+
+```yaml
+- name: fitting_step
+  dependencies: [init,scaling_step]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      filedata:    {step: init, output: filedata}
+      histdata:    {step: init, output: histdata}
+      filebkg:     {step: init, output: filebkg}
+      histbkg:     {step: init, output: histbkg}
+      filesig:     {step: scaling_step, output: output_file}
+      histsig:     {step: init, output: hist}
+      outputfile:  '{workdir}/limit.png'
+      plotfile:    '{workdir}/spectrum.png'
+      local_dir:   '{workdir}'
+    step: {$ref: steps.yml#/fitting}
 ```
 
 ## Registering Your Workflow
