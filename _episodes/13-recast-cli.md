@@ -57,20 +57,20 @@ spec:
 example_inputs:
   default:
     dataopts:
-      initdir: '/Users/meehan/work/ATLASRecast2021/Overhaul/workflow-atlas'
+      initdir: '/Users/meehan/work/ATLASRecast2021/Overhaul/workflow-atlas'   # You will need to modify this line. It should be the path to the directory where the recast.yml is located on your computer.
     initdata:
-      signal_daod: 'inputdata/DAOD_EXOT27.20140688._000071.pool.root.1'
+      signal_daod: 'inputdata/DAOD_EXOT27.20140688._000071.pool.root.1'   # You may need to modify this line. The name of your signal DAOD will likely be slighly different if you downloaded it with rucio.
       cross_section: 44.873
       sum_of_weights: 6813.025800
       k_factor: 1
       filter_eff: 1
       luminosity: 140.1
       hist: 'h_mjj'
-      eosuser: 'jesjer'
-      eospass: 'Fare-Sawa'
-      filedata: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root'
+      eosuser: 'recasttu'
+      eospass: 'DidiBuki1'
+      filedata: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
       histdata: 'data'
-      filebkg: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root'
+      filebkg: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
       histbkg: 'background'
 ~~~
 
