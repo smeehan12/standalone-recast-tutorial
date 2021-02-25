@@ -23,9 +23,9 @@ The changes we must implement bring together our understanding of GitLab CI and 
 
 ### Authentications
 The first piece is to enter the appropriate credentials for our CI to use when executing our CI job.  In particular, we need to enter three variables in the GitLab remote interface :
-  - `RECAST_USER` : This is the username of the service account - in this case `jesjer`
-  - `RECAST_PASS` : This is the associated password of the service account - get this from the tutorial organizers.
-  - `RECAST_TOKEN` : This is the associated password of the service account - get this from the tutorial organizers.
+  - `RECAST_USER` : This is the username of the service account - in this case `recasttu`
+  - `RECAST_PASS` : This is the associated password of the service account - in this case `DidiBuki1`.
+  - `RECAST_TOKEN` : This is the [gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) associated with the service account - in this case `n44PNWoaG22LJhHxaV94`. The access token should have at minimum `read_registry` permission (see [Before you Begin](https://recast-docs.web.cern.ch/recast-docs/workflowauthoring/intro/#before-you-begin) in RECAST docs)
 
 These will be used to setup the ability to execute yadage on the runner. On the left hand selection bar, go to `Settings` --> `CI/CD` and then expand the section on `Variables` (this should be familiar from entering EOS credentials in normal CI jobs) and enter these three new variables.
 
