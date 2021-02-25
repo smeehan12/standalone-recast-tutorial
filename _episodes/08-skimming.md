@@ -20,7 +20,7 @@ We now have all the yadage tools to put together our VHbb RECAST workflow, start
 
 <img src="../fig/diagram_skimming.png" alt="Skimming" style="width:220px">
 
-On gitlab, create a new repo to contain your workflow. Name it something like `my-workflow` (but with your name instead of mine). Clone your new repo onto your computer.
+On gitlab, create a new repo to contain your workflow. Name it something like `my-workflow`. Clone your new repo onto your computer.
 
 **In another shell**, cd into the workflow repo and start the yadage container so you can validate and test the steps and workflow as you develop. You'll also need to log in to the gitlab docker registry using your CERN credentials so yadage can automatically pull images from the gitlab registry:
 
@@ -30,7 +30,7 @@ docker run --rm -it -e PACKTIVITY_WITHIN_DOCKER=true -v $PWD:$PWD -w $PWD -v /va
 docker login gitlab-registry.cern.ch
 ~~~
 
-**Back in your first shell**, cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, copy your signal DAOD file into `inputdata`:
+**Back in your first shell**, cd into your new workflow repo, and create your empty steps.yml and workflow.yml files. Next, create a directory called `inputdata`, and copy your signal DAOD file into `inputdata`:
 
 ~~~bash
 cd [your workflow repo]
@@ -144,7 +144,7 @@ and it should be noted that there can be multiple instances of `-p` and `-d` fla
   - `-p signal_daod=recast_daod.root` : We are defining the `signal_daod` parameter at the first stage of our workflow.  This parameter will be an "output" of the `[init]` stage of the workflow and can be picked up by any step from here.
   - `-d initdir=$PWD/inputdata` : Since we have a signal DAOD file for yadage to process, we'll need a way to tell the yadage-run command where to look for the DOAD file. This functionality is provided by the `-d initdir=` option.
 
-Now let's also note that unlike the `packtivity-run` command that we did earlier, there is no `-p output_file='{workdir}/selected.root'` argument.  That is because in our `workflow.yml` file, that has been "hardcoded" in a sense.  "Isn't that bad?" you say. "No", I say, "That file will be produced internally used internally to our full analysis workflow, so no matter what specific MC sample we are running on, it need not change."  Again, we are embracing the concept of "parameterizing" our work and in this case really reflecting on which parameterizations matter, and which are superfluous and can really be hardcoded for *better*, not worse.
+Now let's also note that unlike the `packtivity-run` command that we did earlier, there is no `-p output_file='{workdir}/selected.root'` argument.  That is because in our `workflow.yml` file, that has been "hardcoded" in a sense.  "Isn't that bad?" you say. "No", I say, "That file will be produced and used internally by our full analysis workflow, so no matter what specific MC sample we are running on, it need not change."  Again, we are embracing the concept of "parameterizing" our work and in this case really reflecting on which parameterizations matter, and which are superfluous and can really be hardcoded for *better*, not worse.
 
 The output file, the thing whose name we have hardcoded (not parameterized) should be located under `workdir/skimming_step/selected.root` after a successful `yadage-run`.
 
