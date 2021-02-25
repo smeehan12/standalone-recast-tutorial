@@ -74,6 +74,68 @@ example_inputs:
       histbkg: 'background'
 ~~~
 
+# Setting up Kerberos Authentication
+
+The `recast-atlas` client has a built-in tool for setting up kerberos authentication. To set this up, first run the following commands to create an `authdir` containing your kerberos credentials:
+
+```bash
+# Define RECAST_USER, RECAST_PASS and RECAST_TOKEN as environment variables
+RECAST_USER=recasttu
+RECAST_PASS=DidiBuki1
+RECAST_TOKEN=n44PNWoaG22LJhHxaV94
+
+# To pull images from a gitlab registry that $RECAST_USER has access to
+eval "$(recast auth setup -a $RECAST_USER -a $RECAST_PASS -a $RECAST_TOKEN -a default)"
+
+# To access private data that $RECAST_USER has access to on \eos
+eval "$(recast auth write --basedir authdir)"
+```
+
+Look at the contents of authdir:
+
+```bash
+cat authdir/getkrb.sh 
+```
+
+should output:
+
+```
+echo 'DidiBuki1'|kinit recasttu@CERN.CH
+```
+
+This is just the `kinit` command we were encoding by-hand in the fitting stage (`echo "{eospass}" | kinit {eosuser}@CERN.CH`) - but now there's some added security because we don't have to write down our password in the `inputs.yml` file.
+
+This `authdir` gets mounted into any containers that need kerberos authentication using a new resource `GRIDProxy` in the `environment` field of your step definition. The kerberos authentication is then automated by executing `. /recast_auth/getkrb.sh` at the beginning of the step. 
+
+
+> ## Don't give away your secrets!
+> Keep in mind that the `authdir` contains the password associated with your user or service account, so be careful not to push it to the gitlab repo! An easy way to prevent this from happening is to add the `authdir` to your `.gitignore` file.
+{: .callout}
+
+Update the `fitting` stage in your `specs/steps.yml` file to use this automated kerberos auth as follows:
+
+```yaml
+fitting:
+ process:
+   process_type: interpolated-script-cmd
+   script: |
+     . /recast_auth/getkrb.sh
+     xrdcp {filedata} {local_dir}/file_data.root
+     xrdcp {filebkg}  {local_dir}/file_bkg.root
+     cd /code
+     python run_fit.py --filedata {local_dir}/file_data.root --histdata {histdata} --filebkg {local_dir}/file_bkg.root --histbkg {histbkg} --filesig {filesig} --histsig {histsig} --outputfile {outputfile} --plotfile {plotfile}
+ environment:
+   environment_type: docker-encapsulated
+   image: gitlab-registry.cern.ch/recast-examples/fitting
+   imagetag: master
+   resources:
+      - GRIDProxy
+ publisher:
+   publisher_type: interpolated-pub
+   publish:
+     output_spectrum: '{plotfile}'
+     output_limit:    '{outputfile}'
+```
 
 ## Registering Your Workflow
 The next step is to make sure that the recast CLI recognizes that your workflow exists.  This is done via the `recast catalogue`.  Start by viewing the existing catalogue of workflows
@@ -99,6 +161,7 @@ and you are now running the full analysis and interpretation workflow which was 
 To be able to run any workflow, it must be available in the catalogue on your local instance of recast CLI.  So we need to get your workflow `tutorial/vhbb` in here.  To do so you need to `add` it to the catalogue with the following call
 ~~~bash
 $(recast catalogue add /path/to/the/directory/with/your/recast.yml)
+# Time saver: if you're already in the directory with your recast.yml, you can just run: $(recast catalogue add $PWD)
 ~~~
 After doing this, execute the `recast catalogue ls` call again and you should be able to find your workflow has been registered.
 
