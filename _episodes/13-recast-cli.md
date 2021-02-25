@@ -76,7 +76,13 @@ example_inputs:
 
 # Setting up Kerberos Authentication
 
-The `recast-atlas` client has a built-in tool for setting up kerberos authentication. To set this up, first run the following commands to create an `authdir` containing your kerberos credentials:
+The `recast-atlas` client has a built-in tool for setting up kerberos authentication. It uses the following user-defined environment variables to set this up:
+
+  - `RECAST_USER` : This is the username of the service account - in this case `recasttu`
+  - `RECAST_PASS` : This is the associated password of the service account - in this case `DidiBuki1`.
+  - `RECAST_TOKEN` : This is the [gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) associated with the service account - in this case `n44PNWoaG22LJhHxaV94`. The access token should have at minimum `read_registry` permission (see [Before you Begin](https://recast-docs.web.cern.ch/recast-docs/workflowauthoring/intro/#before-you-begin) in RECAST docs)
+
+Run the following commands to create an `authdir` containing your kerberos credentials:
 
 ```bash
 # Define RECAST_USER, RECAST_PASS and RECAST_TOKEN as environment variables
