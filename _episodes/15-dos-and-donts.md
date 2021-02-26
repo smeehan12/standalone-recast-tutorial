@@ -15,7 +15,7 @@ keypoints:
 ## Best Practices
 By now, hopefully you have implemented the toy VHbb analysis.  However, you may be muttering, "Yeah, but this was a simple analysis and mine is much more complicated".  Yes, this is probably the case and for good reasons that you and your team have arrived at during the course of months of work.  What we would leave you with here are a few things to do and things to *NOT* do that will hopefully help guide you in a meta way.
 
-### Dos
+### Dos 
 Embrace these best practices:
   - Make each of your analysis executables behavior modifiable via command line arguments.  Make it "parameterized".
   - Make unit tests of individual steps a part of your workflow development. This will make your life a lot easier when it comes to debugging a failed workflow.
