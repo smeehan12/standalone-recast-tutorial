@@ -94,7 +94,13 @@ What you have done is the equivalent of doing `setupATLAS` and then `asetup` if 
 
 > ## Top Level `CMakeLists.txt`
 >
->One of the primary differences between this setup and the CVMFS-based one is that when you run this `~/release_setup.sh` command, it will **not** create a top level `CMakeLists.txt` file that will facilitate the building of your code in the next step.  As such, in your own code, you should ask yourself if you have such a top level `CMakeLists.txt` file.  The one here can be found in `source/CMakeLists.txt`.  If you don't, then you will need to create one and put it in your own analysis code repository.
+>One of the primary differences between this setup and the CVMFS-based one is that when you run this `~/release_setup.sh` command, it will **not** create a top level `CMakeLists.txt` file that will facilitate the building of your code in the next step.  As such, in your own code, you should ask yourself if you have such a top level `CMakeLists.txt` file.  The one here can be found in `source/CMakeLists.txt`.  If you don't, then you will need to create one and put it in your own analysis code repository. If you're unfamiliar with this automatic`CMakeLists.txt` creation with CVMFS, try `ssh`-ing onto lxplus and running an `asetup` command:
+>~~~bash
+>ssh [your_username]@lxplus.cern.ch
+>asetup AnalysisBase,21.2.145,here
+>ls *.txt
+>~~~
+> notice that a new file `CMakeLists.txt` gets created - open it up and poke around to see what's in it.
 {: .callout}
 
 ## Build and run
