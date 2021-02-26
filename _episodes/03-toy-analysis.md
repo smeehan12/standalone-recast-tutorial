@@ -64,7 +64,7 @@ docker pull atlas/analysisbase:21.2.85-centos7
 Once the signal DOAD is finished downloading, run the `atlas/analysisbase:21.2.85-centos7` docker image in interactive mode, volume-mounting the data file and current directory to the container:
 
 ~~~bash
-cd recast-standalone
+cd event-selection
 docker run --rm -it -v /full/path/to/DAOD_EXOT27.17882736._000008.pool.root.1:/Data/signal_daod.root -v $PWD:/Tutorial atlas/analysisbase:21.2.85-centos7 bash
 ~~~
 
@@ -139,7 +139,7 @@ Now, run the `AnalysisPayload` executable to loop over jets in each event - appl
 
 ~~~bash
 cd ../run
-AnalysisPayload
+AnalysisPayload /Data/signal_daod.root output_hist.root 10000
 ~~~
 
 > ## Stop! Parameter time!
@@ -149,7 +149,7 @@ AnalysisPayload
 >  - `output_hist.root` : The path to the output analyzed file with the histograms and whatever else comes from the analysis
 >  - `10000` : The number of events to run on
 >
->Now, granted, in this analysis they are provided in a poorly thought out way.  There are no flags and they are critically order dependent but the critical bit is that there is **nothing in the code that must be changed.  This is nothing more than reinforcing the concept that hardcoding is bad practice, but in analysis preservation it is given a whole new dimension of importance.  If your code is not parameterizeable, then it is not preservable and it will likely take some rather ugly hacks to preserve it.  So take a second to reflect on whether your event selection code is "paraemterizeable".
+>Now, granted, in this analysis they are provided in a poorly thought out way.  There are no flags and they are critically order dependent but the critical bit is that there is **nothing in the code that must be changed.  This is nothing more than reinforcing the concept that hardcoding is bad practice, but in analysis preservation it is given a whole new dimension of importance.  If your code is not parameterizeable, then it is not preservable and it will likely take some rather ugly hacks to preserve it.  So take a second to reflect on whether your event selection code is "parameterizeable".
 >
 {: .callout}
 
