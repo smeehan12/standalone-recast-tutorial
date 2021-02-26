@@ -57,23 +57,109 @@ spec:
 example_inputs:
   default:
     dataopts:
-      initdir: '/Users/meehan/work/ATLASRecast2021/Overhaul/workflow-atlas'
+      initdir: '/Users/meehan/work/ATLASRecast2021/Overhaul/workflow-atlas'   # You will need to modify this line. It should be the path to the directory where the recast.yml is located on your computer.
     initdata:
-      signal_daod: 'inputdata/DAOD_EXOT27.20140688._000071.pool.root.1'
+      signal_daod: 'inputdata/DAOD_EXOT27.20140688._000071.pool.root.1'   # You may need to modify this line. The name of your signal DAOD will likely be slighly different if you downloaded it with rucio.
       cross_section: 44.873
       sum_of_weights: 6813.025800
       k_factor: 1
       filter_eff: 1
       luminosity: 140.1
       hist: 'h_mjj'
-      eosuser: 'jesjer'
-      eospass: 'Fare-Sawa'
-      filedata: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root'
+      filedata: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
       histdata: 'data'
-      filebkg: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root'
+      filebkg: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
       histbkg: 'background'
 ~~~
 
+## Setting up Kerberos Authentication
+
+The `recast-atlas` client has a built-in tool for setting up kerberos authentication. It uses the following user-defined environment variables to set this up:
+
+  - `RECAST_USER` : This is the username of the service account - in this case `recasttu`
+  - `RECAST_PASS` : This is the associated password of the service account - in this case `DidiBuki1`.
+  - `RECAST_TOKEN` : This is the [gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) associated with the service account - in this case `n44PNWoaG22LJhHxaV94`. The access token should have at minimum `read_registry` permission (see [Before you Begin](https://recast-docs.web.cern.ch/recast-docs/workflowauthoring/intro/#before-you-begin) in RECAST docs)
+
+Run the following commands to create an `authdir` containing your kerberos credentials:
+
+```bash
+# Define RECAST_USER, RECAST_PASS and RECAST_TOKEN as environment variables
+RECAST_USER=recasttu
+RECAST_PASS=DidiBuki1
+RECAST_TOKEN=n44PNWoaG22LJhHxaV94
+
+# To pull images from a gitlab registry that $RECAST_USER has access to
+eval "$(recast auth setup -a $RECAST_USER -a $RECAST_PASS -a $RECAST_TOKEN -a default)"
+
+# To access private data that $RECAST_USER has access to on \eos
+eval "$(recast auth write --basedir authdir)"
+```
+
+Look at the contents of authdir:
+
+```bash
+cat authdir/getkrb.sh 
+```
+
+should output:
+
+```
+echo 'DidiBuki1'|kinit recasttu@CERN.CH
+```
+
+This is just the `kinit` command we were encoding by-hand in the fitting stage (`echo "{eospass}" | kinit {eosuser}@CERN.CH`) - but now there's some added security because we don't have to write down our password in the `inputs.yml` file.
+
+This `authdir` gets mounted into any containers that need kerberos authentication using a new resource `GRIDProxy` in the `environment` field of your step definition. The kerberos authentication is then automated by executing `. /recast_auth/getkrb.sh` at the beginning of the step. 
+
+
+> ## Don't give away your secrets!
+> Keep in mind that the `authdir` contains the password associated with your user or service account, so be careful not to push it to the gitlab repo! An easy way to prevent this from happening is to add the `authdir` to your `.gitignore` file.
+{: .callout}
+
+Update the `fitting` stage in your `specs/steps.yml` file to use this automated kerberos auth as follows:
+
+```yaml
+fitting:
+ process:
+   process_type: interpolated-script-cmd
+   script: |
+     . /recast_auth/getkrb.sh
+     xrdcp {filedata} {local_dir}/file_data.root
+     xrdcp {filebkg}  {local_dir}/file_bkg.root
+     cd /code
+     python run_fit.py --filedata {local_dir}/file_data.root --histdata {histdata} --filebkg {local_dir}/file_bkg.root --histbkg {histbkg} --filesig {filesig} --histsig {histsig} --outputfile {outputfile} --plotfile {plotfile}
+ environment:
+   environment_type: docker-encapsulated
+   image: gitlab-registry.cern.ch/recast-examples/fitting
+   imagetag: master
+   resources:
+      - GRIDProxy
+ publisher:
+   publisher_type: interpolated-pub
+   publish:
+     output_spectrum: '{plotfile}'
+     output_limit:    '{outputfile}'
+```
+
+Having done away with these `{eosuser}` and `{eospass}` variables, you can now remove them from the `fitting_step` stage in `specs/workflow.yml`, which should now look like:
+
+```yaml
+- name: fitting_step
+  dependencies: [init,scaling_step]
+  scheduler:
+    scheduler_type: singlestep-stage
+    parameters:
+      filedata:    {step: init, output: filedata}
+      histdata:    {step: init, output: histdata}
+      filebkg:     {step: init, output: filebkg}
+      histbkg:     {step: init, output: histbkg}
+      filesig:     {step: scaling_step, output: output_file}
+      histsig:     {step: init, output: hist}
+      outputfile:  '{workdir}/limit.png'
+      plotfile:    '{workdir}/spectrum.png'
+      local_dir:   '{workdir}'
+    step: {$ref: steps.yml#/fitting}
+```
 
 ## Registering Your Workflow
 The next step is to make sure that the recast CLI recognizes that your workflow exists.  This is done via the `recast catalogue`.  Start by viewing the existing catalogue of workflows
@@ -99,6 +185,7 @@ and you are now running the full analysis and interpretation workflow which was 
 To be able to run any workflow, it must be available in the catalogue on your local instance of recast CLI.  So we need to get your workflow `tutorial/vhbb` in here.  To do so you need to `add` it to the catalogue with the following call
 ~~~bash
 $(recast catalogue add /path/to/the/directory/with/your/recast.yml)
+# Time saver: if you're already in the directory with your recast.yml, you can just run: $(recast catalogue add $PWD)
 ~~~
 After doing this, execute the `recast catalogue ls` call again and you should be able to find your workflow has been registered.
 
