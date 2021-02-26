@@ -22,10 +22,7 @@ Finally, we will schedule this CI to run on a regular basis so that your full an
 The changes we must implement bring together our understanding of GitLab CI and the recast CLI in a way that involves nothing remarkably new, but requires a bit of retooling of our workflow.  However, the workflow that you will be left with will also be useable on your local machine, just like the one you have been running, so no worries, its only improving the situation.
 
 ### Authentications
-The first piece is to enter the appropriate credentials for our CI to use when executing our CI job.  In particular, we need to enter three variables in the GitLab remote interface :
-  - `RECAST_USER` : This is the username of the service account - in this case `recasttu`
-  - `RECAST_PASS` : This is the associated password of the service account - in this case `DidiBuki1`.
-  - `RECAST_TOKEN` : This is the [gitlab personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) associated with the service account - in this case `n44PNWoaG22LJhHxaV94`. The access token should have at minimum `read_registry` permission (see [Before you Begin](https://recast-docs.web.cern.ch/recast-docs/workflowauthoring/intro/#before-you-begin) in RECAST docs)
+The first piece is to enter the appropriate credentials for our CI to use when executing our CI job.  In particular, we need to enter the three variables `RECAST_USER`, `RECAST_PASS` and `RECAST_TOKEN` in the GitLab remote interface, which in the [previous lesson](./13-recast-cli/index.html) we'd been defining by-hand as environment variables.
 
 These will be used to setup the ability to execute yadage on the runner. On the left hand selection bar, go to `Settings` --> `CI/CD` and then expand the section on `Variables` (this should be familiar from entering EOS credentials in normal CI jobs) and enter these three new variables.
 
@@ -41,16 +38,17 @@ Next, we need to augment our actual workflow, in particular adding a new `skimmi
 > >    process_type: interpolated-script-cmd
 > >    script: |
 > >      source /home/atlas/release_setup.sh
-> >      cat {eospass}
-> >      cat {eosuser}
-> >      echo "{eospass}" | kinit {eosuser}@CERN.CH
+> >      . /recast_auth/getkrb.sh
 > >      xrdcp {input_file} {local_dir}/input.root
 > >      source /Tutorial/build/x86_64-centos7-gcc8-opt/setup.sh
 > >      AnalysisPayload {local_dir}/input.root {output_file} 1000
+> >      rm {local_dir}/input.root  # This is to avoid cluttering the storage area with the big input file once we're finished with it
 > >  environment:
 > >    environment_type: docker-encapsulated
 > >    image: gitlab-registry.cern.ch/recast-examples/event-selection
 > >    imagetag: final
+> >    resources:
+         - GRIDProxy
 > >  publisher:
 > >    publisher_type: interpolated-pub
 > >    publish:
@@ -68,8 +66,6 @@ Next, we need to augment our actual workflow, in particular adding a new `skimmi
 > >   scheduler:
 > >     scheduler_type: singlestep-stage
 > >     parameters:
-> >       eosuser:     {step: init, output: eosuser}
-> >       eospass:     {step: init, output: eospass}
 > >       input_file:  {step: init, output: signal_daod_eos}
 > >       output_file: '{workdir}/selected.root'
 > >       local_dir:   '{workdir}'
@@ -110,6 +106,7 @@ Now, create a `.gitlab-ci.yml` and implement the following CI jobs.  This may lo
   - Those `tags: docker-privileged` and `services: docker:stable-dind` are necessary because our workflow is going to have to pull other images and spawn individuals processes.  Only certain runners can do this.
   - The first couple lines in the `script` authenticate the user for the recast run, and creating the directory where it will run on the runner.
   - The last couple lines in the `script` are precisely what you did on your local machine to launch a run with the recast CLI.
+  - The directory `recast-firsttest` containing all the files and logs produced by the workflow is saved as [job `artifact`](https://docs.gitlab.com/ee/ci/pipelines/job_artifacts.html) in case it's needed for debugging.
 
 ~~~
 stages:
@@ -130,6 +127,12 @@ testing:
   - eval "$(recast auth write --basedir authdir)"
   - $(recast catalogue add $PWD)
   - recast run tutorial/vhbb --tag firsttest
+
+  artifacts:
+    paths:
+    - recast-firsttest
+    expire_in: 1 day
+    when: always
 ~~~
 
 
