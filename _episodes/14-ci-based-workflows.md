@@ -42,6 +42,7 @@ Next, we need to augment our actual workflow, in particular adding a new `skimmi
 > >      xrdcp {input_file} {local_dir}/input.root
 > >      source /Tutorial/build/x86_64-centos7-gcc8-opt/setup.sh
 > >      AnalysisPayload {local_dir}/input.root {output_file} 1000
+> >      rm {local_dir}/input.root  # This is to avoid cluttering the storage area with the big input file once we're finished with it
 > >  environment:
 > >    environment_type: docker-encapsulated
 > >    image: gitlab-registry.cern.ch/recast-examples/event-selection
@@ -105,6 +106,7 @@ Now, create a `.gitlab-ci.yml` and implement the following CI jobs.  This may lo
   - Those `tags: docker-privileged` and `services: docker:stable-dind` are necessary because our workflow is going to have to pull other images and spawn individuals processes.  Only certain runners can do this.
   - The first couple lines in the `script` authenticate the user for the recast run, and creating the directory where it will run on the runner.
   - The last couple lines in the `script` are precisely what you did on your local machine to launch a run with the recast CLI.
+  - The directory `recast-firsttest` containing all the files and logs produced by the workflow is saved as [job `artifact`](https://docs.gitlab.com/ee/ci/pipelines/job_artifacts.html) in case it's needed for debugging.
 
 ~~~
 stages:
@@ -125,6 +127,12 @@ testing:
   - eval "$(recast auth write --basedir authdir)"
   - $(recast catalogue add $PWD)
   - recast run tutorial/vhbb --tag firsttest
+
+  artifacts:
+    paths:
+    - recast-firsttest
+    expire_in: 1 day
+    when: always
 ~~~
 
 
