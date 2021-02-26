@@ -35,19 +35,19 @@ Spectrum of Data/MC        |  Reinterpreted Limit
 
 
 There are three primary additional components that we will need to use within our workflow :
-  - **EOS** : For storing/retrieving the
+  - **EOS** : For retrieving/storing the workflow inputs and outputs
   - **Post Processing** : For scaling of our signal
   - **Statistical Analysis** : For doing the final fit and interpretation
 
-Spend some time getting familiar with these utilities and then we will begin to tie them together into a jazzy workflow using some new tools - [packtivity](), [yadage](), and [recast]().
+Let's spend some time getting familiar with these utilities and then we will begin to tie them together into a jazzy workflow using some new tools - [packtivity](https://github.com/yadage/packtivity), [yadage](https://github.com/yadage/yadage), and [recast](https://github.com/recast-hep/recast-atlas).
 
 #### Getting our Data and Background (EOS)
-As you have learned in the [HSF GitLab tutorial](), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored in a file `root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root`, which is accessible with the `recasttu` service account (password: `DidiBuki1`). Within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial). 
-  
+As you have learned in the [HSF GitLab tutorial](https://hsf-training.github.io/hsf-training-cicd/), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored at `NEED PATH HERE` and within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial).
+
   > ## Exercise (15 min)
   > Practice running the python scripts that scale the signal to the correct cross section and luminosity and perform the statistical analysis in their respective docker environments.
   > #### Part 1: Processing Stuff
-  > Normally, between doing the event loop and the statistical analysis, you have some set of scripts for processing your histograms, right?  In particular, for scaling your raw histograms to physically meaningful luminosities and cross sections.  For our analysis chain, these utilities are bundled into a docker image `gitlab-registry.cern.ch/recast-examples/post-processing:master` housed at [this repo](https://gitlab.cern.ch/recast-examples/post-processing) though you should not need to look at the code to write your workflow, just know what the parameterized script eats and spits.  
+  > Normally, between doing the event loop and the statistical analysis, you have some set of scripts for processing your histograms, right?  In particular, for scaling your raw histograms to physically meaningful luminosities and cross sections.  For our analysis chain, these utilities are bundled into a docker image `gitlab-registry.cern.ch/recast-examples/post-processing:master` housed at [this repo](https://gitlab.cern.ch/recast-examples/post-processing) though you should not need to look at the code to write your workflow, just know what the parameterized script eats and spits.
   > For our purposes, the key utility we want is for scaling our signal appropriately.
   > ```
   > python scale_to_lumi_xsec.py -i selected.root -o selected_scaled.root -p scaled.pdf -c 1 -s 1 -k 1 -f 1 -l 1 -g h_mjj
@@ -136,7 +136,7 @@ As you have learned in the [HSF GitLab tutorial](), data is preserved and distri
 
 ## Why do we need to get fancy and use jazz hands?
 
-If it weren't for the docker containers involved in RECAST, this whole workflow could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. This is accomplished through the use of a [declarative]() programming language called [`yadage`]().
+If it weren't for the docker containers involved in RECAST, this could conceivably be accomplished with some environment variables and bash scripts that just list out each command that an analyst would type into the terminal while going through the analysis. But when we perform the analysis steps in docker containers, we need a way to codify what needs to happen in which container for each step, and how the output from one step feeds as the input for later steps. This is accomplished through the use of a [declarative](https://en.wikipedia.org/wiki/Declarative_programming) programming language called [`yadage`](https://github.com/yadage/yadage).
 
 Before diving into the gory details of how to actually program with yadage in the next lesson, let's start with a high-level overview of what it is and how it accomplishes the goal of preserving and re-interpreting our analysis.
 
@@ -151,7 +151,7 @@ We'll get into the syntax part of yadage in the upcoming *intermezzo* lesson, du
 In the yadage approach, the workflow is divided into distinct steps, called packaged activities - or "packtivities" - each of which will run inside a docker container. The steps get linked into a workflow by specifying how the output from each such packtivity step feeds in as the input for subsequent steps (this flow of dependencies is not necessarily linear). The yadage workflow engine optimizes the execution of the workflow.  If you want to eat up all the details, then you are encouraged to work through the dedicated [yadage tutorial](https://yadage.github.io/tutorial/) and read the [paper describing the design principles](https://arxiv.org/pdf/1706.01878.pdf)
 
 > ## Declarative Languages
-> In this tutorial, we will be using yadage, which itself is an instance of a *declarative* programming language and relies on this concept of "eating" and "spitting".  What goes on under the hood is something that does not concern us when we are programming in a declarative way.  This is opposed to an *imperative* programming language where you write all of the details out that go under the hood (e.g. loops).  There are many other declarative languages (e.g. [serial]() and [snakemate]()) and you could very well write your workflows using those.  If you find that one of those is easier for you, then go for it! Write your workflow in that language and we will help you translate to yadage to make the conveners happy.
+> In this tutorial, we will be using yadage, which itself is an instance of a *declarative* programming language and relies on this concept of "eating" and "spitting".  What goes on under the hood is something that does not concern us when we are programming in a declarative way.  This is opposed to an *imperative* programming language where you write all of the details out that go under the hood (e.g. loops).  There are many other declarative languages (e.g. [serial](https://github.com/reanahub/reana-workflow-engine-serial) and [snakemate](https://snakemake.readthedocs.io/en/stable/)) and you could very well write your workflows using those.  If you find that one of those is easier for you, then go for it! Write your workflow in that language and we will help you translate to yadage to make the conveners happy.
 {: .callout}
 
 ### Steps (`steps.yml`)

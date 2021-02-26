@@ -61,10 +61,6 @@ The number of MC-weighted events that were used to generate an MC sample isn't a
 > {: .solution}
 {: .challenge}
 
-> ## The JZW Samples
-> A perennial issue that trips many people up, and which
-{: .callout}
-
 ### Cross Section
 
 If the MC generator indiscriminately produced the full range of events for a given process, this would just require scaling the histogram for each MC sample by the predicted production cross section &sigma; after dividing by the sum of event weights.
