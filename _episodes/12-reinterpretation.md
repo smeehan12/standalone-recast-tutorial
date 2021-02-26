@@ -49,8 +49,12 @@ You need to provide authenticating information via kerberos `kinit` and then you
 This is the same mechanism by which your background and data are preserved for a fully recasted ATLAS analysis.  In fact, there is a dedicated storage area for such data for each individual analysis that will be created for you with the path like `/eos/project/r/recast/atlas/ANA-XXXX-20XX-XX`. All of these details, along with how to request this space, etc. are all described in the [recast-docs](https://recast-docs.web.cern.ch/recast-docs) and you are *highly* encouraged to read them thoroughly when moving to your actual analysis, even if this tutorial was a piece of cake.
 
 ### For this Toy Analysis
-However, for this tutorial, we will be using a toy EOS area at this location - `root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021`. At this location, there will be one file `external_data.root` which contains two histograms : `data` and `background`.  These are the inputs that your job will pull in for the test example.  This is a service account called `jesjer` (created by Sam, it's not some official JetEtMiss thing, don't worry, though it has some jet calibration stuff there) with a password that you can get from the organizers.
+However, for this tutorial, we will be using a toy EOS area at this location - `root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021`. At this location, there will be one file `external_data.root` which contains two histograms : `data` and `background`.  These are the inputs that your job will pull in for the test example. If you're interested to look more closely at the file with ROOT, you can download it directly from `eos` using the username `recasttu` and password `DidiBuki1`:
 
+```bash
+scp recasttu@lxplus.cern.ch:/eos/user/r/recasttu/ATLASRecast2021/external_data.root .
+rootbrowse external_data.root
+```
 
 ## Encoding the Interpretation Step
 
@@ -145,19 +149,19 @@ packtivity-run -p signal="'{workdir}/workdir/skimming_step/selected.root'" -p xs
 Running this three-step workflow is rather straightforward by extending the `inputs.yml` file to insert the necessary additional parameters for this last stage of the workflow.  You should begin to think of this file as the very high level set of switches that control the global behavior of your entire analysis.  Every once in a while it's good to review whether all of the parameters in here are truly necessary or whether some are purely internal.
 
 ~~~yaml
-initdir: '$PWD/inputdata'
-signal_daod: 'DAOD_EXOT27.20140688._000071.pool.root.1'
+initdir: '$PWD/inputdata'    
+signal_daod: 'DAOD_EXOT27.20140688._000071.pool.root.1'    # Note: your filename may be slightly different if you downloaded it with rucio
 cross_section: 44.873
 sum_of_weights: 6813.025800
 k_factor: 1
 filter_eff: 1
 luminosity: 140.1
 hist: 'h_mjj'
-eosuser: 'jesjer'
-eospass: 'Fare-Sawa'
-filedata: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root'
+eosuser: 'recasttu'
+eospass: 'DidiBuki1'
+filedata: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
 histdata: 'data'
-filebkg: 'root://eosuser.cern.ch//eos/user/j/jesjer/ATLASRecast2021/external_data.root'
+filebkg: 'root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root'
 histbkg: 'background'
 ~~~
 
