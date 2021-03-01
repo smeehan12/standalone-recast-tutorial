@@ -42,16 +42,16 @@ There are three primary additional components that we will need to use within ou
 Let's spend some time getting familiar with these utilities and then we will begin to tie them together into a jazzy workflow using some new tools - [packtivity](https://github.com/yadage/packtivity), [yadage](https://github.com/yadage/yadage), and [recast](https://github.com/recast-hep/recast-atlas).
 
 #### Getting our Data and Background (EOS)
-As you have learned in the [HSF GitLab tutorial](https://hsf-training.github.io/hsf-training-cicd/), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored at `NEED PATH HERE` and within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial).
+As you have learned in the [HSF GitLab tutorial](https://hsf-training.github.io/hsf-training-cicd/), data is preserved and distributed on CERN GitLab via EOS using service accounts. As such, that is where our data and background samples are stored.  More specifically, they are stored at `root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root` and within that file you will find two histograms `background` and `data` which were produced with the same `event-selection` code but running over the entirety of the Run 2 dataset and all MC campaigns ... (not actually, they were produced with [this code](https://gitlab.cern.ch/recast-examples/background-generation) but we are going to pretend for the sake of the tutorial).
+
+#### Post Processing
+Normally, between doing the event loop and the statistical analysis, you have some set of scripts for processing your histograms, right?  In particular, for scaling your raw histograms to physically meaningful luminosities and cross sections.  For our analysis chain, these utilities are bundled into a docker image `gitlab-registry.cern.ch/recast-examples/post-processing:master` housed at [this repo](https://gitlab.cern.ch/recast-examples/post-processing) though you should not need to look at the code to write your workflow, just know what the parameterized script eats and spits.
 
   > ## Exercise (15 min)
-  > Practice running the python scripts that scale the signal to the correct cross section and luminosity and perform the statistical analysis in their respective docker environments.
-  > #### Part 1: Processing Stuff
-  > Normally, between doing the event loop and the statistical analysis, you have some set of scripts for processing your histograms, right?  In particular, for scaling your raw histograms to physically meaningful luminosities and cross sections.  For our analysis chain, these utilities are bundled into a docker image `gitlab-registry.cern.ch/recast-examples/post-processing:master` housed at [this repo](https://gitlab.cern.ch/recast-examples/post-processing) though you should not need to look at the code to write your workflow, just know what the parameterized script eats and spits.
-  > For our purposes, the key utility we want is for scaling our signal appropriately.
+  > Practice running the python scripts that scale the signal to the correct cross section and luminosity from within the `gitlab-registry.cern.ch/recast-examples/post-processing:master` image. For our purposes, the key utility we want is for scaling our signal appropriately.
   > ```
   > python scale_to_lumi_xsec.py -i selected.root -o selected_scaled.root -p scaled.pdf -c 1 -s 1 -k 1 -f 1 -l 1 -g h_mjj
-  > ```
+  > ````
   > the arguments are :
   >  - `-i`: The input file containing the histogram you want to scale
   >  - `-o`: The output file where you will write the scaled histogram
@@ -64,45 +64,20 @@ As you have learned in the [HSF GitLab tutorial](https://hsf-training.github.io/
   >  - `-g`: The histogram in the file that is to be scaled
   > `cd` out of the `event-selection` repo and make a directory to contain the outputs of your scaling and statistical analysis:
   > ```bash
-  > # Assuming we're starting in the event-selection repo:
+  > Assuming we're starting in the event-selection repo:
   > cd ..
   > mkdir scale-and-analyze
   > cd scale-and-analyze
-  > ```
-  > Run the docker image `gitlab-registry.cern.ch/recast-examples/post-processing:master` as a container, and volume mount the skimmed signal histogram `output_hist.root` that we created in the 'Toy Analysis' lesson from `event-selection/run` into the container. Also volume mount the current working directory into a directory `/code/Tutorial` which will house the outputs of our scaling and statistical analysis, and source the atlas software environment:
-  > ```bash
-  > docker run --rm -it -v $PWD:/code/Tutorial -v $PWD/../event-selection/run/output_hist.root:/Data/output_hist.root gitlab-registry.cern.ch/recast-examples/post-processing:master
-  > source /release_setup.sh
-  > ```
-  > Now, run `scale_to_lumi_xsec.py`, adapting the command-line arguments to run on the input file `/Data/output_hist.root` and produce an output `selected_scaled.root` in the mounted `/code/Tutorial` directory. Then `exit` out of the container, and check that the expected output has been produced in the current working directory. See 'Solution' for the full set of commands.
-  >
-  > #### Part 2: Statistical Analysis
-  > The fit will be done using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/).  This has been bundled into a docker image `gitlab-registry.cern.ch/recast-examples/fitting:master` housed at [this repo](https://gitlab.cern.ch/recast-examples/fitting) though if we embrace parameterized code, you shouldn't need to look at the code and your entire workflow can be written by knowing its interface (like all well-written code).
-  > The executable can be executed as
-  > ```
-  > python run_fit.py --filesig selected_scaled.root --histsig h_mjj   --filebkg external_data.root --histbkg background  --filedata external_data.root --histdat data --outputfile limits.png --plotfile results.png
-  > ```
-  > with the input arguments being :
-  >  - `--filesig`    : The path to the input file containing your signal histogram
-  >  - `--histsig`    : The name of the signal histogram in that file
-  >  - `--filebkg`    : The path to the input file containing your background histogram
-  >  - `--histbkg`    : The name of the background histogram in that file
-  >  - `--filedata`   : The path to the input file containing your data histogram
-  >  - `--histdat`    : The name of the data histogram in that file
-  >  - `--outputfile` : The png (or whatever) file name for saving your limits plot
-  >  - `--plotfile`   : The png (or whatever) file name for saving your data/MC plot
-  >
-  > Run the docker image `gitlab-registry.cern.ch/recast-examples/fitting:master, as a container, run kinit to set up kerboros authentication, then download the input file `external_data.root` into the container:
-  > ```bash
-  > docker run --rm -it -v $PWD:/code/Tutorial gitlab-registry.cern.ch/recast-examples/fitting:master
-  > kinit recasttu@CERN.CH
-  > # Enter recasttu password (DidiBuki1)
-  > xrdcp root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root .
-  > ```
-  > Now run `run_fit.py`, adapting the command-line arguments to run on the input file `/code/Tutorial/selected_scaled.root` and produce the output `limits.png` and `results.png` in the mounted directory `/code/Tutorial`. Exit out of the container and check that the expected outputs have been produced in the current directory.
   >
   > > ## Solution
-  > > #### Part 1: Processing Stuff
+  > >
+  > > Run the docker image `gitlab-registry.cern.ch/recast-examples/post-processing:master` as a container, and volume mount the skimmed signal histogram `output_hist.root` that we created in the 'Toy Analysis' lesson from `event-selection/run` into the container. Also volume mount the current working directory into a directory `/code/Tutorial` which will house the outputs of our scaling and statistical analysis, and source the atlas software environment:
+  > > ```bash
+  > > docker run --rm -it -v $PWD:/code/Tutorial -v $PWD/../event-selection/run/output_hist.root:/Data/output_hist.root gitlab-registry.cern.ch/recast-examples/post-processing:master
+  > > source /release_setup.sh
+  > > ```
+  > > Now, run `scale_to_lumi_xsec.py`, adapting the command-line arguments to run on the input file `/Data/output_hist.root` and produce an output `selected_scaled.root` in the mounted `/code/Tutorial` directory. Then `exit` out of the container, and check that the expected output has been produced in the current working directory. See 'Solution' for the full set of commands.
+  > >
   > > The command to produce an output file `selected_scaled.root` under `/code/Tutorial` is:
   > > ```bash
   > > python scale_to_lumi_xsec.py -i /Data/output_hist.root -o /code/Tutorial/selected_scaled.root -p scaled.pdf -c 1 -s 1 -k 1 -f 1 -l 1 -g h_mjj
@@ -116,7 +91,40 @@ As you have learned in the [HSF GitLab tutorial](https://hsf-training.github.io/
   > > ```
   > > selected_scaled.root
   > > ```
-  > > #### Part 2: Statistical Analysis
+  > >
+  > {: .solution}
+  >
+  {: .challenge}
+
+#### Statistical Analysis
+After all inputs are prepared (background and data from EOS / signal scaled to cross section), we are ready to do the combined fit to extract the CLs value and know if we can exclude our signal.  There are a number of packages to do this, but here, we will be using a python fitting framework called [pyhf](https://diana-hep.org/pyhf/).  This has been bundled into a docker image `gitlab-registry.cern.ch/recast-examples/fitting:master` and if we embrace parameterized code, you shouldn't need to look at the code and your entire workflow can be written by knowing its interface (like all well-written code).
+
+  > ## Exercise (15 min)
+  > Practice running the python scripts that scale the signal to the correct cross section and luminosity from within the `gitlab-registry.cern.ch/recast-examples/fitting:master` image. For our purposes, the key utility we want is for scaling our signal appropriately.
+  > The executable can be executed as
+  > ```
+  > python run_fit.py --filesig selected_scaled.root --histsig h_mjj   --filebkg external_data.root --histbkg background  --filedata external_data.root --histdata data --outputfile limits.png --plotfile results.png
+  > ```
+  > with the input arguments being :
+  >  - `--filesig`    : The path to the input file containing your signal histogram
+  >  - `--histsig`    : The name of the signal histogram in that file
+  >  - `--filebkg`    : The path to the input file containing your background histogram
+  >  - `--histbkg`    : The name of the background histogram in that file
+  >  - `--filedata`   : The path to the input file containing your data histogram
+  >  - `--histdat`    : The name of the data histogram in that file
+  >  - `--outputfile` : The png (or whatever) file name for saving your limits plot
+  >  - `--plotfile`   : The png (or whatever) file name for saving your data/MC plot
+  >
+  > > ## Solution
+  > > Run the docker image `gitlab-registry.cern.ch/recast-examples/fitting:master`, as a container, run kinit to set up kerboros authentication, then download the input file `external_data.root` into the container:
+  > > ```bash
+  > > docker run --rm -it -v $PWD:/code/Tutorial gitlab-registry.cern.ch/recast-examples/fitting:master
+  > > kinit recasttu@CERN.CH
+  > > # Enter recasttu password (DidiBuki1)
+  > > xrdcp root://eosuser.cern.ch//eos/user/r/recasttu/ATLASRecast2021/external_data.root .
+  > > ```
+  > > Now run `run_fit.py`, adapting the command-line arguments to run on the input file `/code/Tutorial/selected_scaled.root` and produce the output `limits.png` and `results.png` in the mounted directory `/code/Tutorial`. Exit out of the container and check that the expected outputs have been produced in the current directory.
+  > >
   > > The command to produce the output files in the mounted directory `/code/Tutorial` is:
   > > ```bash
   > > python run_fit.py --filesig /code/Tutorial/selected_scaled.root --histsig h_mjj  --filebkg external_data.root --histbkg background  --filedata external_data.root --histdat data --outputfile /code/Tutorial/limits.png --plotfile /code/Tutorial/results.png
@@ -133,6 +141,16 @@ As you have learned in the [HSF GitLab tutorial](https://hsf-training.github.io/
   > {: .solution}
   >
   {: .challenge}
+
+
+## lxplus Workflow
+Now that you have seen the few components that go into doing the analysis in total, we need to string them together.  A common computing resource where this is done at CERN is lxplus. So let's try to write a workflow on lxplus, and for this, we can simply use bash.
+
+
+
+## Pipelines as a Workflow
+
+
 
 ## Why do we need to get fancy and use jazz hands?
 
